@@ -937,97 +937,133 @@
 
     function extractFromPDF(text){
 
-      // Número de factura: "No. 001-001-000008121"
+      // Número de factura: extrae "001-001-000008121"
       const factura =
-        text.match(/No\.\s*([0-9\-]+)/)?.[1]
-        || text.match(/FACTURA\s*No\.\s*([0-9\-]+)/i)?.[1]
+        text.match(/No\.\s*([0-9\-]+)/)?.[1]?.trim()
+        || text.match(/Número de Autorización[\s:]*([0-9\-]+)/i)?.[1]?.trim()
         || "N/A";
 
-      // RUC: "R.U.C. 1792187567001"
+      // RUC: extrae el número
       const ruc =
-        text.match(/R\.U\.C\.[\s:]*(\d{10,13})/i)?.[1]
-        || text.match(/RUC[\s:]*(\d{10,13})/i)?.[1]
+        text.match(/R\.U\.C\.[\s:]*([0-9]{10,13})/i)?.[1]?.trim()
+        || text.match(/RUC[\s:]*([0-9]{10,13})/i)?.[1]?.trim()
         || "N/A";
 
-      // Cliente: "RENOVAENERGIA S.A."
+      // Cliente/Razón Social
       const cliente =
-        text.match(/Razón[\s\w]*Social[\s:]*([^\n]+)/i)?.[1]
-        || text.match(/Identificación[\s:]*([^\n]+)/i)?.[1]
+        text.match(/Nombres y Apellidos[\s:]*([^,\n]+)/i)?.[1]?.trim()
+        || text.match(/RENOVAENERGIA[\s\w\.]+/i)?.[0]?.trim()
         || "N/A";
 
-      // Fecha de emisión: "2026-05-07"
-      const fecha =
-        text.match(/Fecha[\s\w]*Emisión[\s:]*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i)?.[1]
-        || text.match(/FECHA[\s:]*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i)?.[1]
-        || "N/A";
+      // Fecha: busca fecha en formato múltiple
+      const fecha_match = 
+        text.match(/FECHA[\s\w]*EMISIÓN[\s:]*([0-9]{4}[\-\/][0-9]{2}[\-\/][0-9]{2})/i)
+        || text.match(/Fecha[\s\w]*Emisión[\s:]*([0-9]{1,2}[\/\-][0-9]{1,2}[\/\-][0-9]{2,4})/i)
+        || text.match(/(\d{4}[\-\/]\d{2}[\-\/]\d{2})/);
+      
+      const fecha = fecha_match ? fecha_match[1]?.trim() : "N/A";
 
-      // Vendedor: extrae el dato específico
+      // Vendedor: busca después de "Vendedor:"
       const vendedor =
-        text.match(/Vendedor[\s:]*([^\n]+)/i)?.[1]?.trim()
+        text.match(/Vendedor[\s:]*([^,\n]+)/i)?.[1]?.trim()
         || "N/A";
 
-      // Dirección (Provincia/Ciudad)
-      const direccion_match =
-        text.match(/Dir\.\s*Matriz[\s:]*([^\n]+)/i)?.[1]
-        || text.match(/Dirección[\s:]*([^\n]+)/i)?.[1]
+      // Dirección: extrae de "Dir. Matriz" o "Dirección"
+      const direccion_full =
+        text.match(/Dir\.\s*Matriz[\s:]*([^\n]+)/i)?.[1]?.trim()
+        || text.match(/Dirección[\s:]*([^\n]+)/i)?.[1]?.trim()
         || "";
 
-      const provincia = direccion_match ? direccion_match.split(/[,]/)[0].trim() : "N/A";
-      const ciudad = direccion_match && direccion_match.split(/[,]/)[1] 
-        ? direccion_match.split(/[,]/)[1].trim() 
-        : "N/A";
+      const provincia = direccion_full.split(/[,]/)[0]?.trim() || "N/A";
+      const ciudad = direccion_full.split(/[,]/)[1]?.trim() || "N/A";
 
-      // Extrae items de la tabla de detalles
-      // Formato: CANTIDAD | CÓDIGO | DESCRIPCIÓN | PRECIO UNITARIO | DESCUENTO | PRECIO TOTAL
-      const items_regex = /(\d+\,\d+)\s+([A-Z0-9]+)\s+([^\n]+?)\s+(\d+[\d,\.]*)\s+(\d+[\d,\.]*)\s+(\d+[\d,\.]*)/g;
+      // Canal y Sub Canal: buscan valores específicos
+      const canal = 
+        text.match(/Canal[\s:]*([^,\n]+)/i)?.[1]?.trim()
+        || "N/A";
+
+      const sub_canal =
+        text.match(/Sub[\s\-]*Canal[\s:]*([^,\n]+)/i)?.[1]?.trim()
+        || "N/A";
+
+      // Cuentas
+      const cuentas =
+        text.match(/Cuentas[\s:]*([^,\n]+)/i)?.[1]?.trim()
+        || "N/A";
+
+      // Extrae items de la tabla
+      // Patrón: CANTIDAD | CÓDIGO | DESCRIPCIÓN | PRECIO UNITARIO | DESCUENTO | PRECIO TOTAL
       const items = [];
-      let match;
+      
+      // Busca líneas de items (cantidad.cantidad código descripción precio...)
+      const item_lines = text.match(/(\d+\,\d+)\s+([A-Z0-9]+)\s+([^\d\n]+?)\s+(\d+[\d,\.]*)\s+(\d+[\d,\.]*)\s+(\d+[\d,\.]*)/g) || [];
+      
+      item_lines.forEach(line => {
+        const match = line.match(/(\d+\,\d+)\s+([A-Z0-9]+)\s+([^\d\n]+?)\s+(\d+[\d,\.]*)\s+(\d+[\d,\.]*)\s+(\d+[\d,\.]*)/);
+        if(match) {
+          items.push({
+            cantidad: match[1],
+            codigo: match[2],
+            modelo: match[3].trim(),
+            precio_unitario: match[4],
+            descuento: match[5],
+            precio_total: match[6]
+          });
+        }
+      });
 
-      while ((match = items_regex.exec(text)) !== null) {
-        items.push({
-          cantidad: match[1],
-          codigo: match[2],
-          modelo: match[3].trim(),
-          precio_unitario: match[4],
-          descuento: match[5],
-          precio_total: match[6]
-        });
+      // Si no encuentra items estructurados, busca en descripción general
+      if (items.length === 0) {
+        // Busca todos los productos mencionados
+        const product_matches = text.matchAll(/([A-Z0-9]+)\s+([^\n]+?)\s+(\d+[\d,\.]*)\s+(\d+[\d,\.]*)/g);
+        for(const match of product_matches) {
+          if(match[1] && match[2] && !match[2].includes("Autorización")) {
+            items.push({
+              cantidad: "1.000",
+              codigo: match[1],
+              modelo: match[2].trim(),
+              precio_unitario: match[3],
+              descuento: "0.00",
+              precio_total: match[4]
+            });
+          }
+        }
       }
 
-      // Si no encuentra items en tabla, busca valores totales
+      // Si aún no hay items, crea uno genérico
       if (items.length === 0) {
         const total =
-          text.match(/VALOR TOTAL[\s:]*(\d+[\d,\.]*)/i)?.[1]
-          || text.match(/Total Facturado[\s:]*(\d+[\d,\.]*)/i)?.[1]
+          text.match(/VALOR TOTAL[\s:]*\$?\s*(\d+[\d,\.]*)/i)?.[1]?.trim()
+          || text.match(/VALOR A PAGAR[\s:]*\$?\s*(\d+[\d,\.]*)/i)?.[1]?.trim()
           || "0.00";
 
         items.push({
           cantidad: "1.000",
           codigo: "N/A",
-          modelo: "Documento PDF",
+          modelo: "Producto detectado",
           precio_unitario: total,
           descuento: "0.00",
           precio_total: total
         });
       }
 
-      // Extrae valores de resumen
+      // Totales
       const subtotal =
-        text.match(/SUBTOTAL[\s:]*\$?\s*(\d+[\d,\.]*)/i)?.[1]
-        || text.match(/SUBTOTAL[\s:]*(\d+[\d,\.]*)/i)?.[1]
+        text.match(/SUBTOTAL[\s\d%]*[\s:]*\$?\s*(\d+[\d,\.]*)/i)?.[1]?.trim()
+        || text.match(/SUBTOTAL[\s:]*(\d+[\d,\.]*)/i)?.[1]?.trim()
         || "0.00";
 
-      const iva =
-        text.match(/IVA[\s\d%]*[\s:]*\$?\s*(\d+[\d,\.]*)/i)?.[1]
-        || text.match(/IVA 12%[\s:]*(\d+[\d,\.]*)/i)?.[1]
+      const iva_pagado =
+        text.match(/IVA[\s\d%]*[\s:]*\$?\s*(\d+[\d,\.]*)/i)?.[1]?.trim()
+        || text.match(/IVA 15%[\s:]*(\d+[\d,\.]*)/i)?.[1]?.trim()
         || "0.00";
 
       const total_facturado =
-        text.match(/VALOR TOTAL[\s:]*\$?\s*(\d+[\d,\.]*)/i)?.[1]
-        || text.match(/VALOR TOTAL[\s:]*(\d+[\d,\.]*)/i)?.[1]
+        text.match(/VALOR TOTAL[\s:]*\$?\s*(\d+[\d,\.]*)/i)?.[1]?.trim()
+        || text.match(/VALOR A PAGAR[\s:]*\$?\s*(\d+[\d,\.]*)/i)?.[1]?.trim()
         || subtotal;
 
-      // Retorna array de items para mantener compatibilidad con estructura XML
+      // Retorna array de items
       return items.map(item => ({
 
         tipo: "PDF",
@@ -1048,13 +1084,13 @@
 
         lista_precio: "PDF",
 
-        canal: "N/A",
+        canal: canal,
 
-        sub_canal: "N/A",
+        sub_canal: sub_canal,
 
         vendedor: vendedor,
 
-        cuentas: "N/A",
+        cuentas: cuentas,
 
         codigo: item.codigo,
 
@@ -1068,13 +1104,13 @@
 
         costo_total: item.precio_total,
 
-        iva_pagado: iva,
+        iva_pagado: iva_pagado,
 
         precio_unitario: item.precio_unitario,
 
         precio_total: item.precio_total,
 
-        iva_cobrado: iva,
+        iva_cobrado: iva_pagado,
 
         total_facturado: total_facturado,
 
