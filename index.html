@@ -6,141 +6,144 @@
   <title>Sistema de Facturación Inteligente</title>
 
   <style>
-    body {
-      font-family: "Poppins", Arial, sans-serif;
-      background-color: #f4f6f8;
-      margin: 0;
-      padding: 0;
-      color: #333;
+
+    body{
+      font-family:"Poppins",Arial,sans-serif;
+      background:#f4f6f8;
+      margin:0;
+      padding:0;
+      color:#333;
     }
 
-    header {
-      background-color: #003d66;
-      color: white;
-      padding: 25px 20px;
-      text-align: center;
-      position: relative;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    header{
+      background:#003d66;
+      color:white;
+      padding:25px 20px;
+      text-align:center;
+      position:relative;
+      box-shadow:0 2px 6px rgba(0,0,0,.2);
     }
 
-    h1 {
-      margin: 0;
-      font-size: 1.8rem;
-      letter-spacing: 0.5px;
+    h1{
+      margin:0;
+      font-size:1.8rem;
+      letter-spacing:.5px;
     }
 
-    main {
-      padding: 25px;
-      max-width: 1300px;
-      margin: 0 auto;
+    main{
+      padding:25px;
+      max-width:1300px;
+      margin:auto;
     }
 
-    form {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-      margin-bottom: 20px;
+    form{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      margin-bottom:20px;
     }
 
     input[type="file"],
     input[type="text"],
-    button {
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
+    button{
+      padding:10px;
+      border-radius:6px;
+      border:1px solid #ccc;
+      font-size:1rem;
     }
 
-    button {
-      background-color: #ff6600;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background-color 0.3s;
+    button{
+      background:#ff6600;
+      color:white;
+      border:none;
+      cursor:pointer;
+      font-weight:bold;
+      transition:.3s;
     }
 
-    button:hover {
-      background-color: #cc5200;
+    button:hover{
+      background:#cc5200;
     }
 
-    .excel-btn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background-color: #28a745;
-      padding: 10px 20px;
-      border: none;
-      color: white;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
+    .excel-btn{
+      position:absolute;
+      top:20px;
+      right:20px;
+      background:#28a745;
+      padding:10px 20px;
+      border:none;
+      color:white;
+      font-weight:bold;
+      border-radius:6px;
+      cursor:pointer;
     }
 
-    .excel-btn:hover {
-      background-color: #218838;
+    .excel-btn:hover{
+      background:#218838;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      background-color: white;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      font-size: 13px;
+    .table-container{
+      overflow:auto;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:20px;
+      background:white;
+      box-shadow:0 2px 6px rgba(0,0,0,.1);
+      font-size:13px;
+      min-width:2400px;
     }
 
     th,
-    td {
-      border: 1px solid #ddd;
-      padding: 6px 8px;
-      text-align: center;
+    td{
+      border:1px solid #ddd;
+      padding:6px 8px;
+      text-align:center;
     }
 
-    th {
-      background-color: #003d66;
-      color: white;
-      position: sticky;
-      top: 0;
-      z-index: 1;
+    th{
+      background:#003d66;
+      color:white;
+      position:sticky;
+      top:0;
+      z-index:1;
     }
 
-    tbody tr:nth-child(odd) {
-      background-color: #f9f9f9;
+    tbody tr:nth-child(odd){
+      background:#f9f9f9;
     }
 
-    tbody tr:hover {
-      background-color: #eef5fb;
+    tbody tr:hover{
+      background:#eef5fb;
     }
 
-    .delete-btn {
-      background-color: #dc3545;
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 4px;
-      cursor: pointer;
+    .delete-btn{
+      background:#dc3545;
+      color:white;
+      border:none;
+      padding:5px 10px;
+      border-radius:4px;
+      cursor:pointer;
     }
 
-    footer {
-      background-color: #003d66;
-      color: white;
-      text-align: center;
-      padding: 15px;
-      margin-top: 40px;
-      font-size: 0.9rem;
+    footer{
+      background:#003d66;
+      color:white;
+      text-align:center;
+      padding:15px;
+      margin-top:40px;
+      font-size:.9rem;
     }
 
-    .factura-count {
-      font-weight: bold;
-      margin-left: 10px;
-      color: #003d66;
+    .factura-count{
+      font-weight:bold;
+      margin-left:10px;
+      color:#003d66;
     }
 
-    .table-container {
-      overflow-x: auto;
-    }
   </style>
 
   <!-- LIBRERÍAS -->
@@ -156,6 +159,7 @@
 <body>
 
   <header>
+
     <h1>Sistema de Facturación Inteligente</h1>
 
     <button
@@ -164,6 +168,7 @@
     >
       Pasar a Excel
     </button>
+
   </header>
 
   <main>
@@ -288,7 +293,7 @@
 
         const reader = new FileReader();
 
-        reader.onload = function () {
+        reader.onload = function() {
 
           const parser = new DOMParser();
 
@@ -353,13 +358,13 @@
           let fullText = "";
 
           for (
-            let i = 1;
-            i <= pdf.numPages;
-            i++
+            let pageNum = 1;
+            pageNum <= pdf.numPages;
+            pageNum++
           ) {
 
             const page =
-              await pdf.getPage(i);
+              await pdf.getPage(pageNum);
 
             const textContent =
               await page.getTextContent();
@@ -372,11 +377,11 @@
             fullText += pageText + "\n";
           }
 
-          // Si no detecta texto
+          // Si el PDF viene escaneado
           // usar OCR
 
           if (
-            fullText.trim().length < 10
+            fullText.trim().length < 20
           ) {
 
             const result =
@@ -384,8 +389,7 @@
                 file,
                 "spa",
                 {
-                  logger: m =>
-                    console.log(m)
+                  logger:m=>console.log(m)
                 }
               );
 
@@ -400,7 +404,7 @@
 
           saveAndRender();
 
-        } catch (err) {
+        } catch(err) {
 
           console.error(err);
 
@@ -411,20 +415,19 @@
       }
 
       // =========================
-      // IMAGEN OCR
+      // IMÁGENES OCR
       // =========================
 
       else {
 
         const {
-          data: { text }
+          data:{ text }
         } =
         await Tesseract.recognize(
           file,
           "spa",
           {
-            logger: m =>
-              console.log(m)
+            logger:m=>console.log(m)
           }
         );
 
@@ -446,8 +449,7 @@
 
       const get = (sel) =>
         xml.querySelector(sel)
-        ?.textContent
-        .trim() || "N/A";
+        ?.textContent.trim() || "N/A";
 
       const models =
         Array.from(
@@ -459,100 +461,64 @@
       return models.map(m => ({
 
         factura:
-          get(
-            "infoTributaria > secuencial"
-          ),
+          get("infoTributaria > secuencial"),
 
         fecha:
-          get(
-            "infoFactura > fechaEmision"
-          ),
+          get("infoFactura > fechaEmision"),
 
         fecha_entrega:
-          get(
-            "infoFactura > fechaEntrega"
-          ),
+          get("infoFactura > fechaEntrega"),
 
         cliente:
-          get(
-            "infoFactura > razonSocialComprador"
-          ),
+          get("infoFactura > razonSocialComprador"),
 
         ruc:
-          get(
-            "infoFactura > identificacionComprador"
-          ),
+          get("infoFactura > identificacionComprador"),
 
         provincia:
-          get(
-            "infoFactura > direccionComprador"
-          ),
+          get("infoFactura > direccionComprador"),
 
         ciudad:
-          get(
-            "infoFactura > direccionComprador"
-          ),
+          get("infoFactura > direccionComprador"),
 
         lista_precio:
-          get(
-            "infoFactura > listaPrecio"
-          ),
+          get("infoFactura > listaPrecio"),
 
         canal:
-          get(
-            "infoFactura > canal"
-          ),
+          get("infoFactura > canal"),
 
         sub_canal:
-          get(
-            "infoFactura > subCanal"
-          ),
+          get("infoFactura > subCanal"),
 
         vendedor:
-          get(
-            "infoFactura > vendedor"
-          ),
+          get("infoFactura > vendedor"),
 
         cuentas:
-          get(
-            "infoFactura > cuentas"
-          ),
+          get("infoFactura > cuentas"),
 
         codigo:
-          m.querySelector(
-            "codigoPrincipal"
-          )?.textContent
-          .trim() || "N/A",
+          m.querySelector("codigoPrincipal")
+          ?.textContent.trim() || "N/A",
 
         modelo:
-          m.querySelector(
-            "descripcion"
-          )?.textContent
-          .trim() || "N/A",
+          m.querySelector("descripcion")
+          ?.textContent.trim() || "N/A",
 
         proveedor:
-          m.querySelector(
-            "nombreProveedor"
-          )?.textContent
-          .trim() || "N/A",
+          m.querySelector("nombreProveedor")
+          ?.textContent.trim() || "N/A",
 
         cantidad:
-          m.querySelector(
-            "cantidad"
-          )?.textContent
-          .trim() || "N/A",
+          m.querySelector("cantidad")
+          ?.textContent.trim() || "N/A",
 
         costo_unitario:
-          m.querySelector(
-            "precioUnitario"
-          )?.textContent
-          .trim() || "N/A",
+          m.querySelector("precioUnitario")
+          ?.textContent.trim() || "N/A",
 
         costo_total:
-          m.querySelector(
-            "precioTotalSinImpuesto"
-          )?.textContent
-          .trim() || "N/A",
+          m.querySelector("precioTotalSinImpuesto")
+          ?.textContent.trim() || "N/A",
 
         iva_pagado:
           get(
@@ -560,16 +526,12 @@
           ),
 
         precio_unitario:
-          m.querySelector(
-            "precioUnitario"
-          )?.textContent
-          .trim() || "N/A",
+          m.querySelector("precioUnitario")
+          ?.textContent.trim() || "N/A",
 
         precio_total:
-          m.querySelector(
-            "precioTotalSinImpuesto"
-          )?.textContent
-          .trim() || "N/A",
+          m.querySelector("precioTotalSinImpuesto")
+          ?.textContent.trim() || "N/A",
 
         iva_cobrado:
           get(
@@ -577,41 +539,29 @@
           ),
 
         total_facturado:
-          get(
-            "infoFactura > importeTotal"
-          ),
+          get("infoFactura > importeTotal"),
 
         utilidad:
-          get(
-            "infoFactura > utilidad"
-          ),
+          get("infoFactura > utilidad"),
 
         credito:
-          get(
-            "infoFactura > credito"
-          ),
+          get("infoFactura > credito"),
 
         condiciones_credito:
-          get(
-            "infoFactura > condicionesCredito"
-          ),
+          get("infoFactura > condicionesCredito"),
 
         pendientes:
-          get(
-            "infoFactura > pendientes"
-          ),
+          get("infoFactura > pendientes"),
 
         perdido:
-          get(
-            "infoFactura > perdido"
-          )
+          get("infoFactura > perdido")
 
       }));
 
     }
 
     // =========================
-    // OCR Y PDF
+    // OCR / PDF
     // =========================
 
     function extractFromText(text) {
@@ -650,84 +600,51 @@
       return {
 
         factura,
-
         fecha,
-
-        fecha_entrega:
-          "N/A",
-
+        fecha_entrega:"N/A",
         cliente,
-
         ruc,
 
-        provincia:
-          "OCR/PDF",
+        provincia:"OCR/PDF",
+        ciudad:"OCR/PDF",
 
-        ciudad:
-          "OCR/PDF",
+        lista_precio:"OCR/PDF",
 
-        lista_precio:
-          "OCR/PDF",
+        canal:"-",
+        sub_canal:"-",
+        vendedor:"-",
+        cuentas:"-",
 
-        canal:
-          "-",
-
-        sub_canal:
-          "-",
-
-        vendedor:
-          "-",
-
-        cuentas:
-          "-",
-
-        codigo:
-          "-",
+        codigo:"-",
 
         modelo:
           "Detectado por OCR/PDF",
 
-        proveedor:
-          "-",
+        proveedor:"-",
 
-        cantidad:
-          "1",
+        cantidad:"1",
 
-        costo_unitario:
-          total,
+        costo_unitario:total,
+        costo_total:total,
 
-        costo_total:
-          total,
+        iva_pagado:"-",
 
-        iva_pagado:
-          "-",
+        precio_unitario:total,
+        precio_total:total,
 
-        precio_unitario:
-          total,
+        iva_cobrado:"-",
 
-        precio_total:
-          total,
+        total_facturado:total,
 
-        iva_cobrado:
-          "-",
+        utilidad:"-",
 
-        total_facturado:
-          total,
+        credito:"-",
 
-        utilidad:
-          "-",
+        condiciones_credito:"-",
 
-        credito:
-          "-",
+        pendientes:"-",
 
-        condiciones_credito:
-          "-",
-
-        pendientes:
-          "-",
-
-        perdido:
-          "-"
+        perdido:"-"
 
       };
 
@@ -753,7 +670,9 @@
     // TABLA
     // =========================
 
-    function populateTable() {
+    function populateTable(
+      data = invoices
+    ) {
 
       const tbody =
         document.getElementById(
@@ -762,13 +681,13 @@
 
       tbody.innerHTML = "";
 
-      invoices.forEach((inv, index) => {
+      data.forEach((inv,index)=>{
 
         const row =
           document.createElement("tr");
 
         Object.values(inv)
-        .forEach(v => {
+        .forEach(v=>{
 
           const td =
             document.createElement("td");
@@ -782,15 +701,13 @@
         const del =
           document.createElement("button");
 
-        del.textContent =
-          "Eliminar";
+        del.textContent = "Eliminar";
 
-        del.className =
-          "delete-btn";
+        del.className = "delete-btn";
 
-        del.onclick = () => {
+        del.onclick = ()=>{
 
-          invoices.splice(index, 1);
+          invoices.splice(index,1);
 
           saveAndRender();
         };
@@ -827,9 +744,7 @@
     function exportToExcel() {
 
       const ws =
-        XLSX.utils.json_to_sheet(
-          invoices
-        );
+        XLSX.utils.json_to_sheet(invoices);
 
       const wb =
         XLSX.utils.book_new();
@@ -850,78 +765,25 @@
     // BUSCADOR
     // =========================
 
-    document.getElementById(
-      "search-bar"
-    ).addEventListener(
-      "input",
-      (e) => {
+    document.getElementById("search-bar")
+    .addEventListener("input",(e)=>{
 
-        const value =
-          e.target.value.toLowerCase();
+      const value =
+        e.target.value.toLowerCase();
 
-        const filtered =
-          invoices.filter(inv =>
-
-            Object.values(inv)
-            .join(" ")
-            .toLowerCase()
-            .includes(value)
-
-          );
-
-        const tbody =
-          document.getElementById(
-            "invoice-table"
-          );
-
-        tbody.innerHTML = "";
-
-        filtered.forEach((inv, index) => {
-
-          const row =
-            document.createElement("tr");
+      const filtered =
+        invoices.filter(inv =>
 
           Object.values(inv)
-          .forEach(v => {
+          .join(" ")
+          .toLowerCase()
+          .includes(value)
 
-            const td =
-              document.createElement("td");
+        );
 
-            td.textContent = v;
+      populateTable(filtered);
 
-            row.appendChild(td);
-
-          });
-
-          const del =
-            document.createElement("button");
-
-          del.textContent =
-            "Eliminar";
-
-          del.className =
-            "delete-btn";
-
-          del.onclick = () => {
-
-            invoices.splice(index,1);
-
-            saveAndRender();
-          };
-
-          const td =
-            document.createElement("td");
-
-          td.appendChild(del);
-
-          row.appendChild(td);
-
-          tbody.appendChild(row);
-
-        });
-
-      }
-    );
+    });
 
     // =========================
     // INICIO
@@ -929,7 +791,7 @@
 
     document.addEventListener(
       "DOMContentLoaded",
-      () => {
+      ()=>{
 
         populateTable();
 
