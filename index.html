@@ -717,7 +717,7 @@
             await pdfjsLib.getDocument(arrayBuffer).promise;
 
           updateLoadingProgress(60);
-          loadingText.textContent = "Extrayendo texto del PDF...";
+          loadingText.textContent = "Extrayendo datos del PDF...";
 
           let fullText = "";
 
@@ -738,10 +738,10 @@
 
           updateLoadingProgress(90);
 
-          const invoice = 
-            extractFromText(fullText, "PDF");
+          const invoices_pdf = 
+            extractFromPDF(fullText);
 
-          invoices.push(invoice);
+          invoices.push(...invoices_pdf);
 
           saveAndRender();
 
@@ -908,6 +908,161 @@
 
         perdido:
           get("infoFactura > perdido")
+
+      }));
+
+    }
+
+    function extractFromPDF(text){
+
+      // Extrae número de factura
+      const factura =
+        text.match(/No\.\s*([0-9\-]+)/)?.[1]
+        || text.match(/FACTURA\s*No\.\s*([0-9\-]+)/i)?.[1]
+        || "No detectado";
+
+      // Extrae RUC
+      const ruc =
+        text.match(/R\.U\.C\.[\s:]*(\d{10,13})/i)?.[1]
+        || text.match(/RUC[\s:]*(\d{10,13})/i)?.[1]
+        || "No detectado";
+
+      // Extrae empresa
+      const cliente =
+        text.match(/RAZÓN SOCIAL[\s:]*([^\n]+)/i)?.[1]
+        || text.match(/Razón Sociall?[\s:]*([^\n]+)/i)?.[1]
+        || text.match(/Identificación[\s:]*([^\n]+)/i)?.[1]
+        || "No detectado";
+
+      // Extrae fecha de emisión
+      const fecha =
+        text.match(/FECHA[\s:]*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i)?.[1]
+        || text.match(/Fecha Emisión[\s:]*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i)?.[1]
+        || "No detectado";
+
+      // Extrae vendedor
+      const vendedor =
+        text.match(/Vendedor[\s:]*([^\n]+)/i)?.[1]
+        || "N/A";
+
+      // Extrae dirección (Provincia/Ciudad)
+      const direccion_match =
+        text.match(/Dir\. Matriz[\s:]*([^\n]+)/i)?.[1]
+        || text.match(/Dirección[\s:]*([^\n]+)/i)?.[1]
+        || "";
+
+      const provincia = direccion_match ? direccion_match.split(/[,]/)[0].trim() : "N/A";
+      const ciudad = direccion_match ? direccion_match.split(/[,]/)[1]?.trim() || "N/A" : "N/A";
+
+      // Extrae items de la tabla
+      const items_regex = /(\d+\.\d+)\s+([A-Z0-9]+)\s+([^\n]+?)\s+(\d+[\d,]*)\s+(\d+[\d,]*)\s+(\d+[\d,]*)/g;
+      const items = [];
+      let match;
+
+      while ((match = items_regex.exec(text)) !== null) {
+        items.push({
+          cantidad: match[1],
+          codigo: match[2],
+          modelo: match[3].trim(),
+          precio_unitario: match[4],
+          descuento: match[5],
+          precio_total: match[6]
+        });
+      }
+
+      // Si no encuentra items, crea uno genérico
+      if (items.length === 0) {
+        const total =
+          text.match(/VALOR TOTAL[\s:]*(\d+[\d,\.]*)/i)?.[1]
+          || text.match(/Total Facturado[\s:]*(\d+[\d,\.]*)/i)?.[1]
+          || "0.00";
+
+        items.push({
+          cantidad: "1",
+          codigo: "-",
+          modelo: "Detectado por PDF",
+          precio_unitario: total,
+          descuento: "0",
+          precio_total: total
+        });
+      }
+
+      // Extrae valores totales
+      const subtotal =
+        text.match(/SUBTOTAL[\s:]*(\d+[\d,\.]*)/i)?.[1]
+        || text.match(/subtotal[\s:]*(\d+[\d,\.]*)/i)?.[1]
+        || "0.00";
+
+      const iva =
+        text.match(/IVA[\s:]*(\d+[\d,\.]*)/i)?.[1]
+        || text.match(/iva[\s:]*(\d+[\d,\.]*)/i)?.[1]
+        || "0.00";
+
+      const total_facturado =
+        text.match(/VALOR TOTAL[\s:]*(\d+[\d,\.]*)/i)?.[1]
+        || text.match(/Total Facturado[\s:]*(\d+[\d,\.]*)/i)?.[1]
+        || subtotal;
+
+      // Retorna array de items para mantener compatibilidad con tabla
+      return items.map(item => ({
+
+        tipo: "PDF",
+
+        factura: factura,
+
+        fecha: fecha,
+
+        fecha_entrega: "N/A",
+
+        cliente: cliente,
+
+        ruc: ruc,
+
+        provincia: provincia,
+
+        ciudad: ciudad,
+
+        lista_precio: "PDF",
+
+        canal: "-",
+
+        sub_canal: "-",
+
+        vendedor: vendedor,
+
+        cuentas: "-",
+
+        codigo: item.codigo,
+
+        modelo: item.modelo,
+
+        proveedor: "-",
+
+        cantidad: item.cantidad,
+
+        costo_unitario: item.precio_unitario,
+
+        costo_total: item.precio_total,
+
+        iva_pagado: iva,
+
+        precio_unitario: item.precio_unitario,
+
+        precio_total: item.precio_total,
+
+        iva_cobrado: iva,
+
+        total_facturado: total_facturado,
+
+        utilidad: "-",
+
+        credito: "-",
+
+        condiciones_credito: "-",
+
+        pendientes: "-",
+
+        perdido: "-"
 
       }));
 
