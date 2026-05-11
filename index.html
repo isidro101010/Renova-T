@@ -15,6 +15,8 @@
   <!-- Librerías -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
   <style>
 
@@ -617,14 +619,49 @@
           // OCR
 
           const {
-            data:{ text }
-          } = await Tesseract.recognize(
-            file,
-            "spa",
-            {
-              logger:m=>console.log(m)
-            }
-          );
+        } else if (file.type === "application/pdf") {
+
+  // Leer PDF
+  const arrayBuffer = await file.arrayBuffer();
+
+  const pdf = await pdfjsLib.getDocument({
+    data: arrayBuffer
+  }).promise;
+
+  let fullText = "";
+
+  for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+
+    const page = await pdf.getPage(pageNum);
+
+    const textContent = await page.getTextContent();
+
+    const textItems = textContent.items
+      .map(item => item.str)
+      .join(" ");
+
+    fullText += textItems + "\n";
+  }
+
+  const invoice = extractFromText(fullText);
+
+  invoices.push(invoice);
+
+  saveAndRender();
+
+} else {
+
+  // Procesar imagen con OCR
+  const { data: { text } } = await Tesseract.recognize(file, "spa", {
+    logger: m => console.log(m)
+  });
+
+  const invoice = extractFromText(text);
+
+  invoices.push(invoice);
+
+  saveAndRender();
+}
 
           const invoice =
             extractFromText(text);
