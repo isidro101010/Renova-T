@@ -1,218 +1,470 @@
+```html id="u82kq1"
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
   <title>Sistema de Facturación Inteligente</title>
+
+  <!-- Fuente -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Librerías -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
   <style>
 
-    body{
-      font-family:"Poppins",Arial,sans-serif;
-      background:#f4f6f8;
+    :root{
+      --bg:#0f172a;
+      --card:#111827;
+      --card2:#1e293b;
+      --border:rgba(255,255,255,.08);
+
+      --text:#f8fafc;
+      --muted:#94a3b8;
+
+      --primary:#3b82f6;
+      --primary-hover:#2563eb;
+
+      --success:#22c55e;
+      --danger:#ef4444;
+
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+
+      --radius:18px;
+    }
+
+    *{
       margin:0;
       padding:0;
-      color:#333;
+      box-sizing:border-box;
+    }
+
+    body{
+      font-family:"Inter",sans-serif;
+
+      background:
+      radial-gradient(circle at top left, rgba(59,130,246,.15), transparent 25%),
+      radial-gradient(circle at bottom right, rgba(34,197,94,.10), transparent 20%),
+      var(--bg);
+
+      color:var(--text);
+
+      min-height:100vh;
     }
 
     header{
-      background:#003d66;
-      color:white;
-      padding:25px 20px;
-      text-align:center;
-      position:relative;
-      box-shadow:0 2px 6px rgba(0,0,0,.2);
+      padding:25px;
     }
 
-    h1{
-      margin:0;
-      font-size:1.8rem;
-      letter-spacing:.5px;
+    .header-container{
+      max-width:1600px;
+      margin:auto;
+
+      background:rgba(17,24,39,.75);
+      backdrop-filter:blur(14px);
+
+      border:1px solid var(--border);
+
+      border-radius:24px;
+
+      padding:24px 28px;
+
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:20px;
+
+      box-shadow:var(--shadow);
+    }
+
+    .brand h1{
+      font-size:2rem;
+      font-weight:800;
+      letter-spacing:-.5px;
+    }
+
+    .brand p{
+      color:var(--muted);
+      margin-top:5px;
+    }
+
+    .excel-btn{
+      background:var(--success);
+      color:white;
+
+      border:none;
+
+      padding:14px 22px;
+
+      border-radius:14px;
+
+      font-weight:700;
+
+      cursor:pointer;
+
+      transition:.25s ease;
+    }
+
+    .excel-btn:hover{
+      transform:translateY(-2px);
+      filter:brightness(1.05);
     }
 
     main{
-      padding:25px;
-      max-width:1300px;
+      max-width:1600px;
       margin:auto;
+      padding:0 25px 40px;
+    }
+
+    .card{
+      background:rgba(17,24,39,.75);
+
+      backdrop-filter:blur(14px);
+
+      border:1px solid var(--border);
+
+      border-radius:24px;
+
+      padding:24px;
+
+      box-shadow:var(--shadow);
+    }
+
+    .top-section{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:20px;
+
+      margin-bottom:25px;
+    }
+
+    .top-section h2{
+      font-size:1.4rem;
+      font-weight:700;
+    }
+
+    .factura-count{
+      background:var(--card2);
+
+      border:1px solid var(--border);
+
+      padding:12px 18px;
+
+      border-radius:14px;
+
+      color:white;
+
+      font-weight:600;
     }
 
     form{
       display:flex;
       flex-wrap:wrap;
-      gap:10px;
-      align-items:center;
-      margin-bottom:20px;
+      gap:15px;
+
+      margin-bottom:25px;
     }
 
     input[type="file"],
-    input[type="text"],
-    button{
-      padding:10px;
-      border-radius:6px;
-      border:1px solid #ccc;
-      font-size:1rem;
+    input[type="text"]{
+      flex:1;
+
+      min-width:250px;
+
+      background:#0f172a;
+
+      color:var(--text);
+
+      border:1px solid var(--border);
+
+      border-radius:14px;
+
+      padding:14px;
+
+      outline:none;
+
+      transition:.2s;
+    }
+
+    input[type="file"]:focus,
+    input[type="text"]:focus{
+      border-color:var(--primary);
+
+      box-shadow:0 0 0 4px rgba(59,130,246,.15);
     }
 
     button{
-      background:#ff6600;
-      color:white;
       border:none;
+
       cursor:pointer;
-      font-weight:bold;
-      transition:.3s;
+
+      transition:.25s ease;
     }
 
-    button:hover{
-      background:#cc5200;
-    }
+    .upload-btn{
+      background:var(--primary);
 
-    .excel-btn{
-      position:absolute;
-      top:20px;
-      right:20px;
-      background:#28a745;
-      padding:10px 20px;
-      border:none;
       color:white;
-      font-weight:bold;
-      border-radius:6px;
-      cursor:pointer;
+
+      padding:14px 22px;
+
+      border-radius:14px;
+
+      font-weight:700;
     }
 
-    .excel-btn:hover{
-      background:#218838;
+    .upload-btn:hover{
+      background:var(--primary-hover);
+
+      transform:translateY(-2px);
     }
 
     .table-container{
       overflow:auto;
+
+      border-radius:18px;
+
+      border:1px solid var(--border);
     }
 
     table{
       width:100%;
+
+      min-width:2500px;
+
       border-collapse:collapse;
-      margin-top:20px;
-      background:white;
-      box-shadow:0 2px 6px rgba(0,0,0,.1);
-      font-size:13px;
-      min-width:2400px;
+
+      background:rgba(15,23,42,.9);
     }
 
-    th,
-    td{
-      border:1px solid #ddd;
-      padding:6px 8px;
-      text-align:center;
+    thead{
+      background:#172554;
     }
 
     th{
-      background:#003d66;
-      color:white;
       position:sticky;
       top:0;
-      z-index:1;
+
+      z-index:2;
+
+      padding:14px 10px;
+
+      font-size:.82rem;
+
+      text-transform:uppercase;
+
+      letter-spacing:.4px;
+
+      border-bottom:1px solid var(--border);
     }
 
-    tbody tr:nth-child(odd){
-      background:#f9f9f9;
+    td{
+      padding:12px 10px;
+
+      text-align:center;
+
+      font-size:.85rem;
+
+      border-bottom:1px solid rgba(255,255,255,.05);
+
+      color:#e2e8f0;
+    }
+
+    tbody tr{
+      transition:.2s;
+    }
+
+    tbody tr:nth-child(even){
+      background:rgba(255,255,255,.02);
     }
 
     tbody tr:hover{
-      background:#eef5fb;
+      background:rgba(59,130,246,.08);
     }
 
     .delete-btn{
-      background:#dc3545;
-      color:white;
-      border:none;
-      padding:5px 10px;
-      border-radius:4px;
-      cursor:pointer;
+      background:rgba(239,68,68,.15);
+
+      color:#fecaca;
+
+      border:1px solid rgba(239,68,68,.2);
+
+      padding:8px 12px;
+
+      border-radius:10px;
+
+      font-weight:600;
+    }
+
+    .delete-btn:hover{
+      background:rgba(239,68,68,.25);
     }
 
     footer{
-      background:#003d66;
-      color:white;
       text-align:center;
-      padding:15px;
-      margin-top:40px;
-      font-size:.9rem;
+
+      color:var(--muted);
+
+      padding:30px;
     }
 
-    .factura-count{
-      font-weight:bold;
-      margin-left:10px;
-      color:#003d66;
+    .loading{
+      position:fixed;
+
+      inset:0;
+
+      background:rgba(0,0,0,.65);
+
+      backdrop-filter:blur(6px);
+
+      display:none;
+
+      align-items:center;
+      justify-content:center;
+
+      z-index:999;
+    }
+
+    .loading-box{
+      background:var(--card);
+
+      padding:30px 40px;
+
+      border-radius:20px;
+
+      border:1px solid var(--border);
+
+      text-align:center;
+
+      box-shadow:var(--shadow);
+    }
+
+    .spinner{
+      width:55px;
+      height:55px;
+
+      border:5px solid rgba(255,255,255,.15);
+
+      border-top:5px solid var(--primary);
+
+      border-radius:50%;
+
+      margin:auto auto 15px;
+
+      animation:spin 1s linear infinite;
+    }
+
+    @keyframes spin{
+      to{
+        transform:rotate(360deg);
+      }
+    }
+
+    @media(max-width:900px){
+
+      .header-container{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      form{
+        flex-direction:column;
+      }
+
+      .upload-btn,
+      .excel-btn{
+        width:100%;
+      }
     }
 
   </style>
-
-  <!-- LIBRERÍAS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-
-  <!-- PDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-
 </head>
 
 <body>
 
+  <div class="loading" id="loading">
+
+    <div class="loading-box">
+
+      <div class="spinner"></div>
+
+      <p>Procesando factura...</p>
+
+    </div>
+
+  </div>
+
   <header>
 
-    <h1>Sistema de Facturación Inteligente</h1>
+    <div class="header-container">
 
-    <button
-      class="excel-btn"
-      onclick="exportToExcel()"
-    >
-      Pasar a Excel
-    </button>
+      <div class="brand">
+        <h1>💳 Sistema de Facturación Inteligente</h1>
+        <p>Procesamiento avanzado XML + OCR</p>
+      </div>
+
+      <button class="excel-btn" onclick="exportToExcel()">
+        Exportar Excel
+      </button>
+
+    </div>
 
   </header>
 
   <main>
 
-    <section>
+    <div class="card">
 
-      <h2>Cargar Facturas</h2>
+      <div class="top-section">
+
+        <h2>Facturas</h2>
+
+        <div
+          class="factura-count"
+          id="factura-count"
+        >
+          Facturas leídas: 0
+        </div>
+
+      </div>
 
       <form id="upload-form">
 
         <input
           type="file"
           id="file-upload"
-          accept=".xml,image/*,application/pdf"
+          accept=".xml, image/*, application/pdf"
         >
-
-        <button type="submit">
-          Subir Factura
-        </button>
-
-      </form>
-
-      <div>
 
         <input
           type="text"
           id="search-bar"
-          placeholder="Buscar por cliente, factura, etc."
+          placeholder="Buscar cliente, factura, RUC..."
         >
 
-        <span
-          class="factura-count"
-          id="factura-count"
+        <button
+          type="submit"
+          class="upload-btn"
         >
-          Facturas leídas: 0
-        </span>
+          Subir Factura
+        </button>
 
-      </div>
+      </form>
 
       <div class="table-container">
 
         <table>
 
           <thead>
+
             <tr>
               <th>Factura</th>
               <th>Fecha</th>
@@ -244,6 +496,7 @@
               <th>Perdido</th>
               <th>Eliminar</th>
             </tr>
+
           </thead>
 
           <tbody id="invoice-table"></tbody>
@@ -252,7 +505,7 @@
 
       </div>
 
-    </section>
+    </div>
 
   </main>
 
@@ -266,12 +519,20 @@
       JSON.parse(localStorage.getItem("invoices"))
       || [];
 
-    // =========================
-    // SUBIR FACTURA
-    // =========================
+    const loading =
+      document.getElementById("loading");
 
-    document.getElementById("upload-form")
-    .addEventListener("submit", async (e) => {
+    function showLoading(){
+      loading.style.display = "flex";
+    }
+
+    function hideLoading(){
+      loading.style.display = "none";
+    }
+
+    document
+    .getElementById("upload-form")
+    .addEventListener("submit", async (e)=>{
 
       e.preventDefault();
 
@@ -279,177 +540,120 @@
         document.getElementById("file-upload")
         .files[0];
 
-      if (!file) {
+      if(!file){
         return alert(
           "Selecciona un archivo de factura."
         );
       }
 
-      // =========================
-      // XML ORIGINAL
-      // =========================
+      showLoading();
 
-      if (file.name.endsWith(".xml")) {
+      try{
 
-        const reader = new FileReader();
+        // XML
 
-        reader.onload = function() {
+        if(file.name.toLowerCase().endsWith(".xml")){
 
-          const parser = new DOMParser();
+          const reader = new FileReader();
 
-          const xml =
-            parser.parseFromString(
-              this.result,
-              "application/xml"
-            );
+          reader.onload = function(){
 
-          const cdata =
-            xml.querySelector("comprobante")
-            ?.textContent
-            .trim();
+            try{
 
-          if (cdata) {
+              const parser =
+                new DOMParser();
 
-            const inner =
-              new DOMParser()
-              .parseFromString(
-                cdata,
-                "application/xml"
+              const xml =
+                parser.parseFromString(
+                  this.result,
+                  "application/xml"
+                );
+
+              const cdata =
+                xml.querySelector("comprobante")
+                ?.textContent
+                .trim();
+
+              if(cdata){
+
+                const inner =
+                  new DOMParser()
+                  .parseFromString(
+                    cdata,
+                    "application/xml"
+                  );
+
+                const invoice =
+                  processXMLData(inner);
+
+                invoices.push(...invoice);
+
+                saveAndRender();
+
+              }else{
+
+                alert(
+                  "No se encontró información válida."
+                );
+              }
+
+            }catch(err){
+
+              console.error(err);
+
+              alert(
+                "Error leyendo XML."
               );
 
-            const invoice =
-              processXMLData(inner);
+            }
 
-            invoices.push(...invoice);
+            hideLoading();
 
-            saveAndRender();
+          };
 
-          } else {
+          reader.readAsText(file);
 
-            alert(
-              "No se encontró información válida en el XML."
-            );
-          }
-        };
+        }else{
 
-        reader.readAsText(file);
-      }
+          // OCR
 
-      // =========================
-      // PDF
-      // =========================
-
-      else if (
-        file.type === "application/pdf"
-      ) {
-
-        try {
-
-          const arrayBuffer =
-            await file.arrayBuffer();
-
-          const pdf =
-            await pdfjsLib
-            .getDocument({
-              data: arrayBuffer
-            })
-            .promise;
-
-          let fullText = "";
-
-          for (
-            let pageNum = 1;
-            pageNum <= pdf.numPages;
-            pageNum++
-          ) {
-
-            const page =
-              await pdf.getPage(pageNum);
-
-            const textContent =
-              await page.getTextContent();
-
-            const pageText =
-              textContent.items
-              .map(item => item.str)
-              .join(" ");
-
-            fullText += pageText + "\n";
-          }
-
-          // Si el PDF viene escaneado
-          // usar OCR
-
-          if (
-            fullText.trim().length < 20
-          ) {
-
-            const result =
-              await Tesseract.recognize(
-                file,
-                "spa",
-                {
-                  logger:m=>console.log(m)
-                }
-              );
-
-            fullText =
-              result.data.text;
-          }
+          const {
+            data:{ text }
+          } = await Tesseract.recognize(
+            file,
+            "spa",
+            {
+              logger:m=>console.log(m)
+            }
+          );
 
           const invoice =
-            extractFromText(fullText);
+            extractFromText(text);
 
           invoices.push(invoice);
 
           saveAndRender();
 
-        } catch(err) {
-
-          console.error(err);
-
-          alert(
-            "Error leyendo PDF."
-          );
+          hideLoading();
         }
-      }
 
-      // =========================
-      // IMÁGENES OCR
-      // =========================
+      }catch(err){
 
-      else {
+        console.error(err);
 
-        const {
-          data:{ text }
-        } =
-        await Tesseract.recognize(
-          file,
-          "spa",
-          {
-            logger:m=>console.log(m)
-          }
-        );
+        alert("Error procesando archivo.");
 
-        const invoice =
-          extractFromText(text);
-
-        invoices.push(invoice);
-
-        saveAndRender();
+        hideLoading();
       }
 
     });
 
-    // =========================
-    // XML ORIGINAL
-    // =========================
+    function processXMLData(xml){
 
-    function processXMLData(xml) {
-
-      const get = (sel) =>
+      const get = (sel)=>
         xml.querySelector(sel)
-        ?.textContent.trim() || "N/A";
+        ?.textContent
+        .trim() || "N/A";
 
       const models =
         Array.from(
@@ -458,7 +662,7 @@
           )
         );
 
-      return models.map(m => ({
+      return models.map(m=>({
 
         factura:
           get("infoTributaria > secuencial"),
@@ -560,40 +764,35 @@
 
     }
 
-    // =========================
-    // OCR / PDF
-    // =========================
-
-    function extractFromText(text) {
+    function extractFromText(text){
 
       const factura =
         text.match(
-          /Factura\s*(No|N°|Numero)?[:.\s-]*([A-Z0-9\-]+)/i
-        )?.[2]
-        || "No detectado";
+          /Factura\s*No[:.\s]*([A-Z0-9\-]+)/i
+        )?.[1] || "No detectado";
 
       const cliente =
         text.match(
-          /Cliente[:.\s-]*(.+)/i
+          /Cliente[:.\s]*(.+)/i
         )?.[1]
         ?.split("\n")[0]
         || "No detectado";
 
       const ruc =
         text.match(
-          /RUC[:.\s-]*(\d{10,13})/i
+          /RUC[:.\s]*(\d{10,13})/i
         )?.[1]
         || "No detectado";
 
       const fecha =
         text.match(
-          /\d{2}\/\d{2}\/\d{4}/
-        )?.[0]
+          /Fecha[:.\s]*(\d{2}\/\d{2}\/\d{4})/i
+        )?.[1]
         || "No detectado";
 
       const total =
         text.match(
-          /Total[:.\s\$]*([\d.,]+)/i
+          /Total[:.\s]*\$?\s*([\d.,]+)/i
         )?.[1]
         || "No detectado";
 
@@ -605,31 +804,32 @@
         cliente,
         ruc,
 
-        provincia:"OCR/PDF",
-        ciudad:"OCR/PDF",
+        provincia:"Detectar",
+        ciudad:"Detectar",
 
-        lista_precio:"OCR/PDF",
-
+        lista_precio:"OCR",
         canal:"-",
         sub_canal:"-",
         vendedor:"-",
+
         cuentas:"-",
 
         codigo:"-",
 
-        modelo:
-          "Detectado por OCR/PDF",
+        modelo:"Detectado por imagen",
 
         proveedor:"-",
 
         cantidad:"1",
 
         costo_unitario:total,
+
         costo_total:total,
 
         iva_pagado:"-",
 
         precio_unitario:total,
+
         precio_total:total,
 
         iva_cobrado:"-",
@@ -650,11 +850,7 @@
 
     }
 
-    // =========================
-    // GUARDAR
-    // =========================
-
-    function saveAndRender() {
+    function saveAndRender(){
 
       localStorage.setItem(
         "invoices",
@@ -666,18 +862,10 @@
       updateFacturaCount();
     }
 
-    // =========================
-    // TABLA
-    // =========================
-
-    function populateTable(
-      data = invoices
-    ) {
+    function populateTable(data = invoices){
 
       const tbody =
-        document.getElementById(
-          "invoice-table"
-        );
+        document.getElementById("invoice-table");
 
       tbody.innerHTML = "";
 
@@ -686,8 +874,7 @@
         const row =
           document.createElement("tr");
 
-        Object.values(inv)
-        .forEach(v=>{
+        Object.values(inv).forEach(v=>{
 
           const td =
             document.createElement("td");
@@ -725,23 +912,16 @@
 
     }
 
-    // =========================
-    // CONTADOR
-    // =========================
-
-    function updateFacturaCount() {
+    function updateFacturaCount(){
 
       document.getElementById(
         "factura-count"
       ).textContent =
       `Facturas leídas: ${invoices.length}`;
+
     }
 
-    // =========================
-    // EXCEL
-    // =========================
-
-    function exportToExcel() {
+    function exportToExcel(){
 
       const ws =
         XLSX.utils.json_to_sheet(invoices);
@@ -759,35 +939,29 @@
         wb,
         "facturas.xlsx"
       );
+
     }
 
-    // =========================
-    // BUSCADOR
-    // =========================
-
-    document.getElementById("search-bar")
+    document
+    .getElementById("search-bar")
     .addEventListener("input",(e)=>{
 
-      const value =
+      const term =
         e.target.value.toLowerCase();
 
       const filtered =
-        invoices.filter(inv =>
+        invoices.filter(inv=>
 
           Object.values(inv)
           .join(" ")
           .toLowerCase()
-          .includes(value)
+          .includes(term)
 
         );
 
       populateTable(filtered);
 
     });
-
-    // =========================
-    // INICIO
-    // =========================
 
     document.addEventListener(
       "DOMContentLoaded",
@@ -804,3 +978,4 @@
 
 </body>
 </html>
+```
