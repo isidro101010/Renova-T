@@ -1,126 +1,144 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Sistema de Facturación Inteligente</title>
 
-  <!-- Librerías -->
+  <!-- LIBRERÍAS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-
-  <!-- PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
   <style>
 
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f9;
-      margin: 0;
-      padding: 0;
-      color: #333;
+    body{
+      font-family:Arial,sans-serif;
+      background:#f4f6f8;
+      margin:0;
+      padding:0;
+      color:#333;
     }
 
-    header {
-      background: #003d66;
-      color: white;
-      padding: 20px;
-      text-align: center;
-      position: relative;
+    header{
+      background:#003d66;
+      color:white;
+      padding:25px 20px;
+      text-align:center;
+      position:relative;
+      box-shadow:0 2px 6px rgba(0,0,0,.2);
     }
 
-    h1 {
-      margin: 0;
+    h1{
+      margin:0;
+      font-size:1.8rem;
     }
 
-    main {
-      padding: 20px;
-      max-width: 1400px;
-      margin: auto;
+    main{
+      padding:25px;
+      max-width:1400px;
+      margin:auto;
     }
 
-    form {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
+    form{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-bottom:20px;
+      align-items:center;
     }
 
     input[type="file"],
     input[type="text"],
-    button {
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
+    button{
+      padding:10px;
+      border-radius:6px;
+      border:1px solid #ccc;
+      font-size:1rem;
     }
 
-    button {
-      background: #ff6600;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
+    button{
+      background:#ff6600;
+      color:white;
+      border:none;
+      cursor:pointer;
+      font-weight:bold;
     }
 
-    button:hover {
-      opacity: .9;
+    button:hover{
+      opacity:.9;
     }
 
-    .excel-btn {
-      position: absolute;
-      right: 20px;
-      top: 20px;
-      background: #28a745;
+    .excel-btn{
+      position:absolute;
+      top:20px;
+      right:20px;
+      background:#28a745;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      font-size: 13px;
+    .excel-btn:hover{
+      background:#218838;
+    }
+
+    .factura-count{
+      font-weight:bold;
+      margin-left:10px;
+      color:#003d66;
+    }
+
+    .table-container{
+      overflow:auto;
+      margin-top:20px;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      background:white;
+      font-size:13px;
+      min-width:2500px;
     }
 
     th,
-    td {
-      border: 1px solid #ddd;
-      padding: 6px;
-      text-align: center;
+    td{
+      border:1px solid #ddd;
+      padding:6px 8px;
+      text-align:center;
     }
 
-    th {
-      background: #003d66;
-      color: white;
-      position: sticky;
-      top: 0;
+    th{
+      background:#003d66;
+      color:white;
+      position:sticky;
+      top:0;
+      z-index:1;
     }
 
-    tbody tr:nth-child(odd) {
-      background: #f9f9f9;
+    tbody tr:nth-child(odd){
+      background:#f9f9f9;
     }
 
-    .delete-btn {
-      background: #dc3545;
-      color: white;
-      border: none;
-      padding: 5px 10px;
+    tbody tr:hover{
+      background:#eef5fb;
     }
 
-    .factura-count {
-      font-weight: bold;
-      margin-bottom: 15px;
-      display: inline-block;
+    .delete-btn{
+      background:#dc3545;
+      color:white;
+      border:none;
+      padding:5px 10px;
+      border-radius:4px;
+      cursor:pointer;
     }
 
-    footer {
-      margin-top: 40px;
-      background: #003d66;
-      color: white;
-      text-align: center;
-      padding: 15px;
+    footer{
+      background:#003d66;
+      color:white;
+      text-align:center;
+      padding:15px;
+      margin-top:40px;
+      font-size:.9rem;
     }
 
   </style>
@@ -143,84 +161,88 @@
 
   <main>
 
-    <h2>Cargar Facturas</h2>
+    <section>
 
-    <form id="upload-form">
+      <h2>Cargar Facturas</h2>
 
-      <input
-        type="file"
-        id="file-upload"
-        accept=".xml,image/*,application/pdf"
-      >
+      <form id="upload-form">
 
-      <button type="submit">
-        Subir Factura
-      </button>
+        <input
+          type="file"
+          id="file-upload"
+          accept=".xml,image/*,application/pdf"
+        >
 
-    </form>
+        <button type="submit">
+          Subir Factura
+        </button>
 
-    <div>
+      </form>
 
-      <input
-        type="text"
-        id="search-bar"
-        placeholder="Buscar por cliente, factura, etc."
-      >
+      <div>
 
-      <span
-        class="factura-count"
-        id="factura-count"
-      >
-        Facturas leídas: 0
-      </span>
+        <input
+          type="text"
+          id="search-bar"
+          placeholder="Buscar por cliente, factura, etc."
+        >
 
-    </div>
+        <span
+          class="factura-count"
+          id="factura-count"
+        >
+          Facturas leídas: 0
+        </span>
 
-    <div style="overflow:auto; margin-top:20px;">
+      </div>
 
-      <table>
+      <div class="table-container">
 
-        <thead>
+        <table>
 
-          <tr>
-            <th>Factura</th>
-            <th>Fecha</th>
-            <th>Fecha Entrega</th>
-            <th>Cliente</th>
-            <th>RUC</th>
-            <th>Provincia</th>
-            <th>Ciudad</th>
-            <th>Lista Precio</th>
-            <th>Canal</th>
-            <th>Sub Canal</th>
-            <th>Vendedor</th>
-            <th>Cuentas</th>
-            <th>Código</th>
-            <th>Modelo</th>
-            <th>Proveedor</th>
-            <th>Cantidad</th>
-            <th>Costo Unitario</th>
-            <th>Costo Total</th>
-            <th>IVA Pagado</th>
-            <th>Precio Unitario</th>
-            <th>Precio Total</th>
-            <th>IVA Cobrado</th>
-            <th>Total Facturado</th>
-            <th>Utilidad</th>
-            <th>Crédito</th>
-            <th>Condiciones Crédito</th>
-            <th>Pendientes</th>
-            <th>Perdido</th>
-            <th>Eliminar</th>
-          </tr>
+          <thead>
 
-        </thead>
+            <tr>
+              <th>Factura</th>
+              <th>Fecha</th>
+              <th>Fecha Entrega</th>
+              <th>Cliente</th>
+              <th>RUC</th>
+              <th>Provincia</th>
+              <th>Ciudad</th>
+              <th>Lista Precio</th>
+              <th>Canal</th>
+              <th>Sub Canal</th>
+              <th>Vendedor</th>
+              <th>Cuentas</th>
+              <th>Código</th>
+              <th>Modelo</th>
+              <th>Proveedor</th>
+              <th>Cantidad</th>
+              <th>Costo Unitario</th>
+              <th>Costo Total</th>
+              <th>IVA Pagado</th>
+              <th>Precio Unitario</th>
+              <th>Precio Total</th>
+              <th>IVA Cobrado</th>
+              <th>Total Facturado</th>
+              <th>Utilidad</th>
+              <th>Crédito</th>
+              <th>Condiciones Crédito</th>
+              <th>Pendientes</th>
+              <th>Perdido</th>
+              <th>Eliminar</th>
+            </tr>
 
-        <tbody id="invoice-table"></tbody>
+          </thead>
 
-      </table>
+          <tbody id="invoice-table"></tbody>
 
-    </div>
+        </table>
+
+      </div>
+
+    </section>
 
   </main>
 
@@ -238,9 +260,8 @@
     // SUBIR ARCHIVO
     // =========================
 
-    document
-    .getElementById("upload-form")
-    .addEventListener("submit", async (e) => {
+    document.getElementById("upload-form")
+    .addEventListener("submit", async (e)=>{
 
       e.preventDefault();
 
@@ -248,129 +269,146 @@
         document.getElementById("file-upload")
         .files[0];
 
-      if (!file) {
-        return alert("Selecciona un archivo.");
+      if(!file){
+        alert("Selecciona un archivo");
+        return;
       }
 
-      // =========================
-      // XML
-      // =========================
+      try{
 
-      if (file.name.endsWith(".xml")) {
+        // =========================
+        // XML
+        // =========================
 
-        const reader = new FileReader();
+        if(file.name.toLowerCase().endsWith(".xml")){
 
-        reader.onload = function () {
+          const text = await file.text();
 
           const parser = new DOMParser();
 
-          const xml =
+          let xml =
             parser.parseFromString(
-              this.result,
-              "application/xml"
+              text,
+              "text/xml"
             );
 
-          const cdata =
-            xml.querySelector("comprobante")
-            ?.textContent.trim();
+          let detalles =
+            xml.querySelectorAll("detalle");
 
-          if (cdata) {
+          // XML SRI ECUADOR
 
-            const inner =
-              new DOMParser()
-              .parseFromString(
-                cdata,
-                "application/xml"
-              );
+          if(detalles.length === 0){
 
-            const invoice =
-              processXMLData(inner);
+            const comprobante =
+              xml.querySelector("comprobante");
 
-            invoices.push(...invoice);
+            if(comprobante){
 
-            saveAndRender();
-
-          } else {
-
-            alert(
-              "No se encontró información válida."
-            );
+              xml =
+                parser.parseFromString(
+                  comprobante.textContent,
+                  "text/xml"
+                );
+            }
           }
-        };
 
-        reader.readAsText(file);
-      }
+          const invoice =
+            processXMLData(xml);
 
-      // =========================
-      // PDF
-      // =========================
+          invoices.push(...invoice);
 
-      else if (
-        file.type === "application/pdf"
-      ) {
+          saveAndRender();
 
-        const arrayBuffer =
-          await file.arrayBuffer();
+          alert("Factura XML cargada");
 
-        const pdf =
-          await pdfjsLib
-          .getDocument({
-            data: arrayBuffer
-          })
-          .promise;
-
-        let fullText = "";
-
-        for (
-          let pageNum = 1;
-          pageNum <= pdf.numPages;
-          pageNum++
-        ) {
-
-          const page =
-            await pdf.getPage(pageNum);
-
-          const textContent =
-            await page.getTextContent();
-
-          const pageText =
-            textContent.items
-            .map(item => item.str)
-            .join(" ");
-
-          fullText += pageText + "\n";
         }
 
-        const invoice =
-          extractFromText(fullText);
+        // =========================
+        // PDF
+        // =========================
 
-        invoices.push(invoice);
+        else if(
+          file.type === "application/pdf"
+        ){
 
-        saveAndRender();
-      }
+          const arrayBuffer =
+            await file.arrayBuffer();
 
-      // =========================
-      // IMAGENES
-      // =========================
+          const pdf =
+            await pdfjsLib
+            .getDocument({
+              data: arrayBuffer
+            })
+            .promise;
 
-      else {
+          let fullText = "";
 
-        const {
-          data: { text }
-        } = await Tesseract.recognize(
-          file,
-          "spa",
-          {
-            logger: m => console.log(m)
+          for(
+            let pageNum = 1;
+            pageNum <= pdf.numPages;
+            pageNum++
+          ){
+
+            const page =
+              await pdf.getPage(pageNum);
+
+            const textContent =
+              await page.getTextContent();
+
+            const text =
+              textContent.items
+              .map(item => item.str)
+              .join(" ");
+
+            fullText += text + "\n";
           }
+
+          console.log(fullText);
+
+          const invoice =
+            extractFromText(fullText);
+
+          invoices.push(invoice);
+
+          saveAndRender();
+
+          alert("Factura PDF cargada");
+        }
+
+        // =========================
+        // IMAGENES OCR
+        // =========================
+
+        else{
+
+          const result =
+            await Tesseract.recognize(
+              file,
+              "spa"
+            );
+
+          const text =
+            result.data.text;
+
+          console.log(text);
+
+          const invoice =
+            extractFromText(text);
+
+          invoices.push(invoice);
+
+          saveAndRender();
+
+          alert("Factura OCR cargada");
+        }
+
+      }catch(error){
+
+        console.error(error);
+
+        alert(
+          "Error leyendo factura"
         );
-
-        const invoice =
-          extractFromText(text);
-
-        invoices.push(invoice);
-
-        saveAndRender();
       }
 
     });
@@ -379,221 +417,269 @@
     // XML
     // =========================
 
-    function processXMLData(xml) {
+    function processXMLData(xml){
 
-      const get = (sel) =>
-        xml.querySelector(sel)
-        ?.textContent.trim() || "N/A";
+      const get = (selector)=>{
 
-      const models =
+        return xml
+        .querySelector(selector)
+        ?.textContent
+        ?.trim() || "N/A";
+      };
+
+      const detalles =
         Array.from(
-          xml.querySelectorAll(
-            "detalles > detalle"
-          )
+          xml.querySelectorAll("detalle")
         );
 
-      return models.map(m => ({
+      if(detalles.length === 0){
+
+        return [{
+          factura:"No detectado",
+          fecha:"No detectado",
+          fecha_entrega:"N/A",
+          cliente:"XML inválido",
+          ruc:"N/A",
+          provincia:"N/A",
+          ciudad:"N/A",
+          lista_precio:"N/A",
+          canal:"N/A",
+          sub_canal:"N/A",
+          vendedor:"N/A",
+          cuentas:"N/A",
+          codigo:"N/A",
+          modelo:"N/A",
+          proveedor:"N/A",
+          cantidad:"N/A",
+          costo_unitario:"N/A",
+          costo_total:"N/A",
+          iva_pagado:"N/A",
+          precio_unitario:"N/A",
+          precio_total:"N/A",
+          iva_cobrado:"N/A",
+          total_facturado:"N/A",
+          utilidad:"N/A",
+          credito:"N/A",
+          condiciones_credito:"N/A",
+          pendientes:"N/A",
+          perdido:"N/A"
+        }];
+      }
+
+      return detalles.map(detalle => ({
 
         factura:
-          get("infoTributaria > secuencial"),
+          get("secuencial"),
 
         fecha:
-          get("infoFactura > fechaEmision"),
+          get("fechaEmision"),
 
         fecha_entrega:
-          get("infoFactura > fechaEntrega"),
+          "N/A",
 
         cliente:
-          get("infoFactura > razonSocialComprador"),
+          get("razonSocialComprador"),
 
         ruc:
-          get("infoFactura > identificacionComprador"),
+          get("identificacionComprador"),
 
         provincia:
-          get("infoFactura > direccionComprador"),
+          get("direccionComprador"),
 
         ciudad:
-          get("infoFactura > direccionComprador"),
+          get("direccionComprador"),
 
         lista_precio:
-          get("infoFactura > listaPrecio"),
+          "N/A",
 
         canal:
-          get("infoFactura > canal"),
+          "N/A",
 
         sub_canal:
-          get("infoFactura > subCanal"),
+          "N/A",
 
         vendedor:
-          get("infoFactura > vendedor"),
+          "N/A",
 
         cuentas:
-          get("infoFactura > cuentas"),
+          "N/A",
 
         codigo:
-          m.querySelector("codigoPrincipal")
-          ?.textContent.trim() || "N/A",
+          detalle
+          .querySelector("codigoPrincipal")
+          ?.textContent
+          ?.trim() || "N/A",
 
         modelo:
-          m.querySelector("descripcion")
-          ?.textContent.trim() || "N/A",
+          detalle
+          .querySelector("descripcion")
+          ?.textContent
+          ?.trim() || "N/A",
 
         proveedor:
-          m.querySelector("nombreProveedor")
-          ?.textContent.trim() || "N/A",
+          "N/A",
 
         cantidad:
-          m.querySelector("cantidad")
-          ?.textContent.trim() || "N/A",
+          detalle
+          .querySelector("cantidad")
+          ?.textContent
+          ?.trim() || "N/A",
 
         costo_unitario:
-          m.querySelector("precioUnitario")
-          ?.textContent.trim() || "N/A",
+          detalle
+          .querySelector("precioUnitario")
+          ?.textContent
+          ?.trim() || "N/A",
 
         costo_total:
-          m.querySelector("precioTotalSinImpuesto")
-          ?.textContent.trim() || "N/A",
+          detalle
+          .querySelector("precioTotalSinImpuesto")
+          ?.textContent
+          ?.trim() || "N/A",
 
         iva_pagado:
-          get(
-            "infoFactura > totalConImpuestos > totalImpuesto > valor"
-          ),
+          get("valor"),
 
         precio_unitario:
-          m.querySelector("precioUnitario")
-          ?.textContent.trim() || "N/A",
+          detalle
+          .querySelector("precioUnitario")
+          ?.textContent
+          ?.trim() || "N/A",
 
         precio_total:
-          m.querySelector("precioTotalSinImpuesto")
-          ?.textContent.trim() || "N/A",
+          detalle
+          .querySelector("precioTotalSinImpuesto")
+          ?.textContent
+          ?.trim() || "N/A",
 
         iva_cobrado:
-          get(
-            "infoFactura > totalConImpuestos > totalImpuesto > valor"
-          ),
+          get("valor"),
 
         total_facturado:
-          get("infoFactura > importeTotal"),
+          get("importeTotal"),
 
         utilidad:
-          get("infoFactura > utilidad"),
+          "N/A",
 
         credito:
-          get("infoFactura > credito"),
+          "N/A",
 
         condiciones_credito:
-          get("infoFactura > condicionesCredito"),
+          "N/A",
 
         pendientes:
-          get("infoFactura > pendientes"),
+          "N/A",
 
         perdido:
-          get("infoFactura > perdido")
+          "N/A"
 
       }));
+
     }
 
     // =========================
-    // OCR / PDF
+    // PDF / OCR
     // =========================
 
-    function extractFromText(text) {
+    function extractFromText(text){
 
       const factura =
         text.match(
-          /Factura\s*No[:.\s]*([A-Z0-9\-]+)/i
-        )?.[1] || "No detectado";
+          /factura\\s*(no|n°|numero)?[:\\s-]*([A-Z0-9-]+)/i
+        )?.[2]
+        || "No detectado";
 
       const cliente =
         text.match(
-          /Cliente[:.\s]*(.+)/i
+          /cliente[:\\s-]*(.+)/i
         )?.[1]
-        ?.split("\n")[0]
+        ?.split("\\n")[0]
         || "No detectado";
 
       const ruc =
         text.match(
-          /RUC[:.\s]*(\d{10,13})/i
+          /ruc[:\\s-]*(\\d{10,13})/i
         )?.[1]
         || "No detectado";
 
       const fecha =
         text.match(
-          /Fecha[:.\s]*(\d{2}\/\d{2}\/\d{4})/i
-        )?.[1]
+          /\\d{2}\\/\\d{2}\\/\\d{4}/
+        )?.[0]
         || "No detectado";
 
       const total =
         text.match(
-          /Total[:.\s]*\\?$?\s*([\d.,]+)/i
+          /total[:\\s\\$]*([\\d.,]+)/i
         )?.[1]
-        || "No detectado";
+        || "0";
 
       return {
 
         factura,
         fecha,
 
-        fecha_entrega: "N/A",
+        fecha_entrega:"N/A",
 
         cliente,
 
         ruc,
 
-        provincia: "Detectar",
+        provincia:"OCR/PDF",
 
-        ciudad: "Detectar",
+        ciudad:"OCR/PDF",
 
-        lista_precio: "OCR",
+        lista_precio:"OCR/PDF",
 
-        canal: "-",
+        canal:"-",
 
-        sub_canal: "-",
+        sub_canal:"-",
 
-        vendedor: "-",
+        vendedor:"-",
 
-        cuentas: "-",
+        cuentas:"-",
 
-        codigo: "-",
+        codigo:"-",
 
-        modelo: "Detectado por OCR",
+        modelo:"Detectado",
 
-        proveedor: "-",
+        proveedor:"-",
 
-        cantidad: "1",
+        cantidad:"1",
 
-        costo_unitario: total,
+        costo_unitario:total,
 
-        costo_total: total,
+        costo_total:total,
 
-        iva_pagado: "-",
+        iva_pagado:"-",
 
-        precio_unitario: total,
+        precio_unitario:total,
 
-        precio_total: total,
+        precio_total:total,
 
-        iva_cobrado: "-",
+        iva_cobrado:"-",
 
-        total_facturado: total,
+        total_facturado:total,
 
-        utilidad: "-",
+        utilidad:"-",
 
-        credito: "-",
+        credito:"-",
 
-        condiciones_credito: "-",
+        condiciones_credito:"-",
 
-        pendientes: "-",
+        pendientes:"-",
 
-        perdido: "-"
+        perdido:"-"
 
       };
+
     }
 
     // =========================
     // GUARDAR
     // =========================
 
-    function saveAndRender() {
+    function saveAndRender(){
 
       localStorage.setItem(
         "invoices",
@@ -611,7 +697,7 @@
 
     function populateTable(
       data = invoices
-    ) {
+    ){
 
       const tbody =
         document.getElementById(
@@ -620,18 +706,18 @@
 
       tbody.innerHTML = "";
 
-      data.forEach((inv, index) => {
+      data.forEach((inv,index)=>{
 
         const row =
           document.createElement("tr");
 
         Object.values(inv)
-        .forEach(v => {
+        .forEach(value => {
 
           const td =
             document.createElement("td");
 
-          td.textContent = v;
+          td.textContent = value;
 
           row.appendChild(td);
 
@@ -647,9 +733,9 @@
 
         del.className = "delete-btn";
 
-        del.onclick = () => {
+        del.onclick = ()=>{
 
-          invoices.splice(index, 1);
+          invoices.splice(index,1);
 
           saveAndRender();
         };
@@ -661,17 +747,18 @@
         tbody.appendChild(row);
 
       });
+
     }
 
     // =========================
     // CONTADOR
     // =========================
 
-    function updateFacturaCount() {
+    function updateFacturaCount(){
 
-      document
-      .getElementById("factura-count")
-      .textContent =
+      document.getElementById(
+        "factura-count"
+      ).textContent =
       `Facturas leídas: ${invoices.length}`;
     }
 
@@ -679,7 +766,7 @@
     // EXCEL
     // =========================
 
-    function exportToExcel() {
+    function exportToExcel(){
 
       const ws =
         XLSX.utils.json_to_sheet(invoices);
@@ -703,9 +790,8 @@
     // BUSCADOR
     // =========================
 
-    document
-    .getElementById("search-bar")
-    .addEventListener("input", (e) => {
+    document.getElementById("search-bar")
+    .addEventListener("input",(e)=>{
 
       const term =
         e.target.value.toLowerCase();
@@ -721,20 +807,21 @@
         );
 
       populateTable(filtered);
+
     });
 
     // =========================
     // INICIO
     // =========================
 
-    document
-    .addEventListener(
+    document.addEventListener(
       "DOMContentLoaded",
-      () => {
+      ()=>{
 
         populateTable();
 
         updateFacturaCount();
+
       }
     );
 
