@@ -808,7 +808,7 @@
 
     }
 
-    // PDF - NUEVO PROCESADOR
+    // PDF - NUEVO PROCESADOR CON SEPARACIÓN DE PRODUCTOS
     async function processPDFData(file) {
 
       const arrayBuffer = await file.arrayBuffer();
@@ -822,7 +822,7 @@
         fullText += textContent.items.map(item => item.str).join(" ") + "\n";
       }
 
-      // Extrae campos del texto PDF
+      // Extrae información general de la factura
       const factura = 
         fullText.match(/No\.\s*([0-9\-]+)/)?.[1]?.trim() ||
         fullText.match(/Número de Autorización[\s:]*([0-9\-]+)/i)?.[1]?.trim() ||
@@ -869,20 +869,41 @@
         fullText.match(/Cuentas[\s:]*([^\n]+)/i)?.[1]?.trim() ||
         "N/A";
 
-      const codigo = 
-        fullText.match(/([A-Z0-9]+)\s+(?:Victron|Energy|MultiPlus)/i)?.[1]?.trim() ||
-        fullText.match(/(?:CÓDIGO|CÓDIGO ARTÍCULO)[\s:]*([A-Z0-9]+)/i)?.[1]?.trim() ||
-        "N/A";
+      // DETECCIÓN DE PRODUCTOS/ÍTEMS
+      // Busca patrones de líneas de productos en el PDF
+      const productPatterns = [
+        /([A-Z0-9]+)\s+(?:Victron|Energy|MultiPlus|Inversor|Panel|Batería|Controlador)[\s\w]*/gi,
+        /CÓDIGO ARTÍCULO[\s:]*([A-Z0-9]+)[\s\w]*(?:DESCRIPCIÓN|CANTIDAD)/gi,
+        /(\d+)\s+([A-Z0-9\-]+)\s+([Vv]ictron[\w\s]+)\s+([\d,\.]+)/g
+      ];
 
-      const modelo = 
-        fullText.match(/(Victron[\s\w]+|Energy[\s\w]+|MultiPlus[\s\w]+)/i)?.[0]?.trim() ||
-        "N/A";
+      let productos = [];
+      let foundProducts = false;
 
-      const cantidad = 
-        fullText.match(/(\d+\,\d+)\s+(?:[A-Z0-9]+\s+)?/)?.[1]?.trim() ||
-        fullText.match(/CANTIDAD[\s:]*([0-9\,\.]+)/i)?.[1]?.trim() ||
-        "1";
+      for(let pattern of productPatterns) {
+        let match;
+        while((match = pattern.exec(fullText)) !== null) {
+          if(match[1]) {
+            productos.push({
+              codigo: match[1],
+              modelo: match[2] || match[3] || "N/A",
+              cantidad: match[4] || "1"
+            });
+            foundProducts = true;
+          }
+        }
+      }
 
+      // Si no encontró productos con patrones, crea uno por defecto
+      if(productos.length === 0) {
+        productos.push({
+          codigo: fullText.match(/([A-Z0-9]+)\s+(?:Victron|Energy|MultiPlus)/i)?.[1] || "N/A",
+          modelo: fullText.match(/(Victron[\s\w]+|Energy[\s\w]+|MultiPlus[\s\w]+)/i)?.[0] || "N/A",
+          cantidad: "1"
+        });
+      }
+
+      // EXTRAE PRECIOS
       const precio_unitario = 
         fullText.match(/PRECIO UNITARIO[\s:]*(\d+[\d,\.]*)/i)?.[1]?.trim() ||
         fullText.match(/(?:PRECIO|VALOR)\s+UNITARIO[\s:]*(\d+[\d,\.]*)/i)?.[1]?.trim() ||
@@ -904,7 +925,8 @@
         fullText.match(/VALOR A PAGAR[\s:]*\$?\s*(\d+[\d,\.]*)/i)?.[1]?.trim() ||
         precio_total;
 
-      return [{
+      // CREA UNA FILA POR CADA PRODUCTO
+      return productos.map(prod => ({
         tipo: "PDF",
         factura: factura,
         fecha: fecha,
@@ -918,10 +940,10 @@
         sub_canal: sub_canal,
         vendedor: vendedor,
         cuentas: cuentas,
-        codigo: codigo,
-        modelo: modelo,
+        codigo: prod.codigo,
+        modelo: prod.modelo,
         proveedor: "N/A",
-        cantidad: cantidad,
+        cantidad: prod.cantidad,
         costo_unitario: precio_unitario,
         costo_total: precio_total,
         iva_pagado: iva,
@@ -934,7 +956,7 @@
         condiciones_credito: "N/A",
         pendientes: "N/A",
         perdido: "N/A"
-      }];
+      }));
     }
 
     // OCR - ORIGINAL SIN CAMBIOS
