@@ -646,322 +646,48 @@
         }
 
         // PDF - NUEVO
-      async function processPDFData(file){
+        else if(file.name.toLowerCase().endsWith(".pdf")){
 
-  const arrayBuffer =
-    await file.arrayBuffer();
-
-  const pdf =
-    await pdfjsLib
-    .getDocument(arrayBuffer)
-    .promise;
-
-  let lines = [];
-
-  // EXTRAER TEXTO RESPETANDO LÍNEAS
-  for(let p = 1; p <= pdf.numPages; p++){
-
-    const page =
-      await pdf.getPage(p);
-
-    const content =
-      await page.getTextContent();
-
-    let lastY = null;
-
-    let currentLine = "";
-
-    content.items.forEach(item=>{
-
-      const y =
-        item.transform[5];
-
-      // NUEVA LÍNEA
-      if(
-        lastY !== null &&
-        Math.abs(y - lastY) > 4
-      ){
-
-        if(currentLine.trim()){
-
-          lines.push(
-            currentLine.trim()
-          );
+          const invoice = await processPDFData(file);
+          invoices.push(...invoice);
+          saveAndRender();
+          hideLoading();
 
         }
 
-        currentLine = "";
+        // OCR - ORIGINAL
+        else{
 
+          const {
+            data:{ text }
+          } = await Tesseract.recognize(
+            file,
+            "spa",
+            {
+              logger:m=>console.log(m)
+            }
+          );
+
+          const invoice =
+            extractFromText(text);
+
+          invoices.push(invoice);
+
+          saveAndRender();
+
+          hideLoading();
+        }
+
+      }catch(err){
+
+        console.error(err);
+
+        alert("Error procesando archivo.");
+
+        hideLoading();
       }
 
-      currentLine += item.str + " ";
-
-      lastY = y;
-
     });
-
-    if(currentLine.trim()){
-
-      lines.push(
-        currentLine.trim()
-      );
-
-    }
-
-  }
-
-  const fullText =
-    lines.join("\n");
-
-  // DATOS GENERALES
-  const factura =
-    fullText.match(
-      /(?:FACTURA|Factura|No\.?)\s*[:#]?\s*([0-9\-]+)/i
-    )?.[1]
-    || "N/A";
-
-  const ruc =
-    fullText.match(
-      /RUC[:\s]*([0-9]{10,13})/i
-    )?.[1]
-    || "N/A";
-
-  const cliente =
-    fullText.match(
-      /(?:Cliente|Raz[oó]n Social|Nombres y Apellidos)[:\s]*(.+)/i
-    )?.[1]
-    ?.split("\n")[0]
-    ?.trim()
-    || "N/A";
-
-  const fecha =
-    fullText.match(
-      /(\d{2}\/\d{2}\/\d{4})/
-    )?.[1]
-    || fullText.match(
-      /(\d{4}\-\d{2}\-\d{2})/
-    )?.[1]
-    || "N/A";
-
-  const vendedor =
-    fullText.match(
-      /Vendedor[:\s]*(.+)/i
-    )?.[1]
-    ?.trim()
-    || "N/A";
-
-  const direccion =
-    fullText.match(
-      /(?:Dirección|Dir\.?\s*Matriz)[:\s]*(.+)/i
-    )?.[1]
-    ?.trim()
-    || "";
-
-  const provincia =
-    direccion.split(",")[0]?.trim()
-    || "N/A";
-
-  const ciudad =
-    direccion.split(",")[1]?.trim()
-    || "N/A";
-
-  const canal =
-    fullText.match(
-      /Canal[:\s]*(.+)/i
-    )?.[1]
-    ?.trim()
-    || "N/A";
-
-  const sub_canal =
-    fullText.match(
-      /Sub[\s\-]*Canal[:\s]*(.+)/i
-    )?.[1]
-    ?.trim()
-    || "N/A";
-
-  const cuentas =
-    fullText.match(
-      /Cuentas[:\s]*(.+)/i
-    )?.[1]
-    ?.trim()
-    || "N/A";
-
-  const iva =
-    fullText.match(
-      /IVA(?:\s\d+%)?[:\s\$]*([\d.,]+)/i
-    )?.[1]
-    || "0";
-
-  const total_facturado =
-    fullText.match(
-      /(?:TOTAL|VALOR TOTAL|VALOR A PAGAR)[:\s\$]*([\d.,]+)/i
-    )?.[1]
-    || "0";
-
-  // PRODUCTOS
-  const productos = [];
-
-  lines.forEach(line=>{
-
-    const clean =
-      line.replace(/\s+/g," ").trim();
-
-    if(clean.length < 8){
-      return;
-    }
-
-    const match =
-      clean.match(
-        /^([A-Z0-9\-_]{2,})\s+(.+?)\s+(\d+)\s+([\d.,]+)\s+([\d.,]+)$/
-      );
-
-    if(match){
-
-      productos.push({
-
-        codigo:
-          match[1],
-
-        modelo:
-          match[2],
-
-        cantidad:
-          match[3],
-
-        precio_unitario:
-          match[4],
-
-        precio_total:
-          match[5]
-
-      });
-
-    }
-
-  });
-
-  // FALLBACK
-  if(productos.length === 0){
-
-    productos.push({
-
-      codigo:
-        fullText.match(
-          /[A-Z0-9\-_]{4,}/
-        )?.[0]
-        || "N/A",
-
-      modelo:
-        fullText.match(
-          /(Victron|Inversor|Panel|Bater[ií]a|Controlador)[\w\s\-]+/i
-        )?.[0]
-        || "Producto detectado",
-
-      cantidad:"1",
-
-      precio_unitario:
-        total_facturado,
-
-      precio_total:
-        total_facturado
-
-    });
-
-  }
-
-  // ELIMINAR DUPLICADOS
-  const unicos = [];
-
-  const seen = new Set();
-
-  productos.forEach(prod=>{
-
-    const key =
-      prod.codigo + prod.modelo;
-
-    if(!seen.has(key)){
-
-      seen.add(key);
-
-      unicos.push(prod);
-
-    }
-
-  });
-
-  // RETORNO FINAL
-  return unicos.map(prod=>({
-
-    tipo:"PDF",
-
-    factura,
-
-    fecha,
-
-    fecha_entrega:"N/A",
-
-    cliente,
-
-    ruc,
-
-    provincia,
-
-    ciudad,
-
-    lista_precio:"PDF",
-
-    canal,
-
-    sub_canal,
-
-    vendedor,
-
-    cuentas,
-
-    codigo:
-      prod.codigo,
-
-    modelo:
-      prod.modelo,
-
-    proveedor:"N/A",
-
-    cantidad:
-      prod.cantidad,
-
-    costo_unitario:
-      prod.precio_unitario,
-
-    costo_total:
-      prod.precio_total,
-
-    iva_pagado:
-      iva,
-
-    precio_unitario:
-      prod.precio_unitario,
-
-    precio_total:
-      prod.precio_total,
-
-    iva_cobrado:
-      iva,
-
-    total_facturado,
-
-    utilidad:"N/A",
-
-    credito:"N/A",
-
-    condiciones_credito:"N/A",
-
-    pendientes:"N/A",
-
-    perdido:"N/A"
-
-  }));
-
-}
 
     // XML - ORIGINAL SIN CAMBIOS
     function processXMLData(xml){
