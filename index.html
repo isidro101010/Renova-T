@@ -4,9 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sistema de Facturación Inteligente</title>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  
   <style>
     body {
-      font-family: "Poppins", Arial, sans-serif;
+      font-family: "Inter", Arial, sans-serif;
       background-color: #f4f6f8;
       margin: 0;
       padding: 0;
@@ -104,6 +109,17 @@
       border-radius: 4px;
       cursor: pointer;
     }
+    .type-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 3px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      color: white;
+    }
+    .type-xml { background-color: #007bff; }
+    .type-pdf { background-color: #dc3545; }
+    .type-ocr { background-color: #ffc107; color: #333; }
     footer {
       background-color: #003d66;
       color: white;
@@ -117,14 +133,51 @@
       margin-left: 10px;
       color: #003d66;
     }
+    .loading {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+    }
+    .loading.active {
+      display: flex;
+    }
+    .loading-box {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #003d66;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
-
-  <!-- Librerías -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 </head>
 
 <body>
+  <div class="loading" id="loading">
+    <div class="loading-box">
+      <div class="spinner"></div>
+      <p>Procesando factura...</p>
+    </div>
+  </div>
+
   <header>
     <h1>Sistema de Facturación Inteligente</h1>
     <button class="excel-btn" onclick="exportToExcel()">Pasar a Excel</button>
@@ -146,6 +199,7 @@
       <table>
         <thead>
           <tr>
+            <th>Tipo</th>
             <th>Factura</th>
             <th>Fecha</th>
             <th>Fecha Entrega</th>
@@ -187,45 +241,168 @@
   </footer>
 
   <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
     let invoices = JSON.parse(localStorage.getItem("invoices")) || [];
 
-    document.getElementById("upload-form").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const file = document.getElementById("file-upload").files[0];
-      if (!file) return alert("Selecciona un archivo de factura (XML o imagen).");
+    function showLoading() {
+      document.getElementById("loading").classList.add("active");
+    }
 
-      // Procesar XML
-      if (file.name.endsWith(".xml")) {
-        const reader = new FileReader();
-        reader.onload = function() {
-          const parser = new DOMParser();
-          const xml = parser.parseFromString(this.result, "application/xml");
-          const cdata = xml.querySelector("comprobante")?.textContent.trim();
-          if (cdata) {
-            const inner = new DOMParser().parseFromString(cdata, "application/xml");
-            const invoice = processXMLData(inner);
-            invoices.push(...invoice);
-            saveAndRender();
-          } else {
-            alert("No se encontró información válida en el XML.");
-          }
-        };
-        reader.readAsText(file);
-      } else {
-        // Procesar imagen con OCR
-        const { data: { text } } = await Tesseract.recognize(file, "spa", {
-          logger: m => console.log(m)
-        });
-        const invoice = extractFromText(text);
-        invoices.push(invoice);
-        saveAndRender();
-      }
-    });
+    function hideLoading() {
+      document.getElementById("loading").classList.remove("active");
+    }
 
+    // FUNCIÓN UNIFICADA DE EXTRACCIÓN
+    function normalizeInvoice(data) {
+      return {
+        tipo: data.tipo || "N/A",
+        factura: data.factura?.trim() || "N/A",
+        fecha: data.fecha?.trim() || "N/A",
+        fecha_entrega: data.fecha_entrega?.trim() || "N/A",
+        cliente: data.cliente?.trim() || "N/A",
+        ruc: data.ruc?.trim() || "N/A",
+        provincia: data.provincia?.trim() || "N/A",
+        ciudad: data.ciudad?.trim() || "N/A",
+        lista_precio: data.lista_precio?.trim() || "N/A",
+        canal: data.canal?.trim() || "N/A",
+        sub_canal: data.sub_canal?.trim() || "N/A",
+        vendedor: data.vendedor?.trim() || "N/A",
+        cuentas: data.cuentas?.trim() || "N/A",
+        codigo: data.codigo?.trim() || "N/A",
+        modelo: data.modelo?.trim() || "N/A",
+        proveedor: data.proveedor?.trim() || "N/A",
+        cantidad: data.cantidad?.trim() || "N/A",
+        costo_unitario: data.costo_unitario?.trim() || "N/A",
+        costo_total: data.costo_total?.trim() || "N/A",
+        iva_pagado: data.iva_pagado?.trim() || "N/A",
+        precio_unitario: data.precio_unitario?.trim() || "N/A",
+        precio_total: data.precio_total?.trim() || "N/A",
+        iva_cobrado: data.iva_cobrado?.trim() || "N/A",
+        total_facturado: data.total_facturado?.trim() || "N/A",
+        utilidad: data.utilidad?.trim() || "N/A",
+        credito: data.credito?.trim() || "N/A",
+        condiciones_credito: data.condiciones_credito?.trim() || "N/A",
+        pendientes: data.pendientes?.trim() || "N/A",
+        perdido: data.perdido?.trim() || "N/A"
+      };
+    }
+
+    // EXTRACTOR UNIVERSAL DE TEXTO
+    function extractUniversalFields(text) {
+      // Factura
+      const factura = 
+        text.match(/No\.\s*([0-9\-]+)/)?.[1] ||
+        text.match(/Número de Autorización[\s:]*([0-9\-]+)/i)?.[1] ||
+        text.match(/FACTURA\s*No[\.\s:]*([A-Z0-9\-]+)/i)?.[1] ||
+        text.match(/Factura\s*No[:.\s]*([A-Z0-9\-]+)/i)?.[1] ||
+        "N/A";
+
+      // RUC
+      const ruc = 
+        text.match(/R\.U\.C\.[\s:]*([0-9]{10,13})/i)?.[1] ||
+        text.match(/RUC[\s:]*([0-9]{10,13})/i)?.[1] ||
+        "N/A";
+
+      // Cliente
+      const cliente = 
+        text.match(/Nombres y Apellidos[\s:]*([^,\n]+)/i)?.[1] ||
+        text.match(/RENOVAENERGIA[\s\w\.]+/i)?.[0] ||
+        text.match(/Razón[\s\w]*Social[\s:]*([^\n]+)/i)?.[1] ||
+        text.match(/Cliente[:.\s]*(.+)/i)?.[1]?.split("\n")[0] ||
+        "N/A";
+
+      // Fecha
+      const fecha = 
+        text.match(/FECHA[\s\w]*EMISIÓN[\s:]*([0-9]{4}[\-\/][0-9]{2}[\-\/][0-9]{2})/i)?.[1] ||
+        text.match(/Fecha[\s\w]*Emisión[\s:]*([0-9]{1,2}[\/\-][0-9]{1,2}[\/\-][0-9]{2,4})/i)?.[1] ||
+        text.match(/Fecha[:.\s]*(\d{2}\/\d{2}\/\d{4})/i)?.[1] ||
+        text.match(/(\d{4}[\-\/]\d{2}[\-\/]\d{2})/)?.[1] ||
+        "N/A";
+
+      // Vendedor
+      const vendedor = 
+        text.match(/Vendedor[\s:]*([^,\n]+)/i)?.[1] ||
+        "N/A";
+
+      // Dirección
+      const direccion = 
+        text.match(/Dir\.\s*Matriz[\s:]*([^\n]+)/i)?.[1] ||
+        text.match(/Dirección[\s:]*([^\n]+)/i)?.[1] ||
+        "";
+
+      const provincia = direccion?.split(/[,]/)[0]?.trim() || "N/A";
+      const ciudad = direccion?.split(/[,]/)[1]?.trim() || "N/A";
+
+      // Canal y Sub Canal
+      const canal = 
+        text.match(/Canal[\s:]*([^,\n]+)/i)?.[1] ||
+        "N/A";
+
+      const sub_canal = 
+        text.match(/Sub[\s\-]*Canal[\s:]*([^,\n]+)/i)?.[1] ||
+        "N/A";
+
+      // Cuentas
+      const cuentas = 
+        text.match(/Cuentas[\s:]*([^,\n]+)/i)?.[1] ||
+        "N/A";
+
+      // Código y Modelo (de tabla de productos)
+      const codigo = 
+        text.match(/([A-Z0-9]+)\s+Victron|([A-Z0-9]+)\s+Energy|([A-Z0-9]+)\s+MultiPlus/)?.[1] ||
+        text.match(/(?:CÓDIGO|CÓDIGO ARTÍCULO)[\s:]*([A-Z0-9]+)/i)?.[1] ||
+        "N/A";
+
+      const modelo = 
+        text.match(/(Victron[\s\w]+|Energy[\s\w]+|MultiPlus[\s\w]+)/i)?.[0] ||
+        text.match(/(?:DESCRIPCIÓN|MODELO)[\s:]*([^\n]+)/i)?.[1] ||
+        "N/A";
+
+      // Cantidad
+      const cantidad = 
+        text.match(/(\d+\,\d+)\s+(?:[A-Z0-9]+\s+)?/)?.[1] ||
+        text.match(/CANTIDAD[\s:]*([0-9\,\.]+)/i)?.[1] ||
+        "1";
+
+      // Precios
+      const precio_unitario = 
+        text.match(/PRECIO UNITARIO[\s:]*(\d+[\d,\.]*)/i)?.[1] ||
+        text.match(/(?:PRECIO|VALOR)\s+UNITARIO[\s:]*(\d+[\d,\.]*)/i)?.[1] ||
+        "0";
+
+      const precio_total = 
+        text.match(/PRECIO TOTAL[\s:]*(\d+[\d,\.]*)/i)?.[1] ||
+        text.match(/(?:TOTAL|VALOR)\s+TOTAL[\s:]*(?!IVA)(\d+[\d,\.]*)/i)?.[1] ||
+        precio_unitario;
+
+      // IVA
+      const iva = 
+        text.match(/IVA[\s\d%]*[\s:]*\$?\s*(\d+[\d,\.]*)/i)?.[1] ||
+        text.match(/IVA 15%[\s:]*(\d+[\d,\.]*)/i)?.[1] ||
+        text.match(/IVA 12%[\s:]*(\d+[\d,\.]*)/i)?.[1] ||
+        "0";
+
+      // Total Facturado
+      const total_facturado = 
+        text.match(/VALOR TOTAL[\s:]*\$?\s*(\d+[\d,\.]*)/i)?.[1] ||
+        text.match(/VALOR A PAGAR[\s:]*\$?\s*(\d+[\d,\.]*)/i)?.[1] ||
+        text.match(/Total[:.\s]*\$?\s*([\d.,]+)/i)?.[1] ||
+        precio_total;
+
+      return {
+        factura, ruc, cliente, fecha, vendedor, provincia, ciudad,
+        canal, sub_canal, cuentas, codigo, modelo, cantidad,
+        precio_unitario, precio_total, iva, total_facturado
+      };
+    }
+
+    // PROCESAMIENTO XML
     function processXMLData(xml) {
-      const get = (sel) => xml.querySelector(sel)?.textContent.trim() || "N/A";
+      const get = (sel) => xml.querySelector(sel)?.textContent.trim() || "";
       const models = Array.from(xml.querySelectorAll("detalles > detalle"));
-      return models.map(m => ({
+      
+      const commonData = {
         factura: get("infoTributaria > secuencial"),
         fecha: get("infoFactura > fechaEmision"),
         fecha_entrega: get("infoFactura > fechaEntrega"),
@@ -238,15 +415,7 @@
         sub_canal: get("infoFactura > subCanal"),
         vendedor: get("infoFactura > vendedor"),
         cuentas: get("infoFactura > cuentas"),
-        codigo: m.querySelector("codigoPrincipal")?.textContent.trim() || "N/A",
-        modelo: m.querySelector("descripcion")?.textContent.trim() || "N/A",
-        proveedor: m.querySelector("nombreProveedor")?.textContent.trim() || "N/A",
-        cantidad: m.querySelector("cantidad")?.textContent.trim() || "N/A",
-        costo_unitario: m.querySelector("precioUnitario")?.textContent.trim() || "N/A",
-        costo_total: m.querySelector("precioTotalSinImpuesto")?.textContent.trim() || "N/A",
         iva_pagado: get("infoFactura > totalConImpuestos > totalImpuesto > valor"),
-        precio_unitario: m.querySelector("precioUnitario")?.textContent.trim() || "N/A",
-        precio_total: m.querySelector("precioTotalSinImpuesto")?.textContent.trim() || "N/A",
         iva_cobrado: get("infoFactura > totalConImpuestos > totalImpuesto > valor"),
         total_facturado: get("infoFactura > importeTotal"),
         utilidad: get("infoFactura > utilidad"),
@@ -254,28 +423,150 @@
         condiciones_credito: get("infoFactura > condicionesCredito"),
         pendientes: get("infoFactura > pendientes"),
         perdido: get("infoFactura > perdido")
+      };
+
+      return models.map(m => normalizeInvoice({
+        tipo: "XML",
+        ...commonData,
+        codigo: m.querySelector("codigoPrincipal")?.textContent.trim() || "",
+        modelo: m.querySelector("descripcion")?.textContent.trim() || "",
+        proveedor: m.querySelector("nombreProveedor")?.textContent.trim() || "",
+        cantidad: m.querySelector("cantidad")?.textContent.trim() || "",
+        costo_unitario: m.querySelector("precioUnitario")?.textContent.trim() || "",
+        costo_total: m.querySelector("precioTotalSinImpuesto")?.textContent.trim() || "",
+        precio_unitario: m.querySelector("precioUnitario")?.textContent.trim() || "",
+        precio_total: m.querySelector("precioTotalSinImpuesto")?.textContent.trim() || ""
       }));
     }
 
-    function extractFromText(text) {
-      // OCR básico con patrones
-      const factura = text.match(/Factura\s*No[:.\s]*([A-Z0-9\-]+)/i)?.[1] || "No detectado";
-      const cliente = text.match(/Cliente[:.\s]*(.+)/i)?.[1]?.split("\n")[0] || "No detectado";
-      const ruc = text.match(/RUC[:.\s]*(\d{10,13})/i)?.[1] || "No detectado";
-      const fecha = text.match(/Fecha[:.\s]*(\d{2}\/\d{2}\/\d{4})/i)?.[1] || "No detectado";
-      const total = text.match(/Total[:.\s]*\$?\s*([\d.,]+)/i)?.[1] || "No detectado";
+    // PROCESAMIENTO PDF
+    async function processPDFData(file) {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+      
+      let fullText = "";
+      for(let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        fullText += textContent.items.map(item => item.str).join(" ") + "\n";
+      }
 
-      return {
-        factura, fecha, fecha_entrega: "N/A", cliente, ruc,
-        provincia: "Detectar", ciudad: "Detectar",
-        lista_precio: "OCR", canal: "-", sub_canal: "-", vendedor: "-",
-        cuentas: "-", codigo: "-", modelo: "Detectado por imagen", proveedor: "-",
-        cantidad: "1", costo_unitario: total, costo_total: total,
-        iva_pagado: "-", precio_unitario: total, precio_total: total,
-        iva_cobrado: "-", total_facturado: total, utilidad: "-",
-        credito: "-", condiciones_credito: "-", pendientes: "-", perdido: "-"
-      };
+      const fields = extractUniversalFields(fullText);
+      
+      return [normalizeInvoice({
+        tipo: "PDF",
+        factura: fields.factura,
+        fecha: fields.fecha,
+        fecha_entrega: "N/A",
+        cliente: fields.cliente,
+        ruc: fields.ruc,
+        provincia: fields.provincia,
+        ciudad: fields.ciudad,
+        lista_precio: "PDF",
+        canal: fields.canal,
+        sub_canal: fields.sub_canal,
+        vendedor: fields.vendedor,
+        cuentas: fields.cuentas,
+        codigo: fields.codigo,
+        modelo: fields.modelo,
+        proveedor: "N/A",
+        cantidad: fields.cantidad,
+        costo_unitario: fields.precio_unitario,
+        costo_total: fields.precio_total,
+        iva_pagado: fields.iva,
+        precio_unitario: fields.precio_unitario,
+        precio_total: fields.precio_total,
+        iva_cobrado: fields.iva,
+        total_facturado: fields.total_facturado,
+        utilidad: "N/A",
+        credito: "N/A",
+        condiciones_credito: "N/A",
+        pendientes: "N/A",
+        perdido: "N/A"
+      })];
     }
+
+    // PROCESAMIENTO OCR
+    async function processOCRData(file) {
+      const { data: { text } } = await Tesseract.recognize(file, "spa");
+      const fields = extractUniversalFields(text);
+
+      return normalizeInvoice({
+        tipo: "OCR",
+        factura: fields.factura,
+        fecha: fields.fecha,
+        fecha_entrega: "N/A",
+        cliente: fields.cliente,
+        ruc: fields.ruc,
+        provincia: fields.provincia,
+        ciudad: fields.ciudad,
+        lista_precio: "OCR",
+        canal: fields.canal,
+        sub_canal: fields.sub_canal,
+        vendedor: fields.vendedor,
+        cuentas: fields.cuentas,
+        codigo: fields.codigo,
+        modelo: fields.modelo,
+        proveedor: "N/A",
+        cantidad: fields.cantidad,
+        costo_unitario: fields.precio_unitario,
+        costo_total: fields.precio_total,
+        iva_pagado: fields.iva,
+        precio_unitario: fields.precio_unitario,
+        precio_total: fields.precio_total,
+        iva_cobrado: fields.iva,
+        total_facturado: fields.total_facturado,
+        utilidad: "N/A",
+        credito: "N/A",
+        condiciones_credito: "N/A",
+        pendientes: "N/A",
+        perdido: "N/A"
+      });
+    }
+
+    // EVENT LISTENER PRINCIPAL
+    document.getElementById("upload-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const file = document.getElementById("file-upload").files[0];
+      if (!file) return alert("Selecciona un archivo de factura (XML, PDF o imagen).");
+
+      showLoading();
+
+      try {
+        if (file.name.endsWith(".xml")) {
+          const reader = new FileReader();
+          reader.onload = function() {
+            const parser = new DOMParser();
+            const xml = parser.parseFromString(this.result, "application/xml");
+            const cdata = xml.querySelector("comprobante")?.textContent.trim();
+            if (cdata) {
+              const inner = new DOMParser().parseFromString(cdata, "application/xml");
+              const result = processXMLData(inner);
+              invoices.push(...result);
+              saveAndRender();
+            } else {
+              alert("Error: No se encontró información válida en el XML.");
+            }
+            hideLoading();
+          };
+          reader.readAsText(file);
+        } else if (file.name.endsWith(".pdf")) {
+          const result = await processPDFData(file);
+          invoices.push(...result);
+          saveAndRender();
+          hideLoading();
+        } else {
+          const result = await processOCRData(file);
+          invoices.push(result);
+          saveAndRender();
+          hideLoading();
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Error al procesar el archivo.");
+        hideLoading();
+      }
+    });
 
     function saveAndRender() {
       localStorage.setItem("invoices", JSON.stringify(invoices));
@@ -283,16 +574,21 @@
       updateFacturaCount();
     }
 
-    function populateTable() {
+    function populateTable(data = invoices) {
       const tbody = document.getElementById("invoice-table");
       tbody.innerHTML = "";
-      invoices.forEach((inv, index) => {
+      data.forEach((inv, index) => {
         const row = document.createElement("tr");
-        Object.values(inv).forEach(v => {
+        Object.entries(inv).forEach(([key, value]) => {
           const td = document.createElement("td");
-          td.textContent = v;
+          if (key === "tipo") {
+            td.innerHTML = `<span class="type-badge type-${value.toLowerCase()}">${value}</span>`;
+          } else {
+            td.textContent = value;
+          }
           row.appendChild(td);
         });
+
         const del = document.createElement("button");
         del.textContent = "Eliminar";
         del.className = "delete-btn";
@@ -317,6 +613,14 @@
       XLSX.utils.book_append_sheet(wb, ws, "Facturas");
       XLSX.writeFile(wb, "facturas.xlsx");
     }
+
+    document.getElementById("search-bar").addEventListener("input", (e) => {
+      const term = e.target.value.toLowerCase();
+      const filtered = invoices.filter(inv =>
+        Object.values(inv).join(" ").toLowerCase().includes(term)
+      );
+      populateTable(filtered);
+    });
 
     document.addEventListener("DOMContentLoaded", () => {
       populateTable();
