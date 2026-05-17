@@ -435,8 +435,8 @@
     <div class="header-container">
 
       <div class="brand">
-        <h1>💳 Sistema de Facturación Inteligente</h1>
-        <p>Procesamiento avanzado XML + PDF + OCR</p>
+        <h1> Facturas </h1>
+        <p>Pon tu factura
       </div>
 
       <button class="excel-btn" onclick="exportToExcel()">
@@ -581,7 +581,7 @@
 
       try{
 
-        // XML - ORIGINAL SIN CAMBIOS
+        
         if(file.name.toLowerCase().endsWith(".xml")){
 
           const reader = new FileReader();
@@ -809,155 +809,226 @@
     }
 
     // PDF - NUEVO PROCESADOR CON SEPARACIÓN DE PRODUCTOS
-    async function processPDFData(file) {
+    // PDF - NUEVO PROCESADOR CON SEPARACIÓN DE PRODUCTOS
+async function processPDFData(file) {
 
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+  const arrayBuffer =
+    await file.arrayBuffer();
 
-      let fullText = "";
-      
-      for(let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const textContent = await page.getTextContent();
-        fullText += textContent.items.map(item => item.str).join(" ") + "\n";
-      }
+  const pdf =
+    await pdfjsLib
+    .getDocument(arrayBuffer)
+    .promise;
 
-      // Extrae información general de la factura
-      const factura = 
-        fullText.match(/No\.\s*([0-9\-]+)/)?.[1]?.trim() ||
-        fullText.match(/Número de Autorización[\s:]*([0-9\-]+)/i)?.[1]?.trim() ||
-        "N/A";
+  let fullText = "";
 
-      const ruc = 
-        fullText.match(/R\.U\.C\.[\s:]*([0-9]{10,13})/i)?.[1]?.trim() ||
-        fullText.match(/RUC[\s:]*([0-9]{10,13})/i)?.[1]?.trim() ||
-        "N/A";
+  // =========================
+  // EXTRAER TEXTO CONSERVANDO LÍNEAS
+  // =========================
 
-      const cliente = 
-        fullText.match(/Nombres y Apellidos[\s:]*([^\n]+)/i)?.[1]?.trim() ||
-        fullText.match(/RENOVAENERGIA[\s\w\.]+/i)?.[0]?.trim() ||
-        fullText.match(/Razón[\s\w]*Social[\s:]*([^\n]+)/i)?.[1]?.trim() ||
-        "N/A";
+  for(let i = 1; i <= pdf.numPages; i++){
 
-      const fecha = 
-        fullText.match(/FECHA[\s\w]*EMISIÓN[\s:]*([0-9]{4}[\-\/][0-9]{2}[\-\/][0-9]{2})/i)?.[1]?.trim() ||
-        fullText.match(/Fecha[\s\w]*Emisión[\s:]*([0-9]{1,2}[\/\-][0-9]{1,2}[\/\-][0-9]{2,4})/i)?.[1]?.trim() ||
-        fullText.match(/Fecha[:.\s]*(\d{2}\/\d{2}\/\d{4})/i)?.[1]?.trim() ||
-        "N/A";
+    const page =
+      await pdf.getPage(i);
 
-      const vendedor = 
-        fullText.match(/Vendedor[\s:]*([^\n]+)/i)?.[1]?.trim() ||
-        "N/A";
+    const textContent =
+      await page.getTextContent();
 
-      const direccion = 
-        fullText.match(/Dir\.\s*Matriz[\s:]*([^\n]+)/i)?.[1]?.trim() ||
-        fullText.match(/Dirección[\s:]*([^\n]+)/i)?.[1]?.trim() ||
-        "";
+    const lines = [];
 
-      const provincia = direccion?.split(/[,]/)[0]?.trim() || "N/A";
-      const ciudad = direccion?.split(/[,]/)[1]?.trim() || "N/A";
+    let lastY = null;
+    let currentLine = "";
 
-      const canal = 
-        fullText.match(/Canal[\s:]*([^\n]+)/i)?.[1]?.trim() ||
-        "N/A";
+    textContent.items.forEach(item=>{
 
-      const sub_canal = 
-        fullText.match(/Sub[\s\-]*Canal[\s:]*([^\n]+)/i)?.[1]?.trim() ||
-        "N/A";
+      const y = item.transform[5];
 
-      const cuentas = 
-        fullText.match(/Cuentas[\s:]*([^\n]+)/i)?.[1]?.trim() ||
-        "N/A";
+      if(lastY === y){
 
-      // DETECCIÓN DE PRODUCTOS/ÍTEMS
-      // Busca patrones de líneas de productos en el PDF
-      const productPatterns = [
-        /([A-Z0-9]+)\s+(?:Victron|Energy|MultiPlus|Inversor|Panel|Batería|Controlador)[\s\w]*/gi,
-        /CÓDIGO ARTÍCULO[\s:]*([A-Z0-9]+)[\s\w]*(?:DESCRIPCIÓN|CANTIDAD)/gi,
-        /(\d+)\s+([A-Z0-9\-]+)\s+([Vv]ictron[\w\s]+)\s+([\d,\.]+)/g
-      ];
+        currentLine += " " + item.str;
 
-      let productos = [];
-      let foundProducts = false;
+      }else{
 
-      for(let pattern of productPatterns) {
-        let match;
-        while((match = pattern.exec(fullText)) !== null) {
-          if(match[1]) {
-            productos.push({
-              codigo: match[1],
-              modelo: match[2] || match[3] || "N/A",
-              cantidad: match[4] || "1"
-            });
-            foundProducts = true;
-          }
+        if(currentLine){
+          lines.push(currentLine);
         }
+
+        currentLine = item.str;
+
+        lastY = y;
       }
 
-      // Si no encontró productos con patrones, crea uno por defecto
-      if(productos.length === 0) {
-        productos.push({
-          codigo: fullText.match(/([A-Z0-9]+)\s+(?:Victron|Energy|MultiPlus)/i)?.[1] || "N/A",
-          modelo: fullText.match(/(Victron[\s\w]+|Energy[\s\w]+|MultiPlus[\s\w]+)/i)?.[0] || "N/A",
-          cantidad: "1"
-        });
-      }
+    });
 
-      // EXTRAE PRECIOS
-      const precio_unitario = 
-        fullText.match(/PRECIO UNITARIO[\s:]*(\d+[\d,\.]*)/i)?.[1]?.trim() ||
-        fullText.match(/(?:PRECIO|VALOR)\s+UNITARIO[\s:]*(\d+[\d,\.]*)/i)?.[1]?.trim() ||
-        "0";
-
-      const precio_total = 
-        fullText.match(/PRECIO TOTAL[\s:]*(\d+[\d,\.]*)/i)?.[1]?.trim() ||
-        fullText.match(/(?:TOTAL|VALOR)\s+TOTAL[\s:]*(?!IVA)(\d+[\d,\.]*)/i)?.[1]?.trim() ||
-        precio_unitario;
-
-      const iva = 
-        fullText.match(/IVA[\s\d%]*[\s:]*\$?\s*(\d+[\d,\.]*)/i)?.[1]?.trim() ||
-        fullText.match(/IVA 15%[\s:]*(\d+[\d,\.]*)/i)?.[1]?.trim() ||
-        fullText.match(/IVA 12%[\s:]*(\d+[\d,\.]*)/i)?.[1]?.trim() ||
-        "0";
-
-      const total_facturado = 
-        fullText.match(/VALOR TOTAL[\s:]*\$?\s*(\d+[\d,\.]*)/i)?.[1]?.trim() ||
-        fullText.match(/VALOR A PAGAR[\s:]*\$?\s*(\d+[\d,\.]*)/i)?.[1]?.trim() ||
-        precio_total;
-
-      // CREA UNA FILA POR CADA PRODUCTO
-      return productos.map(prod => ({
-        tipo: "PDF",
-        factura: factura,
-        fecha: fecha,
-        fecha_entrega: "N/A",
-        cliente: cliente,
-        ruc: ruc,
-        provincia: provincia,
-        ciudad: ciudad,
-        lista_precio: "PDF",
-        canal: canal,
-        sub_canal: sub_canal,
-        vendedor: vendedor,
-        cuentas: cuentas,
-        codigo: prod.codigo,
-        modelo: prod.modelo,
-        proveedor: "N/A",
-        cantidad: prod.cantidad,
-        costo_unitario: precio_unitario,
-        costo_total: precio_total,
-        iva_pagado: iva,
-        precio_unitario: precio_unitario,
-        precio_total: precio_total,
-        iva_cobrado: iva,
-        total_facturado: total_facturado,
-        utilidad: "N/A",
-        credito: "N/A",
-        condiciones_credito: "N/A",
-        pendientes: "N/A",
-        perdido: "N/A"
-      }));
+    if(currentLine){
+      lines.push(currentLine);
     }
+
+    fullText += lines.join("\n") + "\n";
+  }
+
+  console.log(fullText);
+
+  // =========================
+  // DATOS GENERALES
+  // =========================
+
+  const factura =
+    fullText.match(/001-001-\d+/)?.[0]
+    || "N/A";
+
+  const fecha =
+    fullText.match(/Fecha Emisión:\s*([0-9\/]+)/i)?.[1]
+    || "N/A";
+
+  const ruc =
+    fullText.match(/R\.U\.C\.\:\s*(\d{13})/i)?.[1]
+    || "N/A";
+
+  const cliente =
+    fullText.match(
+      /Razón Social\/ Nombres y Apellidos:\s*\n?([^\n]+)/i
+    )?.[1]
+    ?.trim()
+    || "N/A";
+
+  const total_facturado =
+    fullText.match(
+      /VALOR TOTAL\s*([\d\.,]+)/i
+    )?.[1]
+    || "0";
+
+  const iva =
+    fullText.match(
+      /IVA 15 %\s*([\d\.,]+)/i
+    )?.[1]
+    || "0";
+
+  // =========================
+  // PRODUCTOS
+  // =========================
+
+  const productos = [];
+
+  const productRegex =
+    /(\d+,\d+)\s+([A-Z0-9\.]+)\s+(Victron Energy.*?)(\d+,\d{4})\s+0,00\s+([\d\.\,]+)/g;
+
+  let match;
+
+  while((match = productRegex.exec(fullText)) !== null){
+
+    productos.push({
+
+      cantidad:
+        match[1],
+
+      codigo:
+        match[2],
+
+      modelo:
+        match[3]
+        .replace(/\s+/g," ")
+        .trim(),
+
+      precio_unitario:
+        match[4],
+
+      precio_total:
+        match[5]
+
+    });
+
+  }
+
+  // =========================
+  // FALLBACK
+  // =========================
+
+  if(productos.length === 0){
+
+    productos.push({
+
+      cantidad:"1",
+
+      codigo:"N/A",
+
+      modelo:"Producto no detectado",
+
+      precio_unitario:"0",
+
+      precio_total:"0"
+
+    });
+
+  }
+
+  // =========================
+  // RETORNAR FILAS
+  // =========================
+
+  return productos.map(prod=>({
+
+    tipo:"PDF",
+
+    factura,
+
+    fecha,
+
+    fecha_entrega:"N/A",
+
+    cliente,
+
+    ruc,
+
+    provincia:"N/A",
+
+    ciudad:"N/A",
+
+    lista_precio:"PDF",
+
+    canal:"N/A",
+
+    sub_canal:"N/A",
+
+    vendedor:"N/A",
+
+    cuentas:"N/A",
+
+    codigo:prod.codigo,
+
+    modelo:prod.modelo,
+
+    proveedor:"N/A",
+
+    cantidad:prod.cantidad,
+
+    costo_unitario:prod.precio_unitario,
+
+    costo_total:prod.precio_total,
+
+    iva_pagado:iva,
+
+    precio_unitario:prod.precio_unitario,
+
+    precio_total:prod.precio_total,
+
+    iva_cobrado:iva,
+
+    total_facturado,
+
+    utilidad:"N/A",
+
+    credito:"N/A",
+
+    condiciones_credito:"N/A",
+
+    pendientes:"N/A",
+
+    perdido:"N/A"
+
+  }));
+
+}
 
     // OCR - ORIGINAL SIN CAMBIOS
     function extractFromText(text){
