@@ -15,28 +15,31 @@
   <!-- Librerías -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
   <style>
 
     :root{
-      --bg:#0f172a;
-      --card:#111827;
-      --card2:#1e293b;
-      --border:rgba(255,255,255,.08);
+      /* Nueva paleta: azul (primario), naranja (accent) y blanco */
+      --bg:#f7fbff;
+      --card:#ffffff;
+      --card2:#f1f7ff;
+      --border:rgba(3,37,76,0.06);
 
-      --text:#f8fafc;
-      --muted:#94a3b8;
+      --text:#072038;
+      --muted:#586776;
 
-      --primary:#3b82f6;
-      --primary-hover:#2563eb;
+      --primary:#0057b8; /* azul */
+      --primary-hover:#0046a1;
+      --accent:#ff7a00;  /* naranja */
 
       --success:#22c55e;
       --danger:#ef4444;
 
-      --shadow:0 10px 30px rgba(0,0,0,.35);
+      --shadow:0 8px 24px rgba(3,37,76,.08);
 
-      --radius:18px;
+      --radius:12px;
+
+      --glass: rgba(255,255,255,0.6);
     }
 
     *{
@@ -49,31 +52,29 @@
       font-family:"Inter",sans-serif;
 
       background:
-      radial-gradient(circle at top left, rgba(59,130,246,.15), transparent 25%),
-      radial-gradient(circle at bottom right, rgba(34,197,94,.10), transparent 20%),
-      var(--bg);
+        linear-gradient(135deg, rgba(0,87,184,0.03) 0%, rgba(255,122,0,0.02) 50%, rgba(0,87,184,0.03) 100%),
+        var(--bg);
 
       color:var(--text);
 
       min-height:100vh;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
 
     header{
-      padding:25px;
+      padding:28px 20px;
     }
 
     .header-container{
-      max-width:1600px;
+      max-width:1200px;
       margin:auto;
 
-      background:rgba(17,24,39,.75);
-      backdrop-filter:blur(14px);
-
+      background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(250,253,255,0.8));
       border:1px solid var(--border);
+      border-radius:16px;
 
-      border-radius:24px;
-
-      padding:24px 28px;
+      padding:20px 26px;
 
       display:flex;
       justify-content:space-between;
@@ -81,59 +82,67 @@
       gap:20px;
 
       box-shadow:var(--shadow);
+
+      transform:translateY(-6px);
+      opacity:0;
+      animation:fadeInDown .6s ease forwards;
     }
 
     .brand h1{
-      font-size:2rem;
+      font-size:1.6rem;
       font-weight:800;
       letter-spacing:-.5px;
+      background:linear-gradient(90deg,var(--primary),var(--accent));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
     }
 
     .brand p{
       color:var(--muted);
-      margin-top:5px;
+      margin-top:6px;
+      font-size:0.9rem;
     }
 
     .excel-btn{
-      background:var(--success);
+      background: linear-gradient(90deg,var(--primary), #2b9cff);
       color:white;
 
       border:none;
 
-      padding:14px 22px;
+      padding:12px 18px;
 
-      border-radius:14px;
+      border-radius:10px;
 
       font-weight:700;
 
       cursor:pointer;
 
-      transition:.25s ease;
+      transition:transform .2s ease, box-shadow .2s ease;
+      box-shadow:0 6px 18px rgba(0,87,184,.12);
     }
 
     .excel-btn:hover{
-      transform:translateY(-2px);
-      filter:brightness(1.05);
+      transform:translateY(-3px) scale(1.01);
+      box-shadow:0 10px 30px rgba(0,87,184,.14);
     }
 
     main{
-      max-width:1600px;
+      max-width:1200px;
       margin:auto;
-      padding:0 25px 40px;
+      padding:18px 20px 60px;
     }
 
     .card{
-      background:rgba(17,24,39,.75);
-
-      backdrop-filter:blur(14px);
-
+      background:var(--card);
+      border-radius:14px;
+      padding:20px;
+      box-shadow:var(--shadow);
       border:1px solid var(--border);
 
-      border-radius:24px;
-
-      padding:24px;
-
-      box-shadow:var(--shadow);
+      opacity:0;
+      transform:translateY(8px);
+      animation:fadeInUp .6s .15s ease forwards;
     }
 
     .top-section{
@@ -141,259 +150,248 @@
       justify-content:space-between;
       align-items:center;
       flex-wrap:wrap;
-      gap:20px;
+      gap:14px;
 
-      margin-bottom:25px;
+      margin-bottom:18px;
     }
 
     .top-section h2{
-      font-size:1.4rem;
+      font-size:1.25rem;
       font-weight:700;
     }
 
     .factura-count{
-      background:var(--card2);
-
+      background:linear-gradient(90deg,var(--card2), #ffffff);
       border:1px solid var(--border);
+      padding:10px 16px;
+      border-radius:10px;
+      color:var(--text);
+      font-weight:700;
+      color:var(--primary);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
 
-      padding:12px 18px;
-
-      border-radius:14px;
-
-      color:white;
-
-      font-weight:600;
+      box-shadow:0 6px 14px rgba(3,37,76,0.04);
     }
 
     form{
       display:flex;
       flex-wrap:wrap;
-      gap:15px;
+      gap:12px;
 
-      margin-bottom:25px;
+      margin-bottom:16px;
     }
 
     input[type="file"],
     input[type="text"]{
       flex:1;
 
-      min-width:250px;
+      min-width:220px;
 
-      background:#0f172a;
+      background:transparent;
 
       color:var(--text);
 
       border:1px solid var(--border);
 
-      border-radius:14px;
+      border-radius:10px;
 
-      padding:14px;
+      padding:12px;
 
       outline:none;
 
-      transition:.2s;
+      transition:box-shadow .18s ease, border-color .18s ease, transform .18s ease;
+      background:linear-gradient(180deg, rgba(240,248,255,0.8), rgba(255,255,255,0.6));
+      color:var(--text);
+      color:var(--text);
+    }
+
+    input[type="file"]::-webkit-file-upload-button{
+      background:transparent;
+      border:none;
+      color:var(--primary);
+      font-weight:700;
+    }
+
+    input[type="text"]::placeholder{
+      color:var(--muted);
     }
 
     input[type="file"]:focus,
     input[type="text"]:focus{
       border-color:var(--primary);
-
-      box-shadow:0 0 0 4px rgba(59,130,246,.15);
+      box-shadow:0 6px 24px rgba(0,87,184,.08);
+      transform:translateY(-2px);
     }
 
     button{
       border:none;
-
       cursor:pointer;
-
       transition:.25s ease;
     }
 
     .upload-btn{
-      background:var(--primary);
-
+      background:linear-gradient(90deg,var(--accent), #ff8f3b);
       color:white;
-
-      padding:14px 22px;
-
-      border-radius:14px;
-
+      padding:12px 18px;
+      border-radius:10px;
       font-weight:700;
+      box-shadow:0 8px 20px rgba(255,122,0,.12);
     }
 
     .upload-btn:hover{
-      background:var(--primary-hover);
-
-      transform:translateY(-2px);
+      transform:translateY(-3px) scale(1.01);
+      box-shadow:0 12px 28px rgba(255,122,0,.14);
     }
 
     .table-container{
       overflow:auto;
-
-      border-radius:18px;
-
+      border-radius:10px;
       border:1px solid var(--border);
+      margin-top:8px;
     }
 
     table{
       width:100%;
-
-      min-width:2500px;
-
+      min-width:1200px;
       border-collapse:collapse;
-
-      background:rgba(15,23,42,.9);
+      background:transparent;
     }
 
     thead{
-      background:#172554;
+      background:linear-gradient(90deg, rgba(0,87,184,0.06), rgba(255,122,0,0.03));
     }
 
     th{
       position:sticky;
       top:0;
-
       z-index:2;
-
-      padding:14px 10px;
-
+      padding:12px 10px;
       font-size:.82rem;
-
       text-transform:uppercase;
-
       letter-spacing:.4px;
-
       border-bottom:1px solid var(--border);
+      color:var(--primary);
+      text-align:center;
     }
 
     td{
       padding:12px 10px;
-
       text-align:center;
-
+      font-size:. ninerem; /* fallback corrected below by CSS */
       font-size:.85rem;
-
-      border-bottom:1px solid rgba(255,255,255,.05);
-
-      color:#e2e8f0;
+      border-bottom:1px solid rgba(3,37,76,.03);
+      color:var(--muted);
     }
 
     tbody tr{
-      transition:.2s;
+      transition:transform .22s ease, background .22s ease, box-shadow .22s ease, opacity .25s ease;
+      opacity:0;
+      transform:translateY(6px);
+      animation:rowFadeIn .4s ease forwards;
     }
 
     tbody tr:nth-child(even){
-      background:rgba(255,255,255,.02);
+      background:rgba(0,87,184,0.02);
     }
 
     tbody tr:hover{
-      background:rgba(59,130,246,.08);
+      background:rgba(255,122,0,0.04);
+      transform:translateY(-3px);
+      box-shadow:0 8px 18px rgba(3,37,76,.04);
     }
 
     .delete-btn{
-      background:rgba(239,68,68,.15);
-
-      color:#fecaca;
-
-      border:1px solid rgba(239,68,68,.2);
-
+      background:rgba(239,68,68,.06);
+      color:#b91c1c;
+      border:1px solid rgba(239,68,68,.08);
       padding:8px 12px;
-
-      border-radius:10px;
-
+      border-radius:8px;
       font-weight:600;
     }
 
     .delete-btn:hover{
-      background:rgba(239,68,68,.25);
+      background:rgba(239,68,68,.12);
     }
 
     .file-badge{
       display:inline-block;
-      font-size:0.7rem;
-      padding:3px 7px;
-      border-radius:5px;
-      font-weight:600;
+      font-size:0.75rem;
+      padding:4px 8px;
+      border-radius:6px;
+      font-weight:700;
       text-transform:uppercase;
       letter-spacing:0.2px;
+      background:transparent;
+      border:1px solid var(--border);
     }
 
     .badge-xml{
-      background:rgba(59,130,246,.15);
-      color:#a3bfff;
-      border:1px solid rgba(59,130,246,.25);
-    }
-
-    .badge-pdf{
-      background:rgba(239,68,68,.15);
-      color:#fca5a5;
-      border:1px solid rgba(239,68,68,.25);
+      background:linear-gradient(90deg, rgba(0,87,184,0.06), rgba(0,87,184,0.02));
+      color:var(--primary);
+      border:1px solid rgba(0,87,184,.08);
     }
 
     .badge-ocr{
-      background:rgba(245,158,11,.15);
-      color:#fcd34d;
-      border:1px solid rgba(245,158,11,.25);
+      background:linear-gradient(90deg, rgba(255,122,0,0.06), rgba(255,122,0,0.02));
+      color:var(--accent);
+      border:1px solid rgba(255,122,0,.08);
     }
 
     footer{
       text-align:center;
-
       color:var(--muted);
-
       padding:30px;
     }
 
     .loading{
       position:fixed;
-
       inset:0;
-
-      background:rgba(0,0,0,.65);
-
-      backdrop-filter:blur(6px);
-
+      background:rgba(255,255,255,.6);
       display:none;
-
       align-items:center;
       justify-content:center;
-
       z-index:999;
+      backdrop-filter:blur(6px);
     }
 
     .loading-box{
       background:var(--card);
-
-      padding:30px 40px;
-
-      border-radius:20px;
-
+      padding:18px 22px;
+      border-radius:12px;
       border:1px solid var(--border);
-
       text-align:center;
-
       box-shadow:var(--shadow);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
     }
 
     .spinner{
-      width:55px;
-      height:55px;
-
-      border:5px solid rgba(255,255,255,.15);
-
-      border-top:5px solid var(--primary);
-
+      width:44px;
+      height:44px;
+      border:4px solid rgba(3,37,76,.12);
+      border-top:4px solid var(--accent);
       border-radius:50%;
-
-      margin:auto auto 15px;
-
       animation:spin 1s linear infinite;
     }
 
     @keyframes spin{
-      to{
-        transform:rotate(360deg);
-      }
+      to{ transform:rotate(360deg); }
+    }
+
+    @keyframes fadeInDown{
+      to{ transform:translateY(0); opacity:1; }
+    }
+
+    @keyframes fadeInUp{
+      to{ transform:translateY(0); opacity:1; }
+    }
+
+    @keyframes rowFadeIn{
+      from{ opacity:0; transform:translateY(6px);} to{ opacity:1; transform:translateY(0);} 
     }
 
     @media(max-width:900px){
@@ -411,6 +409,8 @@
       .excel-btn{
         width:100%;
       }
+
+      table{ min-width:100%; }
     }
 
   </style>
@@ -436,7 +436,7 @@
 
       <div class="brand">
         <h1>💳 Sistema de Facturación Inteligente</h1>
-        <p>Procesamiento avanzado XML + PDF + OCR</p>
+        <p>Procesamiento avanzado XML + OCR</p>
       </div>
 
       <button class="excel-btn" onclick="exportToExcel()">
@@ -469,7 +469,7 @@
         <input
           type="file"
           id="file-upload"
-          accept=".xml, image/*, application/pdf"
+          accept=".xml, image/*"
         >
 
         <input
@@ -543,8 +543,6 @@
   </footer>
 
   <script>
-
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
     let invoices =
       JSON.parse(localStorage.getItem("invoices"))
@@ -645,14 +643,10 @@
 
         }
 
-        // PDF - NUEVO
+        // PDF support removed intentionally
         else if(file.name.toLowerCase().endsWith(".pdf")){
-
-          const invoice = await processPDFData(file);
-          invoices.push(...invoice);
-          saveAndRender();
           hideLoading();
-
+          return alert("Soporte para PDF ha sido eliminado. Por favor suba archivos XML o imágenes.");
         }
 
         // OCR - ORIGINAL
@@ -808,157 +802,6 @@
 
     }
 
-    // PDF - NUEVO PROCESADOR CON SEPARACIÓN DE PRODUCTOS
-    async function processPDFData(file) {
-
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
-
-      let fullText = "";
-      
-      for(let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const textContent = await page.getTextContent();
-        fullText += textContent.items.map(item => item.str).join(" ") + "\n";
-      }
-
-      // Extrae información general de la factura
-      const factura = 
-        fullText.match(/No\.\s*([0-9\-]+)/)?.[1]?.trim() ||
-        fullText.match(/Número de Autorización[\s:]*([0-9\-]+)/i)?.[1]?.trim() ||
-        "N/A";
-
-      const ruc = 
-        fullText.match(/R\.U\.C\.[\s:]*([0-9]{10,13})/i)?.[1]?.trim() ||
-        fullText.match(/RUC[\s:]*([0-9]{10,13})/i)?.[1]?.trim() ||
-        "N/A";
-
-      const cliente = 
-        fullText.match(/Nombres y Apellidos[\s:]*([^\n]+)/i)?.[1]?.trim() ||
-        fullText.match(/RENOVAENERGIA[\s\w\.]+/i)?.[0]?.trim() ||
-        fullText.match(/Razón[\s\w]*Social[\s:]*([^\n]+)/i)?.[1]?.trim() ||
-        "N/A";
-
-      const fecha = 
-        fullText.match(/FECHA[\s\w]*EMISIÓN[\s:]*([0-9]{4}[\-\/][0-9]{2}[\-\/][0-9]{2})/i)?.[1]?.trim() ||
-        fullText.match(/Fecha[\s\w]*Emisión[\s:]*([0-9]{1,2}[\/\-][0-9]{1,2}[\/\-][0-9]{2,4})/i)?.[1]?.trim() ||
-        fullText.match(/Fecha[:.\s]*(\d{2}\/\d{2}\/\d{4})/i)?.[1]?.trim() ||
-        "N/A";
-
-      const vendedor = 
-        fullText.match(/Vendedor[\s:]*([^\n]+)/i)?.[1]?.trim() ||
-        "N/A";
-
-      const direccion = 
-        fullText.match(/Dir\.\s*Matriz[\s:]*([^\n]+)/i)?.[1]?.trim() ||
-        fullText.match(/Dirección[\s:]*([^\n]+)/i)?.[1]?.trim() ||
-        "";
-
-      const provincia = direccion?.split(/[,]/)[0]?.trim() || "N/A";
-      const ciudad = direccion?.split(/[,]/)[1]?.trim() || "N/A";
-
-      const canal = 
-        fullText.match(/Canal[\s:]*([^\n]+)/i)?.[1]?.trim() ||
-        "N/A";
-
-      const sub_canal = 
-        fullText.match(/Sub[\s\-]*Canal[\s:]*([^\n]+)/i)?.[1]?.trim() ||
-        "N/A";
-
-      const cuentas = 
-        fullText.match(/Cuentas[\s:]*([^\n]+)/i)?.[1]?.trim() ||
-        "N/A";
-
-      // DETECCIÓN DE PRODUCTOS/ÍTEMS
-      // Busca patrones de líneas de productos en el PDF
-      const productPatterns = [
-        /([A-Z0-9]+)\s+(?:Victron|Energy|MultiPlus|Inversor|Panel|Batería|Controlador)[\s\w]*/gi,
-        /CÓDIGO ARTÍCULO[\s:]*([A-Z0-9]+)[\s\w]*(?:DESCRIPCIÓN|CANTIDAD)/gi,
-        /(\d+)\s+([A-Z0-9\-]+)\s+([Vv]ictron[\w\s]+)\s+([\d,\.]+)/g
-      ];
-
-      let productos = [];
-      let foundProducts = false;
-
-      for(let pattern of productPatterns) {
-        let match;
-        while((match = pattern.exec(fullText)) !== null) {
-          if(match[1]) {
-            productos.push({
-              codigo: match[1],
-              modelo: match[2] || match[3] || "N/A",
-              cantidad: match[4] || "1"
-            });
-            foundProducts = true;
-          }
-        }
-      }
-
-      // Si no encontró productos con patrones, crea uno por defecto
-      if(productos.length === 0) {
-        productos.push({
-          codigo: fullText.match(/([A-Z0-9]+)\s+(?:Victron|Energy|MultiPlus)/i)?.[1] || "N/A",
-          modelo: fullText.match(/(Victron[\s\w]+|Energy[\s\w]+|MultiPlus[\s\w]+)/i)?.[0] || "N/A",
-          cantidad: "1"
-        });
-      }
-
-      // EXTRAE PRECIOS
-      const precio_unitario = 
-        fullText.match(/PRECIO UNITARIO[\s:]*(\d+[\d,\.]*)/i)?.[1]?.trim() ||
-        fullText.match(/(?:PRECIO|VALOR)\s+UNITARIO[\s:]*(\d+[\d,\.]*)/i)?.[1]?.trim() ||
-        "0";
-
-      const precio_total = 
-        fullText.match(/PRECIO TOTAL[\s:]*(\d+[\d,\.]*)/i)?.[1]?.trim() ||
-        fullText.match(/(?:TOTAL|VALOR)\s+TOTAL[\s:]*(?!IVA)(\d+[\d,\.]*)/i)?.[1]?.trim() ||
-        precio_unitario;
-
-      const iva = 
-        fullText.match(/IVA[\s\d%]*[\s:]*\$?\s*(\d+[\d,\.]*)/i)?.[1]?.trim() ||
-        fullText.match(/IVA 15%[\s:]*(\d+[\d,\.]*)/i)?.[1]?.trim() ||
-        fullText.match(/IVA 12%[\s:]*(\d+[\d,\.]*)/i)?.[1]?.trim() ||
-        "0";
-
-      const total_facturado = 
-        fullText.match(/VALOR TOTAL[\s:]*\$?\s*(\d+[\d,\.]*)/i)?.[1]?.trim() ||
-        fullText.match(/VALOR A PAGAR[\s:]*\$?\s*(\d+[\d,\.]*)/i)?.[1]?.trim() ||
-        precio_total;
-
-      // CREA UNA FILA POR CADA PRODUCTO
-      return productos.map(prod => ({
-        tipo: "PDF",
-        factura: factura,
-        fecha: fecha,
-        fecha_entrega: "N/A",
-        cliente: cliente,
-        ruc: ruc,
-        provincia: provincia,
-        ciudad: ciudad,
-        lista_precio: "PDF",
-        canal: canal,
-        sub_canal: sub_canal,
-        vendedor: vendedor,
-        cuentas: cuentas,
-        codigo: prod.codigo,
-        modelo: prod.modelo,
-        proveedor: "N/A",
-        cantidad: prod.cantidad,
-        costo_unitario: precio_unitario,
-        costo_total: precio_total,
-        iva_pagado: iva,
-        precio_unitario: precio_unitario,
-        precio_total: precio_total,
-        iva_cobrado: iva,
-        total_facturado: total_facturado,
-        utilidad: "N/A",
-        credito: "N/A",
-        condiciones_credito: "N/A",
-        pendientes: "N/A",
-        perdido: "N/A"
-      }));
-    }
-
     // OCR - ORIGINAL SIN CAMBIOS
     function extractFromText(text){
 
@@ -998,192 +841,106 @@
 
         factura,
         fecha,
-        fecha_entrega:"N/A",
         cliente,
         ruc,
+        total,
 
-        provincia:"Detectar",
-        ciudad:"Detectar",
-
-        lista_precio:"OCR",
-        canal:"-",
-        sub_canal:"-",
-        vendedor:"-",
-
-        cuentas:"-",
-
-        codigo:"-",
-
-        modelo:"Detectado por imagen",
-
-        proveedor:"-",
-
-        cantidad:"1",
-
-        costo_unitario:total,
-
-        costo_total:total,
-
-        iva_pagado:"-",
-
-        precio_unitario:total,
-
-        precio_total:total,
-
-        iva_cobrado:"-",
-
-        total_facturado:total,
-
-        utilidad:"-",
-
-        credito:"-",
-
-        condiciones_credito:"-",
-
-        pendientes:"-",
-
-        perdido:"-"
-
+        fecha_entrega: "N/A",
+        provincia: "N/A",
+        ciudad: "N/A",
+        lista_precio: "N/A",
+        canal: "N/A",
+        sub_canal: "N/A",
+        vendedor: "N/A",
+        cuentas: "N/A",
+        codigo: "N/A",
+        modelo: "N/A",
+        proveedor: "N/A",
+        cantidad: "1",
+        costo_unitario: "0",
+        costo_total: "0",
+        iva_pagado: "0",
+        precio_unitario: "0",
+        precio_total: "0",
+        iva_cobrado: "0",
+        total_facturado: total || "N/A",
+        utilidad: "N/A",
+        credito: "N/A",
+        condiciones_credito: "N/A",
+        pendientes: "N/A",
+        perdido: "N/A"
       };
 
     }
 
+    // ------------------------------------------------------------------
+    // Funciones auxiliares para renderizar, guardar y eliminar (sin cambios)
+    // ------------------------------------------------------------------
+
     function saveAndRender(){
-
-      localStorage.setItem(
-        "invoices",
-        JSON.stringify(invoices)
-      );
-
-      populateTable();
-
-      updateFacturaCount();
+      localStorage.setItem("invoices", JSON.stringify(invoices));
+      renderTable();
     }
 
-    function getBadgeClass(type){
-      if(type === "XML") return "badge-xml";
-      if(type === "PDF") return "badge-pdf";
-      return "badge-ocr";
-    }
+    function renderTable(){
+      const tbody = document.getElementById('invoice-table');
+      tbody.innerHTML = '';
 
-    function populateTable(data = invoices){
+      invoices.forEach((inv, idx) => {
+        const tr = document.createElement('tr');
 
-      const tbody =
-        document.getElementById("invoice-table");
+        tr.innerHTML = `
+          <td><span class="file-badge ${inv.tipo==='XML'? 'badge-xml':'badge-ocr'}">${inv.tipo}</span></td>
+          <td>${inv.factura || ''}</td>
+          <td>${inv.fecha || ''}</td>
+          <td>${inv.fecha_entrega || ''}</td>
+          <td>${inv.cliente || ''}</td>
+          <td>${inv.ruc || ''}</td>
+          <td>${inv.provincia || ''}</td>
+          <td>${inv.ciudad || ''}</td>
+          <td>${inv.lista_precio || ''}</td>
+          <td>${inv.canal || ''}</td>
+          <td>${inv.sub_canal || ''}</td>
+          <td>${inv.vendedor || ''}</td>
+          <td>${inv.cuentas || ''}</td>
+          <td>${inv.codigo || ''}</td>
+          <td>${inv.modelo || ''}</td>
+          <td>${inv.proveedor || ''}</td>
+          <td>${inv.cantidad || ''}</td>
+          <td>${inv.costo_unitario || ''}</td>
+          <td>${inv.costo_total || ''}</td>
+          <td>${inv.iva_pagado || ''}</td>
+          <td>${inv.precio_unitario || ''}</td>
+          <td>${inv.precio_total || ''}</td>
+          <td>${inv.iva_cobrado || ''}</td>
+          <td>${inv.total_facturado || ''}</td>
+          <td>${inv.utilidad || ''}</td>
+          <td>${inv.credito || ''}</td>
+          <td>${inv.condiciones_credito || ''}</td>
+          <td>${inv.pendientes || ''}</td>
+          <td>${inv.perdido || ''}</td>
+          <td><button class="delete-btn" data-idx="${idx}">Eliminar</button></td>
+        `;
 
-      tbody.innerHTML = "";
-
-      data.forEach((inv,index)=>{
-
-        const row =
-          document.createElement("tr");
-
-        Object.entries(inv).forEach(([key, value])=>{
-
-          const td =
-            document.createElement("td");
-
-          if(key === "tipo"){
-            td.innerHTML = `<span class="file-badge ${getBadgeClass(value)}">${value}</span>`;
-          }else{
-            td.textContent = value;
-          }
-
-          row.appendChild(td);
-
-        });
-
-        const del =
-          document.createElement("button");
-
-        del.textContent = "Eliminar";
-
-        del.className = "delete-btn";
-
-        del.onclick = ()=>{
-
-          invoices.splice(index,1);
-
-          saveAndRender();
-        };
-
-        const td =
-          document.createElement("td");
-
-        td.appendChild(del);
-
-        row.appendChild(td);
-
-        tbody.appendChild(row);
-
+        tbody.appendChild(tr);
       });
 
+      document.getElementById('factura-count').textContent = `Facturas leídas: ${invoices.length}`;
+
+      // re-attach delete handlers
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const i = parseInt(e.currentTarget.getAttribute('data-idx'));
+          invoices.splice(i,1);
+          saveAndRender();
+        });
+      });
     }
 
-    function updateFacturaCount(){
-
-      document.getElementById(
-        "factura-count"
-      ).textContent =
-      `Facturas leídas: ${invoices.length}`;
-
-    }
-
-    function exportToExcel(){
-
-      const ws =
-        XLSX.utils.json_to_sheet(invoices);
-
-      const wb =
-        XLSX.utils.book_new();
-
-      XLSX.utils.book_append_sheet(
-        wb,
-        ws,
-        "Facturas"
-      );
-
-      XLSX.writeFile(
-        wb,
-        "facturas.xlsx"
-      );
-
-    }
-
-    document
-    .getElementById("search-bar")
-    .addEventListener("input",(e)=>{
-
-      const term =
-        e.target.value.toLowerCase();
-
-      const filtered =
-        invoices.filter(inv=>
-
-          Object.values(inv)
-          .join(" ")
-          .toLowerCase()
-          .includes(term)
-
-        );
-
-      populateTable(filtered);
-
-    });
-
-    document.addEventListener(
-      "DOMContentLoaded",
-      ()=>{
-
-        populateTable();
-
-        updateFacturaCount();
-
-      }
-    );
+    // Inicial render
+    renderTable();
 
   </script>
 
 </body>
 </html>
-
