@@ -906,19 +906,45 @@ async function copyAsExcel(){
     );
   }
 
+async function copyAsExcel(){
+
+  if(invoices.length === 0){
+
+    return alert(
+      "No hay datos para copiar."
+    );
+  }
+
   const headers =
     Object.keys(invoices[0]);
 
   let text =
-    headers.join("\\t") + "\\n";
+    headers.join("\t") + "\n";
 
   invoices.forEach(inv=>{
 
     text +=
       Object.values(inv)
-      .join("\\t") + "\\n";
+      .join("\t") + "\n";
 
   });
+
+  try{
+
+    await navigator.clipboard.writeText(text);
+
+    alert(
+      "Copiado correctamente para Excel."
+    );
+
+  }catch(err){
+
+    console.error(err);
+
+    alert(
+      "No se pudo copiar."
+    );
+  }
 
   try{
 
