@@ -909,13 +909,30 @@ async function processPDFData(file) {
   // =========================
 
   const productos = [];
+const lines = fullText.split("\n");
 
-const productRegex =
-/(\d+,\d+)\s+([A-Z0-9\.]+)\s+(.*?)\s+(\d+,\d{4})\s+0,00\s+([\d\.\,]+)/gs;
+for(let i = 0; i < lines.length; i++){
 
-  let match;
+  const line = lines[i];
 
-  while((match = productRegex.exec(fullText)) !== null){
+  const match =
+    line.match(
+      /^(\d+,\d+)\s+([A-Z0-9\.]+)\s+(.*)\s+(\d+,\d{4})\s+0,00\s+([\d\.\,]+)$/
+    );
+
+  if(match){
+
+    let modelo = match[3];
+
+    // Si la siguiente línea parece continuación del modelo
+    if(
+      lines[i + 1] &&
+      !lines[i + 1].match(/^\d+,\d+/) &&
+      !lines[i + 1].includes("SUBTOTAL")
+    ){
+
+      modelo += " " + lines[i + 1].trim();
+    }
 
     productos.push({
 
@@ -925,11 +942,10 @@ const productRegex =
       codigo:
         match[2],
 
-      mmodelo:
-  match[3]
-  .replace(/\n/g," ")
-  .replace(/\s+/g," ")
-  .trim(),
+      modelo:
+        modelo
+        .replace(/\s+/g," ")
+        .trim(),
 
       precio_unitario:
         match[4],
@@ -940,6 +956,7 @@ const productRegex =
     });
 
   }
+
 
   // =========================
   // FALLBACK
