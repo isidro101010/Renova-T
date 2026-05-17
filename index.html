@@ -479,6 +479,10 @@ footer{
       Exportar Excel
 
     </button>
+    
+    <button class="excel-btn" onclick="copyAsExcel()">
+  Copiar
+</button>
 
   </div>
 
@@ -875,10 +879,10 @@ function updateFacturaCount(){
 function exportToExcel(){
 
   const ws =
-  XLSX.utils.json_to_sheet(invoices);
+    XLSX.utils.json_to_sheet(invoices);
 
   const wb =
-  XLSX.utils.book_new();
+    XLSX.utils.book_new();
 
   XLSX.utils.book_append_sheet(
     wb,
@@ -890,6 +894,48 @@ function exportToExcel(){
     wb,
     "facturas.xlsx"
   );
+
+}
+
+async function copyAsExcel(){
+
+  if(invoices.length === 0){
+
+    return alert(
+      "No hay datos para copiar."
+    );
+  }
+
+  const headers =
+    Object.keys(invoices[0]);
+
+  let text =
+    headers.join("\\t") + "\\n";
+
+  invoices.forEach(inv=>{
+
+    text +=
+      Object.values(inv)
+      .join("\\t") + "\\n";
+
+  });
+
+  try{
+
+    await navigator.clipboard.writeText(text);
+
+    alert(
+      "Información copiada correctamente."
+    );
+
+  }catch(err){
+
+    console.error(err);
+
+    alert(
+      "No se pudo copiar."
+    );
+  }
 
 }
 
