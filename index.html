@@ -436,7 +436,7 @@
 
       <div class="brand">
         <h1> Facturas </h1>
-        <p>Pon tu factura
+        <p>Pon tu factura</p>
       </div>
 
       <button class="excel-btn" onclick="exportToExcel()">
@@ -834,7 +834,7 @@ async function processPDFData(file) {
     const textContent =
       await page.getTextContent();
 
-    const lines = [];
+    const pageLines = [];
 
     let lastY = null;
     let currentLine = "";
@@ -850,7 +850,7 @@ async function processPDFData(file) {
       }else{
 
         if(currentLine){
-          lines.push(currentLine);
+          pageLines.push(currentLine);
         }
 
         currentLine = item.str;
@@ -861,10 +861,10 @@ async function processPDFData(file) {
     });
 
     if(currentLine){
-      lines.push(currentLine);
+      pageLines.push(currentLine);
     }
 
-    fullText += lines.join("\n") + "\n";
+    fullText += pageLines.join("\n") + "\n";
   }
 
   console.log(fullText);
@@ -909,54 +909,55 @@ async function processPDFData(file) {
   // =========================
 
   const productos = [];
-const lines = fullText.split("\n");
+  const lines = fullText.split("\n");
 
-for(let i = 0; i < lines.length; i++){
+  for(let i = 0; i < lines.length; i++){
 
-  const line = lines[i];
+    const line = lines[i];
 
-  const match =
-    line.match(
-      /^(\d+,\d+)\s+([A-Z0-9\.]+)\s+(.*)\s+(\d+,\d{4})\s+0,00\s+([\d\.\,]+)$/
-    );
+    const match =
+      line.match(
+        /^(\d+,\d+)\s+([A-Z0-9\.]+)\s+(.*)\s+(\d+,\d{4})\s+0,00\s+([\d\.\,]+)$/
+      );
 
-  if(match){
+    if(match){
 
-    let modelo = match[3];
+      let modelo = match[3];
 
-    // Si la siguiente línea parece continuación del modelo
-    if(
-      lines[i + 1] &&
-      !lines[i + 1].match(/^\d+,\d+/) &&
-      !lines[i + 1].includes("SUBTOTAL")
-    ){
+      // Si la siguiente línea parece continuación del modelo
+      if(
+        lines[i + 1] &&
+        !lines[i + 1].match(/^\d+,\d+/) &&
+        !lines[i + 1].includes("SUBTOTAL")
+      ){
 
-      modelo += " " + lines[i + 1].trim();
+        modelo += " " + lines[i + 1].trim();
+      }
+
+      productos.push({
+
+        cantidad:
+          match[1],
+
+        codigo:
+          match[2],
+
+        modelo:
+          modelo
+          .replace(/\s+/g," ")
+          .trim(),
+
+        precio_unitario:
+          match[4],
+
+        precio_total:
+          match[5]
+
+      });
+
     }
 
-    productos.push({
-
-      cantidad:
-        match[1],
-
-      codigo:
-        match[2],
-
-      modelo:
-        modelo
-        .replace(/\s+/g," ")
-        .trim(),
-
-      precio_unitario:
-        match[4],
-
-      precio_total:
-        match[5]
-
-    });
-
   }
-
 
   // =========================
   // FALLBACK
@@ -1002,7 +1003,7 @@ for(let i = 0; i < lines.length; i++){
 
     ciudad:"N/A",
 
-    lista_precio:"PDF",
+    lista_precio:"N/A",
 
     canal:"N/A",
 
@@ -1012,27 +1013,27 @@ for(let i = 0; i < lines.length; i++){
 
     cuentas:"N/A",
 
-    codigo:prod.codigo,
+    codigo: prod.codigo,
 
-    modelo:prod.modelo,
+    modelo: prod.modelo,
 
     proveedor:"N/A",
 
-    cantidad:prod.cantidad,
+    cantidad: prod.cantidad,
 
-    costo_unitario:prod.precio_unitario,
+    costo_unitario: prod.precio_unitario,
 
-    costo_total:prod.precio_total,
+    costo_total: prod.precio_total,
 
-    iva_pagado:iva,
+    iva_pagado: iva,
 
-    precio_unitario:prod.precio_unitario,
+    precio_unitario: prod.precio_unitario,
 
-    precio_total:prod.precio_total,
+    precio_total: prod.precio_total,
 
-    iva_cobrado:iva,
+    iva_cobrado: iva,
 
-    total_facturado,
+    total_facturado: total_facturado,
 
     utilidad:"N/A",
 
@@ -1048,228 +1049,167 @@ for(let i = 0; i < lines.length; i++){
 
 }
 
-    // OCR - ORIGINAL SIN CAMBIOS
-    function extractFromText(text){
-
-      const factura =
-        text.match(
-          /Factura\s*No[:.\s]*([A-Z0-9\-]+)/i
-        )?.[1] || "No detectado";
-
-      const cliente =
-        text.match(
-          /Cliente[:.\s]*(.+)/i
-        )?.[1]
-        ?.split("\n")[0]
-        || "No detectado";
-
-      const ruc =
-        text.match(
-          /RUC[:.\s]*(\d{10,13})/i
-        )?.[1]
-        || "No detectado";
-
-      const fecha =
-        text.match(
-          /Fecha[:.\s]*(\d{2}\/\d{2}\/\d{4})/i
-        )?.[1]
-        || "No detectado";
-
-      const total =
-        text.match(
-          /Total[:.\s]*\$?\s*([\d.,]+)/i
-        )?.[1]
-        || "No detectado";
-
-      return {
-
-        tipo:"OCR",
-
-        factura,
-        fecha,
-        fecha_entrega:"N/A",
-        cliente,
-        ruc,
-
-        provincia:"Detectar",
-        ciudad:"Detectar",
-
-        lista_precio:"OCR",
-        canal:"-",
-        sub_canal:"-",
-        vendedor:"-",
-
-        cuentas:"-",
-
-        codigo:"-",
-
-        modelo:"Detectado por imagen",
-
-        proveedor:"-",
-
-        cantidad:"1",
-
-        costo_unitario:total,
-
-        costo_total:total,
-
-        iva_pagado:"-",
-
-        precio_unitario:total,
-
-        precio_total:total,
-
-        iva_cobrado:"-",
-
-        total_facturado:total,
-
-        utilidad:"-",
-
-        credito:"-",
-
-        condiciones_credito:"-",
-
-        pendientes:"-",
-
-        perdido:"-"
-
-      };
-
-    }
+    // -------------------------
+    // FUNCIONES AUXILIARES
+    // -------------------------
 
     function saveAndRender(){
-
-      localStorage.setItem(
-        "invoices",
-        JSON.stringify(invoices)
-      );
-
-      populateTable();
-
-      updateFacturaCount();
+      localStorage.setItem("invoices", JSON.stringify(invoices));
+      renderInvoices();
     }
 
-    function getBadgeClass(type){
-      if(type === "XML") return "badge-xml";
-      if(type === "PDF") return "badge-pdf";
-      return "badge-ocr";
-    }
-
-    function populateTable(data = invoices){
-
-      const tbody =
-        document.getElementById("invoice-table");
-
+    function renderInvoices(){
+      const tbody = document.getElementById("invoice-table");
       tbody.innerHTML = "";
 
-      data.forEach((inv,index)=>{
+      invoices.forEach((inv, idx)=>{
+        const tr = document.createElement("tr");
 
-        const row =
-          document.createElement("tr");
+        function td(value){
+          const cell = document.createElement("td");
+          cell.textContent = value === undefined || value === null ? "" : value;
+          return cell;
+        }
 
-        Object.entries(inv).forEach(([key, value])=>{
+        tr.appendChild(td(inv.tipo));
+        tr.appendChild(td(inv.factura));
+        tr.appendChild(td(inv.fecha));
+        tr.appendChild(td(inv.fecha_entrega));
+        tr.appendChild(td(inv.cliente));
+        tr.appendChild(td(inv.ruc));
+        tr.appendChild(td(inv.provincia));
+        tr.appendChild(td(inv.ciudad));
+        tr.appendChild(td(inv.lista_precio));
+        tr.appendChild(td(inv.canal));
+        tr.appendChild(td(inv.sub_canal));
+        tr.appendChild(td(inv.vendedor));
+        tr.appendChild(td(inv.cuentas));
+        tr.appendChild(td(inv.codigo));
+        tr.appendChild(td(inv.modelo));
+        tr.appendChild(td(inv.proveedor));
+        tr.appendChild(td(inv.cantidad));
+        tr.appendChild(td(inv.costo_unitario));
+        tr.appendChild(td(inv.costo_total));
+        tr.appendChild(td(inv.iva_pagado));
+        tr.appendChild(td(inv.precio_unitario));
+        tr.appendChild(td(inv.precio_total));
+        tr.appendChild(td(inv.iva_cobrado));
+        tr.appendChild(td(inv.total_facturado));
+        tr.appendChild(td(inv.utilidad));
+        tr.appendChild(td(inv.credito));
+        tr.appendChild(td(inv.condiciones_credito));
+        tr.appendChild(td(inv.pendientes));
+        tr.appendChild(td(inv.perdido));
 
-          const td =
-            document.createElement("td");
-
-          if(key === "tipo"){
-            td.innerHTML = `<span class="file-badge ${getBadgeClass(value)}">${value}</span>`;
-          }else{
-            td.textContent = value;
-          }
-
-          row.appendChild(td);
-
+        const delTd = document.createElement("td");
+        const delBtn = document.createElement("button");
+        delBtn.className = "delete-btn";
+        delBtn.textContent = "Eliminar";
+        delBtn.addEventListener("click", ()=>{
+          deleteInvoice(idx);
         });
+        delTd.appendChild(delBtn);
+        tr.appendChild(delTd);
 
-        const del =
-          document.createElement("button");
-
-        del.textContent = "Eliminar";
-
-        del.className = "delete-btn";
-
-        del.onclick = ()=>{
-
-          invoices.splice(index,1);
-
-          saveAndRender();
-        };
-
-        const td =
-          document.createElement("td");
-
-        td.appendChild(del);
-
-        row.appendChild(td);
-
-        tbody.appendChild(row);
-
+        tbody.appendChild(tr);
       });
 
+      document.getElementById("factura-count").textContent = `Facturas leídas: ${invoices.length}`;
     }
 
-    function updateFacturaCount(){
-
-      document.getElementById(
-        "factura-count"
-      ).textContent =
-      `Facturas leídas: ${invoices.length}`;
-
+    function deleteInvoice(index){
+      if(index >= 0 && index < invoices.length){
+        invoices.splice(index,1);
+        saveAndRender();
+      }
     }
 
     function exportToExcel(){
+      if(!invoices || invoices.length === 0){
+        return alert("No hay facturas para exportar.");
+      }
 
-      const ws =
-        XLSX.utils.json_to_sheet(invoices);
+      // Crear una copia con claves ordenadas para mejor estructura
+      const data = invoices.map(i=>({
+        Tipo: i.tipo,
+        Factura: i.factura,
+        Fecha: i.fecha,
+        Fecha_Entrega: i.fecha_entrega,
+        Cliente: i.cliente,
+        RUC: i.ruc,
+        Provincia: i.provincia,
+        Ciudad: i.ciudad,
+        Lista_Precio: i.lista_precio,
+        Canal: i.canal,
+        Sub_Canal: i.sub_canal,
+        Vendedor: i.vendedor,
+        Cuentas: i.cuentas,
+        Codigo: i.codigo,
+        Modelo: i.modelo,
+        Proveedor: i.proveedor,
+        Cantidad: i.cantidad,
+        Costo_Unitario: i.costo_unitario,
+        Costo_Total: i.costo_total,
+        IVA_Pagado: i.iva_pagado,
+        Precio_Unitario: i.precio_unitario,
+        Precio_Total: i.precio_total,
+        IVA_Cobrado: i.iva_cobrado,
+        Total_Facturado: i.total_facturado,
+        Utilidad: i.utilidad,
+        Credito: i.credito,
+        Condiciones_Credito: i.condiciones_credito,
+        Pendientes: i.pendientes,
+        Perdido: i.perdido
+      }));
 
-      const wb =
-        XLSX.utils.book_new();
-
-      XLSX.utils.book_append_sheet(
-        wb,
-        ws,
-        "Facturas"
-      );
-
-      XLSX.writeFile(
-        wb,
-        "facturas.xlsx"
-      );
-
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Facturas");
+      XLSX.writeFile(wb, `facturas_${new Date().toISOString().slice(0,10)}.xlsx`);
     }
 
-    document
-    .getElementById("search-bar")
-    .addEventListener("input",(e)=>{
+    // OCR simple: extrae algunos campos básicos del texto reconocido
+    function extractFromText(text){
+      const factura = text.match(/\d{3}-\d{3}-\d+/)?.[0] || "N/A";
+      const fecha = text.match(/Fecha\s*[:\-]?\s*([0-9\/\-]+)/i)?.[1] || "N/A";
+      const ruc = text.match(/\b(\d{10,13})\b/)?.[1] || "N/A";
+      const cliente = text.match(/(Razón Social|Cliente|Nombre)[:\-\n]?\s*([^\n]+)/i)?.[2]?.trim() || "N/A";
 
-      const term =
-        e.target.value.toLowerCase();
+      return {
+        tipo: "OCR",
+        factura,
+        fecha,
+        fecha_entrega: "N/A",
+        cliente,
+        ruc,
+        provincia: "N/A",
+        ciudad: "N/A",
+        lista_precio: "N/A",
+        canal: "N/A",
+        sub_canal: "N/A",
+        vendedor: "N/A",
+        cuentas: "N/A",
+        codigo: "N/A",
+        modelo: "N/A",
+        proveedor: "N/A",
+        cantidad: "1",
+        costo_unitario: "0",
+        costo_total: "0",
+        iva_pagado: "0",
+        precio_unitario: "0",
+        precio_total: "0",
+        iva_cobrado: "0",
+        total_facturado: "0",
+        utilidad: "N/A",
+        credito: "N/A",
+        condiciones_credito: "N/A",
+        pendientes: "N/A",
+        perdido: "N/A"
+      };
+    }
 
-      const filtered =
-        invoices.filter(inv=>
-
-          Object.values(inv)
-          .join(" ")
-          .toLowerCase()
-          .includes(term)
-
-        );
-
-      populateTable(filtered);
-
-    });
-
-    document.addEventListener(
-      "DOMContentLoaded",
-      ()=>{
-
-        populateTable();
-
-        updateFacturaCount();
-
-      }
-    );
+    // Inicializar render
+    renderInvoices();
 
   </script>
 
