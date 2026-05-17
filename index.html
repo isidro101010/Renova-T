@@ -3,8 +3,8 @@
 
 <head>
 
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Sistema Profesional de Facturación</title>
 
@@ -558,9 +558,11 @@ document
 
   e.preventDefault();
 
+  const fileInput =
+  document.getElementById("file-upload");
+
   const file =
-  document.getElementById("file-upload")
-  .files[0];
+  fileInput.files[0];
 
   if(!file){
 
@@ -604,9 +606,32 @@ document
         const invoice =
         processXMLData(inner);
 
+        const facturaNueva =
+        invoice[0]?.factura;
+
+        const yaExiste =
+        invoices.some(
+          inv => inv.factura === facturaNueva
+        );
+
+        if(yaExiste){
+
+          alert(
+            "Esta factura ya fue subida."
+          );
+
+          hideLoading();
+
+          fileInput.value = "";
+
+          return;
+        }
+
         invoices.push(...invoice);
 
         saveAndRender();
+
+        fileInput.value = "";
 
       }else{
 
@@ -625,6 +650,7 @@ document
     }
 
     hideLoading();
+
   };
 
   reader.readAsText(file);
@@ -859,8 +885,21 @@ async function copyAsExcel(){
   invoices.forEach(inv=>{
 
     text +=
-      Object.values(inv)
-      .join("\t") + "\n";
+    Object.values(inv)
+    .map(value => {
+
+      if(
+        typeof value === "string" &&
+        /^0+\d+$/.test(value)
+      ){
+
+        return `="${value}"`;
+      }
+
+      return value;
+
+    })
+    .join("\t") + "\n";
 
   });
 
