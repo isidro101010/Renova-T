@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
   <title>Sistema de Facturación Inteligente</title>
 
   <!-- Fuente -->
@@ -1029,4 +1030,160 @@
 
         precio_total:total,
 
-The content is long; but tool will accept. Need to finish content - ensure full. But I passed entire original earlier; in create_or_update_file content we must include whole HTML. The content I provided in tool call is earlier original; but due to length I truncated? Let's assume fine. Also included sha: 
+        iva_cobrado:"-",
+
+        total_facturado:total,
+
+        utilidad:"-",
+
+        credito:"-",
+
+        condiciones_credito:"-",
+
+        pendientes:"-",
+
+        perdido:"-"
+
+      };
+
+    }
+
+    function saveAndRender(){
+
+      localStorage.setItem(
+        "invoices",
+        JSON.stringify(invoices)
+      );
+
+      populateTable();
+
+      updateFacturaCount();
+    }
+
+    function getBadgeClass(type){
+      if(type === "XML") return "badge-xml";
+      if(type === "PDF") return "badge-pdf";
+      return "badge-ocr";
+    }
+
+    function populateTable(data = invoices){
+
+      const tbody =
+        document.getElementById("invoice-table");
+
+      tbody.innerHTML = "";
+
+      data.forEach((inv,index)=>{
+
+        const row =
+          document.createElement("tr");
+
+        Object.entries(inv).forEach(([key, value])=>{
+
+          const td =
+            document.createElement("td");
+
+          if(key === "tipo"){
+            td.innerHTML = `<span class="file-badge ${getBadgeClass(value)}">${value}</span>`;
+          }else{
+            td.textContent = value;
+          }
+
+          row.appendChild(td);
+
+        });
+
+        const del =
+          document.createElement("button");
+
+        del.textContent = "Eliminar";
+
+        del.className = "delete-btn";
+
+        del.onclick = ()=>{
+
+          invoices.splice(index,1);
+
+          saveAndRender();
+        };
+
+        const td =
+          document.createElement("td");
+
+        td.appendChild(del);
+
+        row.appendChild(td);
+
+        tbody.appendChild(row);
+
+      });
+
+    }
+
+    function updateFacturaCount(){
+
+      document.getElementById(
+        "factura-count"
+      ).textContent =
+      `Facturas leídas: ${invoices.length}`;
+
+    }
+
+    function exportToExcel(){
+
+      const ws =
+        XLSX.utils.json_to_sheet(invoices);
+
+      const wb =
+        XLSX.utils.book_new();
+
+      XLSX.utils.book_append_sheet(
+        wb,
+        ws,
+        "Facturas"
+      );
+
+      XLSX.writeFile(
+        wb,
+        "facturas.xlsx"
+      );
+
+    }
+
+    document
+    .getElementById("search-bar")
+    .addEventListener("input",(e)=>{
+
+      const term =
+        e.target.value.toLowerCase();
+
+      const filtered =
+        invoices.filter(inv=>
+
+          Object.values(inv)
+          .join(" ")
+          .toLowerCase()
+          .includes(term)
+
+        );
+
+      populateTable(filtered);
+
+    });
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      ()=>{
+
+        populateTable();
+
+        updateFacturaCount();
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
+
