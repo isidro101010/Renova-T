@@ -798,15 +798,7 @@
       }));
 
     }
-
-
-    // OCR - ORIGINAL SIN CAMBIOS
-    function extractFromText(text){
-
-      const factura =
-        text.match(
-          /Factura\s*No[:.\s]*([A-Z0-9\-]+)/i
-        )?.[1] || "No detectado";
+         
 
       const cliente =
         text.match(
@@ -902,9 +894,7 @@
     }
 
     function getBadgeClass(type){
-      if(type === "XML") return "badge-xml";
-      if(type === "PDF") return "badge-pdf";
-      return "badge-ocr";
+      if(type === "XML") return "badge-xml"
     }
 
     function populateTable(data = invoices){
