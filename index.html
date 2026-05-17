@@ -809,7 +809,7 @@
     }
 
     // PDF - NUEVO PROCESADOR CON SEPARACIÓN DE PRODUCTOS
-    // PDF - NUEVO PROCESADOR CON SEPARACIÓN DE PRODUCTOS
+
 async function processPDFData(file) {
 
   const arrayBuffer =
@@ -910,8 +910,8 @@ async function processPDFData(file) {
 
   const productos = [];
 
-  const productRegex =
-    /(\d+,\d+)\s+([A-Z0-9\.]+)\s+(Victron Energy.*?)(\d+,\d{4})\s+0,00\s+([\d\.\,]+)/g;
+const productRegex =
+/(\d+,\d+)\s+([A-Z0-9\.]+)\s+([\s\S]*?)\s+(\d+,\d{4})\s+0,00\s+([\d\.\,]+)/g;
 
   let match;
 
@@ -925,10 +925,11 @@ async function processPDFData(file) {
       codigo:
         match[2],
 
-      modelo:
-        match[3]
-        .replace(/\s+/g," ")
-        .trim(),
+      mmodelo:
+  match[3]
+  .replace(/\n/g," ")
+  .replace(/\s+/g," ")
+  .trim(),
 
       precio_unitario:
         match[4],
