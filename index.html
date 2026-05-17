@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sistema de Facturación Inteligente</title>
+  <title>Sistema de Facturación Inteligente — Profesional</title>
 
   <!-- Fuente -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,24 +16,24 @@
 
   <style>
     :root{
-      --bg:#0b1220;
-      --surface:#0f1724;
-      --muted:#9aa8bf;
+      --bg:#071024;
+      --card:#0f1724;
+      --muted:#98a8bf;
       --text:#e6eef8;
       --accent:#2563eb;
       --accent-2:#06b6d4;
-      --success:#16a34a;
-      --danger:#ef4444;
       --glass: rgba(255,255,255,0.03);
       --radius:12px;
-      --shadow: 0 6px 22px rgba(2,6,23,0.6);
+      --shadow: 0 8px 30px rgba(2,6,23,0.6);
+      --success:#16a34a;
+      --danger:#ef4444;
     }
 
     *{box-sizing:border-box;margin:0;padding:0}
     html,body{height:100%}
     body{
       font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-      background: linear-gradient(180deg,#071024 0%, #071026 60%);
+      background: linear-gradient(180deg,#061021 0%, #071026 70%);
       color:var(--text);
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
@@ -42,31 +42,24 @@
 
     .container{max-width:1200px;margin:0 auto}
 
-    header{
-      display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px;
-    }
-
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
     .brand{display:flex;gap:12px;align-items:center}
-    .logo{
-      width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:800;color:white;font-size:20px;box-shadow:var(--shadow)
-    }
-
-    .brand h1{font-size:1.25rem;letter-spacing:-0.3px}
+    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:800;color:white}
+    .brand h1{font-size:1.15rem;letter-spacing:-0.3px}
     .brand p{color:var(--muted);font-size:0.85rem}
 
     .controls{display:flex;gap:10px;align-items:center}
     .btn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:10px 14px;border-radius:10px;color:var(--text);cursor:pointer;font-weight:600}
     .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));border:none;color:white}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
 
-    /* Card */
     .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:18px;border:1px solid rgba(255,255,255,0.04);box-shadow:var(--shadow)}
 
     .top-area{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:16px}
 
-    .upload-area{flex:1;padding:16px;border-radius:12px;border:1px dashed rgba(255,255,255,0.04);background:var(--glass);display:flex;gap:12px;align-items:center}
-    .upload-area.dragover{border-color:rgba(37,99,235,0.9);box-shadow:0 8px 30px rgba(37,99,235,0.08);}
-
-    .upload-icon{width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,0.03);display:flex;align-items:center;justify-content:center}
+    .upload-area{flex:1;padding:18px;border-radius:12px;border:1px dashed rgba(255,255,255,0.06);background:var(--glass);display:flex;gap:14px;align-items:center;cursor:pointer;transition:all .18s}
+    .upload-area.dragover{border-color:rgba(37,99,235,0.95);box-shadow:0 10px 36px rgba(37,99,235,0.06);transform:translateY(-2px)}
+    .upload-icon{width:48px;height:48px;border-radius:10px;background:rgba(255,255,255,0.03);display:flex;align-items:center;justify-content:center;font-size:22px}
     .upload-text{color:var(--muted);font-size:0.95rem}
     input[type=file]{display:none}
 
@@ -74,30 +67,35 @@
     .search input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)}
 
     .meta{display:flex;gap:12px;align-items:center}
-    .count{background:rgba(255,255,255,0.03);padding:8px 12px;border-radius:10px;color:var(--muted);font-weight:600}
+    .count{background:rgba(255,255,255,0.03);padding:8px 12px;border-radius:10px;color:var(--muted);font-weight:700}
 
     .table-wrap{margin-top:14px;overflow:auto;border-radius:10px}
     table{width:100%;border-collapse:collapse;min-width:1200px}
-    thead th{background:rgba(255,255,255,0.03);text-align:left;padding:12px 14px;position:sticky;top:0}
+    thead th{background:rgba(255,255,255,0.02);text-align:left;padding:14px 16px;position:sticky;top:0;font-size:0.9rem;color:var(--muted)}
     tbody td{padding:12px 14px;border-top:1px solid rgba(255,255,255,0.02);color:var(--text)}
-    tbody tr:hover{background:rgba(37,99,235,0.04)}
+    tbody tr:hover{background:rgba(37,99,235,0.03)}
 
     .badge{display:inline-block;padding:6px 10px;border-radius:8px;font-weight:700;font-size:0.78rem}
-    .badge.type-xml{background:rgba(96,165,250,0.12);color:#bfdbfe}
+    .badge.type-xml{background:rgba(96,165,250,0.10);color:#bfdbfe}
     .badge.type-ocr{background:rgba(250,204,21,0.08);color:#fef08a}
 
     .small{font-size:0.85rem;color:var(--muted)}
-
     .actions{display:flex;gap:8px;align-items:center}
-    .delete{background:transparent;border:1px solid rgba(239,68,68,0.16);color:var(--danger);padding:8px 10px;border-radius:8px;cursor:pointer}
+
+    .download{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--text);padding:8px 10px;border-radius:8px;cursor:pointer}
+
+    .locked{opacity:0.9;display:flex;gap:8px;align-items:center}
+    .locked .lock-icon{font-size:14px;color:var(--muted)}
 
     footer{margin-top:18px;color:var(--muted);text-align:center;font-size:0.9rem}
 
-    @media(max-width:900px){
-      header{flex-direction:column;align-items:flex-start}
-      .top-area{flex-direction:column;align-items:stretch}
-      .search{width:100%}
-    }
+    /* Modal */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.6);z-index:50}
+    .modal.open{display:flex}
+    .modal .dialog{background:var(--card);border-radius:12px;padding:18px;max-width:900px;width:95%;max-height:80vh;overflow:auto;border:1px solid rgba(255,255,255,0.03)}
+    .modal pre{white-space:pre-wrap;background:rgba(0,0,0,0.35);padding:12px;border-radius:8px;color:var(--text);max-height:60vh;overflow:auto}
+
+    @media(max-width:900px){header{flex-direction:column;align-items:flex-start}.top-area{flex-direction:column;align-items:stretch}.search{width:100%}table{min-width:900px}}
   </style>
 </head>
 <body>
@@ -108,12 +106,13 @@
         <div class="logo">RF</div>
         <div>
           <h1>Sistema de Facturación Inteligente</h1>
-          <p>Organiza y exporta tus facturas rápidamente</p>
+          <p>Versión profesional — Datos importados son solo lectura</p>
         </div>
       </div>
 
       <div class="controls">
-        <button class="btn" id="helpBtn" title="Atajos y ayuda">Ayuda</button>
+        <button class="btn ghost" id="helpBtn" title="Atajos y ayuda">Ayuda</button>
+        <button class="btn" id="downloadAllBtn" title="Descargar todo (CSV/Excel)">Descargar todo</button>
         <button class="btn primary" id="exportBtn">Exportar Excel</button>
       </div>
     </header>
@@ -125,7 +124,7 @@
         <label class="upload-area" id="uploadArea" tabindex="0">
           <div class="upload-icon">📤</div>
           <div>
-            <div class="upload-text">Arrastra y suelta archivos XML o imágenes aquí, o haz clic para seleccionar (múltiple)</div>
+            <div class="upload-text">Arrastra y suelta archivos XML o imágenes aquí, o haz clic para seleccionar (múltiple). Los registros importados son inmutables (solo lectura).</div>
             <input type="file" id="fileUpload" accept=".xml,image/*" multiple aria-label="Subir facturas" />
           </div>
         </label>
@@ -137,6 +136,10 @@
 
           <div class="meta">
             <div class="count" id="invoiceCount">Facturas leídas: 0</div>
+            <div class="locked" title="Los registros importados no se pueden editar ni eliminar">
+              <span class="lock-icon">🔒</span>
+              <span class="small">Solo lectura</span>
+            </div>
           </div>
         </div>
 
@@ -151,15 +154,16 @@
               <th>Fecha</th>
               <th>Cliente</th>
               <th>RUC</th>
-              <th>Modelo / Descripción</th>
-              <th>Cantidad</th>
+              <th>Descripción</th>
+              <th>Cant.</th>
               <th>Precio Unit.</th>
               <th>Precio Total</th>
               <th>Total Facturado</th>
-              <th>Acciones</th>
+              <th>Origen</th>
             </tr>
           </thead>
           <tbody id="invoiceTable"></tbody>
+          <tfoot id="tableFooter"></tfoot>
         </table>
       </div>
 
@@ -169,8 +173,23 @@
 
   </div>
 
+  <!-- Modal para ver contenido original (XML / OCR text) -->
+  <div class="modal" id="previewModal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="dialog" role="document">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <strong id="modalTitle">Contenido original</strong>
+        <div>
+          <button class="btn" id="modalDownload">Descargar</button>
+          <button class="btn" id="modalClose">Cerrar</button>
+        </div>
+      </div>
+      <pre id="modalContent">Cargando...</pre>
+    </div>
+  </div>
+
   <script>
-    // Remove PDF-related code entirely. This script focuses on XML and OCR (images).
+    // App: Read-only data pipeline for imported invoices (XML or OCR images).
+    // Summary of changes requested: UI más profesional, impedir edición/eliminación de filas.
 
     let invoices = JSON.parse(localStorage.getItem('invoices')) || [];
 
@@ -180,6 +199,13 @@
     const invoiceCount = document.getElementById('invoiceCount');
     const searchInput = document.getElementById('search');
     const exportBtn = document.getElementById('exportBtn');
+    const downloadAllBtn = document.getElementById('downloadAllBtn');
+
+    const previewModal = document.getElementById('previewModal');
+    const modalContent = document.getElementById('modalContent');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDownload = document.getElementById('modalDownload');
+    const modalClose = document.getElementById('modalClose');
 
     // UX: show dragover state
     ['dragenter','dragover'].forEach(evt=>{
@@ -195,6 +221,7 @@
 
     searchInput.addEventListener('input',()=>renderTable(filterInvoices(searchInput.value)));
     exportBtn.addEventListener('click',exportToExcel);
+    downloadAllBtn.addEventListener('click',downloadAllJSON);
 
     // Keyboard shortcut: Ctrl/Cmd+E export
     window.addEventListener('keydown',(e)=>{
@@ -230,11 +257,16 @@
             const cdata = xml.querySelector('comprobante')?.textContent?.trim();
             const inner = cdata ? new DOMParser().parseFromString(cdata,'application/xml') : xml;
             const rows = processXMLData(inner);
+
+            // Attach original raw content and filename; preserve immutability
+            rows.forEach(r => r._source = {type:'xml', filename: file.name, raw: text});
             invoices.push(...rows);
+
           } else if(file.type.startsWith('image/') || /\.(png|jpe?g|bmp|tiff)$/i.test(file.name)){
             // OCR
             const { data: { text } } = await Tesseract.recognize(file,'spa',{logger: m => {/*silence*/}});
             const row = extractFromText(text);
+            row._source = {type:'ocr', filename: file.name, raw: text};
             invoices.push(row);
           } else {
             console.warn('Tipo de archivo no soportado:', file.name);
@@ -253,13 +285,15 @@
 
       const detalles = Array.from(xml.querySelectorAll('detalles > detalle'));
       if(detalles.length === 0){
-        // Try legacy selector
-        detalles.push(xml.querySelector('detalle'));
+        const single = xml.querySelector('detalle');
+        if(single) detalles.push(single);
       }
+
+      const facturaId = get('infoTributaria > secuencial') || get('infoTributaria > numeroAutorizacion') || 'N/A';
 
       return detalles.map(m => ({
         tipo: 'XML',
-        factura: get('infoTributaria > secuencial'),
+        factura: facturaId,
         fecha: get('infoFactura > fechaEmision'),
         cliente: get('infoFactura > razonSocialComprador'),
         ruc: get('infoFactura > identificacionComprador'),
@@ -271,14 +305,13 @@
       }));
     }
 
-    // Simple OCR text extractor fallback
+    // OCR extractor (fallback)
     function extractFromText(text){
       const factura = text.match(/\d{3}-\d{3}-\d+/)?.[0] || 'N/A';
       const fecha = text.match(/Fecha[:\s]*([0-9]{2}\/?[0-9]{2}\/?[0-9]{2,4})/i)?.[1] || 'N/A';
       const ruc = text.match(/(R\.?U\.?C\.?[:\s]*\d{9,13})/i)?.[0] || 'N/A';
       const cliente = text.match(/(Raz[oó]n Social[:\s]*[^\n]+)/i)?.[1] || text.split('\n')[0] || 'N/A';
 
-      // Try to find last numeric amount as total
       const amounts = Array.from(text.matchAll(/([0-9]{1,3}(?:[\.,][0-9]{3})*(?:[\.,][0-9]{2}))/g)).map(m=>m[1]);
       const total = amounts.length ? amounts[amounts.length-1] : '0';
 
@@ -288,7 +321,7 @@
         fecha,
         cliente,
         ruc,
-        modelo: 'Producto detectado por OCR',
+        modelo: 'Detectado por OCR',
         cantidad: '1',
         precio_unitario: total,
         precio_total: total,
@@ -297,6 +330,7 @@
     }
 
     function saveAndRender(){
+      // Store invoices but keep them immutable at UI level — users cannot edit/remove.
       localStorage.setItem('invoices', JSON.stringify(invoices));
       renderTable(invoices);
       updateCount();
@@ -313,6 +347,7 @@
       data.forEach((inv, idx) => {
         const tr = document.createElement('tr');
 
+        const originBtnId = `origin-${idx}`;
         tr.innerHTML = `
           <td><span class="badge ${inv.tipo === 'XML' ? 'type-xml' : 'type-ocr'}">${inv.tipo}</span></td>
           <td class="small">${escapeHtml(inv.factura || 'N/A')}</td>
@@ -320,13 +355,12 @@
           <td>${escapeHtml(inv.cliente || 'N/A')}</td>
           <td>${escapeHtml(inv.ruc || 'N/A')}</td>
           <td>${escapeHtml(inv.modelo || '')}</td>
-          <td>${escapeHtml(inv.cantidad || '')}</td>
-          <td>${escapeHtml(inv.precio_unitario || '')}</td>
-          <td>${escapeHtml(inv.precio_total || '')}</td>
-          <td>${escapeHtml(inv.total_facturado || '')}</td>
+          <td>${formatNumber(inv.cantidad)}</td>
+          <td>${formatCurrency(inv.precio_unitario)}</td>
+          <td>${formatCurrency(inv.precio_total)}</td>
+          <td><strong>${formatCurrency(inv.total_facturado)}</strong></td>
           <td class="actions">
-            <button class="btn" data-idx="${idx}" onclick="copyRow(${idx})" title="Copiar fila">Copiar</button>
-            <button class="delete" data-idx="${idx}" onclick="deleteRow(${idx})" title="Eliminar">Eliminar</button>
+            <button class="download" data-idx="${idx}" id="${originBtnId}" title="Ver origen (solo lectura)">Ver origen</button>
           </td>
         `;
 
@@ -334,6 +368,31 @@
       });
 
       invoiceTable.appendChild(fragment);
+
+      // Attach event listeners for origin buttons (open modal with raw content)
+      data.forEach((inv, idx)=>{
+        const btn = document.getElementById(`origin-${idx}`);
+        if(btn){
+          btn.addEventListener('click', ()=>{
+            openPreview(inv);
+          });
+        }
+      });
+
+      // Footer: totals
+      renderFooter(data);
+    }
+
+    function renderFooter(data){
+      const footer = document.getElementById('tableFooter');
+      const totalSum = data.reduce((s, r) => s + (parseNumber(r.total_facturado) || 0), 0);
+      footer.innerHTML = `
+        <tr style="background:rgba(255,255,255,0.02)">
+          <td colspan="9" style="padding:12px 16px;text-align:right;color:var(--muted)"><strong>Total facturado:</strong></td>
+          <td style="padding:12px 16px"><strong>${formatCurrency(totalSum)}</strong></td>
+          <td></td>
+        </tr>
+      `;
     }
 
     function filterInvoices(q){
@@ -349,34 +408,84 @@
 
     // Utilities
     function escapeHtml(str){
-      if(!str) return '';
-      return String(str).replace(/[&<>\"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[m]});
+      if(str === undefined || str === null) return '';
+      return String(str).replace(/[&<>\"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":"&#39;"}[m]});
     }
 
-    function deleteRow(idx){
-      if(!confirm('Eliminar esta entrada?')) return;
-      invoices.splice(idx,1);
-      saveAndRender();
+    function formatNumber(val){
+      const n = Number(String(val).replace(/[^0-9\-\.]/g, ''));
+      return Number.isFinite(n) ? n.toLocaleString() : escapeHtml(val || '');
     }
 
-    function copyRow(idx){
-      const row = invoices[idx];
-      const text = Object.entries(row).map(([k,v])=>`${k}: ${v}`).join('\n');
-      navigator.clipboard?.writeText(text).then(()=>{
-        showTemporaryMessage('Fila copiada al portapapeles');
-      }).catch(()=>{
-        alert('No se pudo copiar');
-      });
+    function parseNumber(val){
+      if(val === undefined || val === null) return 0;
+      const n = Number(String(val).replace(/[^0-9\-\.]/g, '').replace(/,/g, ''));
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function formatCurrency(val){
+      if(val === undefined || val === null) return '';
+      const n = parseNumber(val);
+      return n ? n.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) : escapeHtml(val || '');
+    }
+
+    // No edit/delete functions exposed: data is considered immutable from UI.
+
+    // Preview modal (read-only) with download option
+    function openPreview(inv){
+      modalTitle.textContent = `Origen: ${inv._source?.filename || 'Contenido'}`;
+      modalContent.textContent = inv._source?.raw || JSON.stringify(inv, null, 2);
+      modalDownload.onclick = ()=>{
+        const blob = new Blob([inv._source?.raw || JSON.stringify(inv, null, 2)], {type: inv._source?.type === 'xml' ? 'application/xml' : 'text/plain'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = inv._source?.filename || 'origen.txt';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      };
+      previewModal.classList.add('open');
+      previewModal.setAttribute('aria-hidden','false');
+    }
+
+    modalClose.addEventListener('click', ()=>{ closePreview(); });
+    previewModal.addEventListener('click', (e)=>{ if(e.target === previewModal) closePreview(); });
+
+    function closePreview(){
+      previewModal.classList.remove('open');
+      previewModal.setAttribute('aria-hidden','true');
     }
 
     function exportToExcel(){
       if(!invoices.length){alert('No hay facturas para exportar');return}
-      const ws_data = [Object.keys(invoices[0])];
-      invoices.forEach(r => ws_data.push(Object.values(r)));
+      // Export a copy of current data — original raw files remain in localStorage as _source
+      const rows = invoices.map(r => ({
+        Tipo: r.tipo,
+        Factura: r.factura,
+        Fecha: r.fecha,
+        Cliente: r.cliente,
+        RUC: r.ruc,
+        Descripcion: r.modelo,
+        Cantidad: r.cantidad,
+        Precio_Unitario: r.precio_unitario,
+        Precio_Total: r.precio_total,
+        Total_Facturado: r.total_facturado,
+        Origen: r._source?.filename || ''
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(rows);
       const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.aoa_to_sheet(ws_data);
       XLSX.utils.book_append_sheet(wb, ws, 'Facturas');
-      XLSX.writeFile(wb, 'facturas.xlsx');
+      XLSX.writeFile(wb, 'facturas_export.xlsx');
+    }
+
+    function downloadAllJSON(){
+      if(!invoices.length){alert('No hay facturas para descargar');return}
+      const blob = new Blob([JSON.stringify(invoices, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'facturas.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
     }
 
     // Small transient message area
@@ -384,14 +493,12 @@
     function showTemporaryMessage(msg, time=2000){
       clearTimeout(tempTimer);
       let el = document.getElementById('tempMsg');
-      if(!el){ el = document.createElement('div'); el.id='tempMsg'; el.style.position='fixed'; el.style.right='20px'; el.style.bottom='20px'; el.style.background='rgba(0,0,0,0.6)'; el.style.color='white'; el.style.padding='10px 14px'; el.style.borderRadius='10px'; document.body.appendChild(el); }
+      if(!el){ el = document.createElement('div'); el.id='tempMsg'; el.style.position='fixed'; el.style.right='20px'; el.style.bottom='20px'; el.style.background='rgba(0,0,0,0.6)'; el.style.color='white'; el.style.padding='10px 14px'; el.style.borderRadius='10px'; el.style.zIndex=9999; document.body.appendChild(el);} 
       el.textContent = msg;
       el.style.display='block';
       tempTimer = setTimeout(()=>{ el.style.display='none'; }, time);
     }
-    function hideTemporaryMessage(){
-      const el = document.getElementById('tempMsg'); if(el) el.style.display='none';
-    }
+    function hideTemporaryMessage(){ const el = document.getElementById('tempMsg'); if(el) el.style.display='none'; }
 
     // Initial render
     renderTable(invoices);
@@ -399,7 +506,7 @@
 
     // Help button
     document.getElementById('helpBtn').addEventListener('click', ()=>{
-      alert('Atajos:\n- Ctrl/Cmd+E: Exportar a Excel\nCaracterísticas:\n- Arrastra y suelta archivos XML o imágenes.\n- Búsqueda en vivo.\n- Copiar o eliminar filas.');
+      alert('Atajos:\n- Ctrl/Cmd+E: Exportar a Excel\nCaracterísticas principales:\n- Importa XML y/o imágenes (OCR)\n- Los registros importados son solo lectura: no se pueden editar ni eliminar desde la app\n- Puedes ver/descargar el contenido original de cada registro\n- Exportar a Excel/JSON de solo lectura (crea una copia)');
     });
 
   </script>
