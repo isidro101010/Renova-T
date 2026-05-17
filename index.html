@@ -911,7 +911,7 @@ async function processPDFData(file) {
   const productos = [];
 
 const productRegex =
-/(\d+,\d+)\s+([A-Z0-9\.]+)\s+([\s\S]*?)\s+(\d+,\d{4})\s+0,00\s+([\d\.\,]+)/g;
+/(\d+,\d+)\s+([A-Z0-9\.]+)\s+(.*?)\s+(\d+,\d{4})\s+0,00\s+([\d\.\,]+)/gs;
 
   let match;
 
