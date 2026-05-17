@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
 
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<title>Sistema de Facturación</title>
+<title>Sistema Profesional de Facturación</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,10 +34,7 @@
 
   --border:rgba(255,255,255,.08);
 
-  --radius:20px;
-
-  --shadow:
-  0 20px 40px rgba(0,0,0,.35);
+  --shadow:0 20px 40px rgba(0,0,0,.35);
 }
 
 *{
@@ -98,11 +96,9 @@ header{
 
 .brand h1{
 
-  font-size:2.1rem;
+  font-size:2rem;
 
   font-weight:800;
-
-  letter-spacing:-1px;
 }
 
 .brand p{
@@ -110,8 +106,15 @@ header{
   margin-top:8px;
 
   color:var(--muted);
+}
 
-  font-size:.95rem;
+.button-group{
+
+  display:flex;
+
+  gap:12px;
+
+  flex-wrap:wrap;
 }
 
 .excel-btn{
@@ -136,8 +139,11 @@ header{
 .excel-btn:hover{
 
   transform:translateY(-2px);
+}
 
-  filter:brightness(1.05);
+.copy-btn{
+
+  background:var(--primary);
 }
 
 main{
@@ -177,13 +183,6 @@ main{
   flex-wrap:wrap;
 
   margin-bottom:25px;
-}
-
-.top-section h2{
-
-  font-size:1.4rem;
-
-  font-weight:700;
 }
 
 .factura-count{
@@ -228,24 +227,6 @@ input[type="text"]{
   padding:15px;
 
   outline:none;
-
-  transition:.2s;
-}
-
-input[type="file"]:focus,
-input[type="text"]:focus{
-
-  border-color:var(--primary);
-
-  box-shadow:
-  0 0 0 4px rgba(37,99,235,.15);
-}
-
-button{
-
-  border:none;
-
-  cursor:pointer;
 }
 
 .upload-btn{
@@ -254,20 +235,15 @@ button{
 
   color:white;
 
+  border:none;
+
   padding:15px 24px;
 
   border-radius:16px;
 
   font-weight:700;
 
-  transition:.25s;
-}
-
-.upload-btn:hover{
-
-  background:var(--primary-hover);
-
-  transform:translateY(-2px);
+  cursor:pointer;
 }
 
 .table-container{
@@ -301,15 +277,11 @@ th{
 
   top:0;
 
-  z-index:2;
-
   padding:14px 12px;
 
   font-size:.8rem;
 
   text-transform:uppercase;
-
-  letter-spacing:.5px;
 
   border-bottom:1px solid var(--border);
 }
@@ -323,8 +295,6 @@ td{
   font-size:.84rem;
 
   border-bottom:1px solid rgba(255,255,255,.05);
-
-  color:#e2e8f0;
 }
 
 tbody tr:nth-child(even){
@@ -349,14 +319,7 @@ tbody tr:hover{
 
   border-radius:10px;
 
-  font-weight:600;
-
-  transition:.2s;
-}
-
-.delete-btn:hover{
-
-  background:rgba(220,38,38,.25);
+  cursor:pointer;
 }
 
 .loading{
@@ -366,8 +329,6 @@ tbody tr:hover{
   inset:0;
 
   background:rgba(0,0,0,.65);
-
-  backdrop-filter:blur(5px);
 
   display:none;
 
@@ -382,11 +343,9 @@ tbody tr:hover{
 
   background:var(--card);
 
-  border:1px solid var(--border);
+  padding:30px 40px;
 
   border-radius:24px;
-
-  padding:30px 40px;
 
   text-align:center;
 }
@@ -423,27 +382,6 @@ footer{
   padding:30px;
 }
 
-@media(max-width:900px){
-
-  .header-container{
-
-    flex-direction:column;
-
-    align-items:flex-start;
-  }
-
-  form{
-
-    flex-direction:column;
-  }
-
-  .upload-btn,
-  .excel-btn{
-
-    width:100%;
-  }
-}
-
 </style>
 
 </head>
@@ -468,21 +406,29 @@ footer{
 
     <div class="brand">
 
-      <h1>Sistema de Facturación</h1>
+      <h1>Sistema Profesional de Facturación</h1>
 
-      <p>Version 2</p>
+      <p>Gestión avanzada de facturas XML</p>
 
     </div>
 
-    <button class="excel-btn" onclick="exportToExcel()">
+    <div class="button-group">
 
-      Exportar Excel
+      <button
+        class="excel-btn"
+        onclick="exportToExcel()"
+      >
+        Exportar Excel
+      </button>
 
-    </button>
-    
-    <button class="excel-btn" onclick="copyAsExcel()">
-  Copiar
-</button>
+      <button
+        class="excel-btn copy-btn"
+        onclick="copyAsExcel()"
+      >
+        Copiar
+      </button>
+
+    </div>
 
   </div>
 
@@ -522,9 +468,7 @@ footer{
         type="submit"
         class="upload-btn"
       >
-
         Subir XML
-
       </button>
 
     </form>
@@ -879,10 +823,10 @@ function updateFacturaCount(){
 function exportToExcel(){
 
   const ws =
-    XLSX.utils.json_to_sheet(invoices);
+  XLSX.utils.json_to_sheet(invoices);
 
   const wb =
-    XLSX.utils.book_new();
+  XLSX.utils.book_new();
 
   XLSX.utils.book_append_sheet(
     wb,
@@ -896,15 +840,6 @@ function exportToExcel(){
   );
 
 }
-
-async function copyAsExcel(){
-
-  if(invoices.length === 0){
-
-    return alert(
-      "No hay datos para copiar."
-    );
-  }
 
 async function copyAsExcel(){
 
@@ -935,23 +870,6 @@ async function copyAsExcel(){
 
     alert(
       "Copiado correctamente para Excel."
-    );
-
-  }catch(err){
-
-    console.error(err);
-
-    alert(
-      "No se pudo copiar."
-    );
-  }
-
-  try{
-
-    await navigator.clipboard.writeText(text);
-
-    alert(
-      "Información copiada correctamente."
     );
 
   }catch(err){
