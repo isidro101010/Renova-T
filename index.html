@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Dog's World - Your complete guide to dog breeds, care, training, health, and everything pet owners need to know">
-    <meta name="theme-color" content="#8B4513">
+    <meta name="theme-color" content="#2C3E50">
     <title>🐕 Dog's World - Complete Guide to Dogs</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🐕</text></svg>">
     <style>
@@ -15,17 +15,19 @@
         }
 
         :root {
-            --primary-brown: #8B4513;
-            --dark-brown: #654321;
-            --light-tan: #f5deb3;
-            --gold: #DAA520;
-            --bright-gold: #FFD700;
-            --text-dark: #333;
-            --text-light: #666;
-            --bg-light: #f9f9f9;
-            --white: #ffffff;
-            --shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.15);
+            --primary-dark: #2C3E50;
+            --primary-medium: #34495E;
+            --accent-blue: #3498DB;
+            --accent-teal: #1ABC9C;
+            --accent-orange: #E67E22;
+            --text-dark: #2C3E50;
+            --text-light: #7F8C8D;
+            --bg-light: #ECF0F1;
+            --bg-very-light: #F8F9FA;
+            --white: #FFFFFF;
+            --shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+            --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.18);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         html {
@@ -34,8 +36,8 @@
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            background: linear-gradient(135deg, #f5deb3 0%, #daa520 100%);
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-very-light);
             color: var(--text-dark);
             line-height: 1.6;
             min-height: 100vh;
@@ -43,9 +45,9 @@
 
         /* Header Styles */
         header {
-            background: linear-gradient(135deg, #8B4513 0%, #654321 100%);
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
             color: white;
-            padding: 2.5rem 2rem;
+            padding: 3.5rem 2rem;
             text-align: center;
             box-shadow: var(--shadow-lg);
             position: sticky;
@@ -56,14 +58,17 @@
         header h1 {
             font-size: 3.5rem;
             margin-bottom: 0.5rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
             animation: slideDown 0.6s ease-out;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
 
         header p {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             opacity: 0.95;
             font-weight: 300;
+            letter-spacing: 0.5px;
         }
 
         @keyframes slideDown {
@@ -79,43 +84,45 @@
 
         /* Navigation */
         nav {
-            background: linear-gradient(90deg, #654321 0%, #5a3a1a 100%);
-            padding: 1.2rem 0;
+            background: var(--white);
+            padding: 1rem 0;
             display: flex;
             justify-content: center;
             gap: 2.5rem;
             flex-wrap: wrap;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            box-shadow: var(--shadow-md);
             position: sticky;
-            top: 140px;
+            top: 0;
             z-index: 99;
+            border-bottom: 3px solid var(--accent-blue);
         }
 
         nav a {
-            color: white;
+            color: var(--primary-dark);
             text-decoration: none;
             font-weight: 600;
             font-size: 1rem;
             transition: all 0.3s ease;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
+            padding: 0.7rem 1.2rem;
+            border-radius: 6px;
             position: relative;
         }
 
         nav a::after {
             content: '';
             position: absolute;
-            bottom: 0;
+            bottom: -3px;
             left: 50%;
             width: 0;
-            height: 2px;
-            background: var(--bright-gold);
+            height: 3px;
+            background: var(--accent-blue);
             transition: all 0.3s ease;
             transform: translateX(-50%);
         }
 
         nav a:hover {
-            color: var(--bright-gold);
+            color: var(--accent-blue);
+            background: rgba(52, 152, 219, 0.05);
         }
 
         nav a:hover::after {
@@ -124,44 +131,85 @@
 
         /* Container */
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
+        }
+
+        /* Hero Section with Image */
+        .hero-section {
+            background: var(--white);
+            border-radius: 12px;
+            margin-bottom: 2.5rem;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .hero-content {
+            padding: 3rem;
+        }
+
+        .hero-content h2 {
+            color: var(--primary-dark);
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero-content p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-teal));
+            border-radius: 12px 0 0 12px;
         }
 
         /* Section Styles */
         section {
             background: var(--white);
-            border-radius: 15px;
+            border-radius: 12px;
             margin-bottom: 2.5rem;
-            padding: 2.5rem;
+            padding: 3rem;
             box-shadow: var(--shadow);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         section:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
             box-shadow: var(--shadow-lg);
         }
 
         section h2 {
-            color: var(--primary-brown);
+            color: var(--primary-dark);
             font-size: 2.5rem;
             margin-bottom: 1.5rem;
-            border-bottom: 4px solid var(--gold);
-            padding-bottom: 0.75rem;
+            border-bottom: 4px solid var(--accent-blue);
+            padding-bottom: 1rem;
             display: flex;
             align-items: center;
             gap: 1rem;
+            font-weight: 700;
         }
 
         section h3 {
-            color: var(--dark-brown);
-            font-size: 1.5rem;
-            margin-top: 2rem;
+            color: var(--primary-medium);
+            font-size: 1.6rem;
+            margin-top: 2.5rem;
             margin-bottom: 1.5rem;
             padding-left: 1rem;
-            border-left: 4px solid var(--gold);
+            border-left: 4px solid var(--accent-teal);
+            font-weight: 600;
         }
 
         .intro-text {
@@ -174,47 +222,60 @@
         /* Breed Grid */
         .breeds-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 2rem;
             margin-top: 2rem;
         }
 
         .breed-card {
-            background: linear-gradient(135deg, #fff8dc 0%, #ffe4b5 100%);
+            background: var(--white);
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-md);
             transition: all 0.3s ease;
             border: 2px solid transparent;
             cursor: pointer;
+            border-top: 5px solid var(--accent-blue);
         }
 
         .breed-card:hover {
             transform: translateY(-8px);
             box-shadow: var(--shadow-lg);
-            border-color: var(--gold);
+            border-color: var(--accent-teal);
         }
 
         .breed-image {
             width: 100%;
-            height: 220px;
+            height: 240px;
             object-fit: cover;
-            background: linear-gradient(135deg, #daa520, #8B4513);
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-teal));
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 4rem;
             color: var(--white);
+            position: relative;
+        }
+
+        .breed-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.3), rgba(26, 188, 156, 0.3));
         }
 
         .breed-info {
-            padding: 1.5rem;
+            padding: 2rem;
         }
 
         .breed-card h4 {
-            color: var(--primary-brown);
-            font-size: 1.4rem;
-            margin-bottom: 0.8rem;
+            color: var(--primary-dark);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
         }
 
         .breed-card p {
@@ -227,15 +288,15 @@
         .breed-specs {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 1rem;
+            gap: 0.6rem;
+            margin-top: 1.2rem;
         }
 
         .breed-tag {
             display: inline-block;
-            background: var(--gold);
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-teal));
             color: white;
-            padding: 0.4rem 1rem;
+            padding: 0.5rem 1.2rem;
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 600;
@@ -245,80 +306,98 @@
         .tips-list {
             list-style: none;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 1.5rem;
             margin-top: 1.5rem;
         }
 
         .tips-list li {
-            background: var(--bg-light);
-            padding: 1.5rem;
+            background: var(--bg-very-light);
+            padding: 1.8rem;
             border-radius: 10px;
-            border-left: 5px solid var(--primary-brown);
+            border-left: 5px solid var(--accent-blue);
             transition: all 0.3s ease;
             position: relative;
-            padding-left: 3rem;
+            padding-left: 3.5rem;
         }
 
         .tips-list li::before {
             content: "🐾";
             position: absolute;
             left: 1rem;
-            font-size: 1.5rem;
-            opacity: 0.7;
+            font-size: 1.8rem;
+            opacity: 0.8;
         }
 
         .tips-list li:hover {
-            background: #f0f0f0;
+            background: #E8F4F8;
             transform: translateX(5px);
         }
 
         /* Health Grid */
         .health-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
             margin-top: 2rem;
         }
 
         .health-item {
-            background: linear-gradient(135deg, #fff8dc 0%, #ffe4b5 100%);
-            padding: 2rem 1.5rem;
+            background: linear-gradient(135deg, var(--bg-very-light), var(--white));
+            padding: 2.5rem 2rem;
             border-radius: 12px;
             text-align: center;
-            border: 2px solid var(--gold);
+            border: 2px solid var(--accent-blue);
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .health-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-teal), var(--accent-orange));
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
         }
 
         .health-item:hover {
             transform: translateY(-8px);
             box-shadow: var(--shadow-lg);
-            background: linear-gradient(135deg, #ffe4b5 0%, #ffd699 100%);
+        }
+
+        .health-item:hover::before {
+            transform: translateX(0);
         }
 
         .health-icon {
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: 1rem;
         }
 
         .health-item h4 {
-            color: var(--primary-brown);
-            margin-bottom: 0.8rem;
-            font-size: 1.2rem;
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            font-weight: 600;
         }
 
         .health-item p {
             color: var(--text-light);
             font-size: 0.95rem;
-            line-height: 1.6;
+            line-height: 1.7;
         }
 
         /* CTA Section */
         .call-to-action {
-            background: linear-gradient(135deg, #8B4513 0%, #654321 100%);
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
             color: white;
-            padding: 3rem 2rem;
-            border-radius: 15px;
+            padding: 4rem 2rem;
+            border-radius: 12px;
             text-align: center;
             margin-top: 2rem;
             box-shadow: var(--shadow-lg);
@@ -328,39 +407,44 @@
             color: white;
             margin-bottom: 1rem;
             border-left: none;
-            font-size: 1.8rem;
+            font-size: 2rem;
+            font-weight: 700;
         }
 
         .call-to-action p {
-            margin-bottom: 1.5rem;
-            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
             opacity: 0.95;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .button-group {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 1rem;
+            gap: 1.5rem;
         }
 
         .call-to-action button {
-            background: var(--gold);
-            color: var(--text-dark);
-            border: none;
-            padding: 1rem 2.5rem;
-            font-size: 1.05rem;
+            background: var(--accent-blue);
+            color: white;
+            border: 2px solid var(--accent-blue);
+            padding: 1.2rem 3rem;
+            font-size: 1.1rem;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
         }
 
         .call-to-action button:hover {
-            background: var(--bright-gold);
+            background: var(--accent-teal);
+            border-color: var(--accent-teal);
             transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 6px 20px rgba(26, 188, 156, 0.4);
         }
 
         .call-to-action button:active {
@@ -369,23 +453,23 @@
 
         /* Footer */
         footer {
-            background: linear-gradient(90deg, #333 0%, #1a1a1a 100%);
+            background: var(--primary-dark);
             color: white;
             text-align: center;
-            padding: 3rem 2rem;
-            margin-top: 2rem;
+            padding: 3.5rem 2rem;
+            margin-top: 3rem;
         }
 
         footer p {
-            margin-bottom: 0.8rem;
+            margin-bottom: 1rem;
             opacity: 0.9;
         }
 
         .social-links {
-            margin-top: 1.5rem;
+            margin-top: 2rem;
             display: flex;
             justify-content: center;
-            gap: 1.5rem;
+            gap: 2rem;
             flex-wrap: wrap;
         }
 
@@ -393,56 +477,93 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: var(--gold);
-            color: var(--text-dark);
+            width: 45px;
+            height: 45px;
+            background: var(--accent-blue);
+            color: white;
             text-decoration: none;
             font-weight: 600;
             border-radius: 50%;
             transition: all 0.3s ease;
+            font-size: 1.3rem;
         }
 
         .social-links a:hover {
-            background: var(--bright-gold);
-            transform: translateY(-3px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            background: var(--accent-teal);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(26, 188, 156, 0.4);
+        }
+
+        /* Image Gallery */
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .gallery-item {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
         }
 
         /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero-section {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-image {
+                border-radius: 12px;
+            }
+        }
+
         @media (max-width: 768px) {
             header h1 {
-                font-size: 2.2rem;
+                font-size: 2.5rem;
             }
 
             header p {
-                font-size: 1rem;
+                font-size: 1.1rem;
             }
 
             nav {
                 gap: 1rem;
-                padding: 1rem 0;
-                position: relative;
-                top: 0;
+                padding: 0.8rem 0;
             }
 
             nav a {
                 font-size: 0.9rem;
-                padding: 0.4rem 0.8rem;
+                padding: 0.5rem 0.8rem;
             }
 
             section {
-                padding: 1.5rem;
+                padding: 2rem;
                 margin-bottom: 1.5rem;
             }
 
             section h2 {
-                font-size: 1.8rem;
+                font-size: 2rem;
                 gap: 0.5rem;
             }
 
             section h3 {
-                font-size: 1.2rem;
+                font-size: 1.3rem;
             }
 
             .breeds-grid {
@@ -468,6 +589,14 @@
             .call-to-action button {
                 width: 100%;
             }
+
+            .hero-content {
+                padding: 2rem;
+            }
+
+            .hero-content h2 {
+                font-size: 2rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -488,6 +617,10 @@
             section h2 {
                 font-size: 1.5rem;
             }
+
+            .hero-content {
+                padding: 1.5rem;
+            }
         }
 
         /* Accessibility */
@@ -501,7 +634,7 @@
 
         @media (prefers-color-scheme: dark) {
             body {
-                background: linear-gradient(135deg, #5a4a3a 0%, #6b5a45 100%);
+                background: #1a1a1a;
             }
 
             section {
@@ -535,40 +668,39 @@
     <!-- Header -->
     <header>
         <h1>🐕 Dog's World</h1>
-        <p>Your Complete Guide to Man's Best Friend</p>
+        <p>Your Professional Guide to Dog Breeds, Care & Wellness</p>
     </header>
 
     <!-- Navigation -->
     <nav>
+        <a href="#home">Home</a>
         <a href="#breeds">Breeds</a>
         <a href="#care">Care</a>
         <a href="#training">Training</a>
         <a href="#health">Health</a>
         <a href="#behavior">Behavior</a>
-        <a href="#fun">Fun Facts</a>
         <a href="#contact">Contact</a>
     </nav>
 
     <div class="container">
-        <!-- Introduction Section -->
-        <section>
-            <h2>🐾 Welcome to Dog's World</h2>
-            <p class="intro-text">
-                Dogs have been humanity's most loyal companions for over 15,000 years. From energetic family pets to working service animals, dogs play an incredible role in our lives. Whether you're considering bringing a dog into your home or looking to deepen your relationship with your furry friend, this comprehensive guide is designed for you.
-            </p>
-            <p class="intro-text">
-                On this website, you'll find everything you need to know about dog breeds, nutrition, training, health care, behavior, and so much more. Our mission is to help pet owners make informed decisions and provide the best possible care for their beloved companions.
-            </p>
+        <!-- Hero Section -->
+        <section class="hero-section" id="home">
+            <div class="hero-content">
+                <h2>Welcome to Your Canine Companion Hub</h2>
+                <p>Discover comprehensive information about dog breeds, professional care guidelines, training techniques, and health management. Whether you're a first-time dog owner or an experienced enthusiast, find expert advice tailored to your needs.</p>
+                <p>Our mission is to empower pet owners with science-backed information and practical strategies for raising healthy, happy, and well-behaved dogs.</p>
+            </div>
+            <img src="https://images.unsplash.com/photo-1633722715463-d30628519d4e?w=600&q=80" alt="Happy dog in nature" class="hero-image">
         </section>
 
         <!-- Dog Breeds Section -->
         <section id="breeds">
-            <h2>🏆 Popular Dog Breeds</h2>
-            <p class="intro-text">Discover some of the most beloved dog breeds around the world, each with unique characteristics and care requirements:</p>
+            <h2>🏆 Featured Dog Breeds</h2>
+            <p class="intro-text">Explore popular dog breeds with detailed information about their characteristics, size, lifespan, and ideal living conditions:</p>
             
             <div class="breeds-grid">
                 <div class="breed-card">
-                    <div class="breed-image">🐕 🏃</div>
+                    <img src="https://images.unsplash.com/photo-1633722715463-d30628519d4e?w=400&q=80" alt="Golden Retriever" class="breed-image">
                     <div class="breed-info">
                         <h4>Golden Retriever</h4>
                         <p>Friendly, intelligent, and devoted family dog that excels as therapy and service animals.</p>
@@ -583,7 +715,7 @@
                 </div>
 
                 <div class="breed-card">
-                    <div class="breed-image">🐕 💪</div>
+                    <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&q=80" alt="Labrador Retriever" class="breed-image">
                     <div class="breed-info">
                         <h4>Labrador Retriever</h4>
                         <p>Loyal, outgoing, and athletic companion perfect for active families and outdoor enthusiasts.</p>
@@ -598,7 +730,7 @@
                 </div>
 
                 <div class="breed-card">
-                    <div class="breed-image">🐕 🛡️</div>
+                    <img src="https://images.unsplash.com/photo-1568021846914-26b305f718f9?w=400&q=80" alt="German Shepherd" class="breed-image">
                     <div class="breed-info">
                         <h4>German Shepherd</h4>
                         <p>Confident, intelligent, and versatile working dog used in police, military, and search-and-rescue.</p>
@@ -613,7 +745,7 @@
                 </div>
 
                 <div class="breed-card">
-                    <div class="breed-image">🐕 😊</div>
+                    <img src="https://images.unsplash.com/photo-1612536315141-c32bfeb63054?w=400&q=80" alt="French Bulldog" class="breed-image">
                     <div class="breed-info">
                         <h4>French Bulldog</h4>
                         <p>Playful, alert, and affectionate companion perfect for apartment living and first-time owners.</p>
@@ -628,7 +760,7 @@
                 </div>
 
                 <div class="breed-card">
-                    <div class="breed-image">🐕 🔍</div>
+                    <img src="https://images.unsplash.com/photo-1505628346881-b72b27e84530?w=400&q=80" alt="Beagle" class="breed-image">
                     <div class="breed-info">
                         <h4>Beagle</h4>
                         <p>Merry, curious, and determined hunting dog with an incredible sense of smell and pack mentality.</p>
@@ -643,7 +775,7 @@
                 </div>
 
                 <div class="breed-card">
-                    <div class="breed-image">🐕 👑</div>
+                    <img src="https://images.unsplash.com/photo-1537151607828-8661a20b527f?w=400&q=80" alt="Poodle" class="breed-image">
                     <div class="breed-info">
                         <h4>Poodle</h4>
                         <p>Exceptional intelligence and athletic ability make poodles excellent competitors and family dogs.</p>
@@ -661,7 +793,7 @@
 
         <!-- Dog Care Section -->
         <section id="care">
-            <h2>🍽️ Dog Care Guide</h2>
+            <h2>🍽️ Comprehensive Dog Care Guide</h2>
             <p class="intro-text">Proper care is essential to keep your dog healthy, happy, and thriving. Here are the key aspects every pet owner should understand:</p>
             
             <h3>🥗 Nutrition & Feeding</h3>
@@ -707,8 +839,8 @@
 
         <!-- Training Section -->
         <section id="training">
-            <h2>🎓 Training Tips for Your Dog</h2>
-            <p class="intro-text">Proper training is crucial for a well-behaved, happy, and safe dog. Training strengthens your bond and provides mental stimulation. Here are effective training strategies:</p>
+            <h2>🎓 Professional Training Guide</h2>
+            <p class="intro-text">Proper training is crucial for a well-behaved, happy, and safe dog. Training strengthens your bond and provides mental stimulation. Here are effective training strategies.</p>
             
             <h3>📚 Basic Obedience Commands</h3>
             <ul class="tips-list">
@@ -754,7 +886,7 @@
         <!-- Behavior Section -->
         <section id="behavior">
             <h2>🧠 Understanding Dog Behavior</h2>
-            <p class="intro-text">Understanding your dog's behavior helps you communicate better and build a stronger bond. Dogs use body language, vocalizations, and actions to express their needs and emotions.</p>
+            <p class="intro-text">Understanding your dog's behavior helps you communicate better and build a stronger bond. Dogs use body language, vocalizations, and actions to express their needs.</p>
             
             <h3>📢 Communication Signs</h3>
             <ul class="tips-list">
@@ -790,7 +922,7 @@
         <!-- Health & Wellness Section -->
         <section id="health">
             <h2>💚 Health & Wellness</h2>
-            <p class="intro-text">Your dog's health is paramount. Preventive care, regular checkups, and early detection of problems can add years to your dog's life. Here are essential health considerations:</p>
+            <p class="intro-text">Your dog's health is paramount. Preventive care, regular checkups, and early detection of problems can add years to your dog's life.</p>
             
             <div class="health-grid">
                 <div class="health-item">
@@ -820,25 +952,25 @@
                 <div class="health-item">
                     <div class="health-icon">⚖️</div>
                     <h4>Weight Management</h4>
-                    <p>Maintain a healthy weight to prevent obesity-related diseases like diabetes, arthritis, and heart problems. An estimated 56% of dogs are overweight.</p>
+                    <p>Maintain a healthy weight to prevent obesity-related diseases like diabetes, arthritis, and heart problems.</p>
                 </div>
 
                 <div class="health-item">
                     <div class="health-icon">💤</div>
                     <h4>Rest & Sleep</h4>
-                    <p>Dogs need 12-14 hours of sleep daily for proper health. Puppies and seniors need even more rest to support overall wellbeing.</p>
+                    <p>Dogs need 12-14 hours of sleep daily for proper health. Puppies and seniors need even more rest.</p>
                 </div>
 
                 <div class="health-item">
                     <div class="health-icon">🏃</div>
                     <h4>Exercise Benefits</h4>
-                    <p>Regular exercise maintains healthy weight, strengthens bones and joints, and improves cardiovascular health. Mental exercise is equally important.</p>
+                    <p>Regular exercise maintains healthy weight, strengthens bones and joints, and improves cardiovascular health.</p>
                 </div>
 
                 <div class="health-item">
                     <div class="health-icon">🧘</div>
                     <h4>Stress Reduction</h4>
-                    <p>Chronic stress impairs immune function and contributes to behavioral problems. Create calm, predictable environments for your dog.</p>
+                    <p>Chronic stress impairs immune function and contributes to behavioral problems. Create calm, predictable environments.</p>
                 </div>
 
                 <div class="health-item">
@@ -891,7 +1023,7 @@
         <section>
             <div class="call-to-action">
                 <h3>Ready to Learn More About Dogs? 🐾</h3>
-                <p>Join our community of passionate dog lovers and get exclusive tips, breed guides, training advice, and heartwarming stories delivered regularly!</p>
+                <p>Join our community of passionate dog lovers and get exclusive tips, breed guides, training advice, and wellness strategies delivered to you regularly!</p>
                 <div class="button-group">
                     <button onclick="showAlert('Thank you for your interest! Our subscription feature is coming soon.')">Subscribe Now</button>
                     <button onclick="showAlert('We\'d love to hear from you! Contact form is coming soon.')">Get in Touch</button>
@@ -903,14 +1035,14 @@
     <!-- Footer -->
     <footer id="contact">
         <p>&copy; 2024 Dog's World. All rights reserved.</p>
-        <p>Dedicated to celebrating the joy and companionship of dogs everywhere.</p>
+        <p>Professional Guide to Dog Care, Training & Wellness</p>
         <div class="social-links">
             <a href="#" title="Facebook">📱</a>
             <a href="#" title="Twitter">🐦</a>
             <a href="#" title="Instagram">📷</a>
             <a href="#" title="YouTube">🎬</a>
         </div>
-        <p style="margin-top: 1.5rem; font-size: 0.9rem;">
+        <p style="margin-top: 2rem; font-size: 0.95rem; opacity: 0.8;">
             <em>Disclaimer: This website provides general information about dogs. For medical concerns, always consult with a licensed veterinarian.</em>
         </p>
     </footer>
@@ -951,8 +1083,8 @@
                 header.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.2)';
                 nav.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.15)';
             } else {
-                header.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.1)';
-                nav.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+                header.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.12)';
+                nav.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
             }
             
             lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
