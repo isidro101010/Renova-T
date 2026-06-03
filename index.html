@@ -3,14 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A comprehensive guide to dog breeds, care, training, and everything you need to know about man's best friend">
+    <meta name="description" content="Dog's World - Your complete guide to dog breeds, care, training, health, and everything pet owners need to know">
     <meta name="theme-color" content="#8B4513">
-    <title>Dog's World - Your Complete Guide to Dogs</title>
+    <title>🐕 Dog's World - Complete Guide to Dogs</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🐕</text></svg>">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        :root {
+            --primary-brown: #8B4513;
+            --dark-brown: #654321;
+            --light-tan: #f5deb3;
+            --gold: #DAA520;
+            --bright-gold: #FFD700;
+            --text-dark: #333;
+            --text-light: #666;
+            --bg-light: #f9f9f9;
+            --white: #ffffff;
+            --shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.15);
         }
 
         html {
@@ -19,261 +34,415 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
             background: linear-gradient(135deg, #f5deb3 0%, #daa520 100%);
-            color: #333;
+            color: var(--text-dark);
             line-height: 1.6;
+            min-height: 100vh;
         }
 
+        /* Header Styles */
         header {
             background: linear-gradient(135deg, #8B4513 0%, #654321 100%);
             color: white;
-            padding: 2rem;
+            padding: 2.5rem 2rem;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-lg);
             position: sticky;
             top: 0;
             z-index: 100;
         }
 
         header h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.6s ease-out;
         }
 
         header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
+            font-size: 1.2rem;
+            opacity: 0.95;
+            font-weight: 300;
         }
 
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Navigation */
         nav {
-            background: #654321;
-            padding: 1rem 0;
+            background: linear-gradient(90deg, #654321 0%, #5a3a1a 100%);
+            padding: 1.2rem 0;
             display: flex;
             justify-content: center;
-            gap: 2rem;
+            gap: 2.5rem;
             flex-wrap: wrap;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 140px;
+            z-index: 99;
         }
 
         nav a {
             color: white;
             text-decoration: none;
             font-weight: 600;
-            transition: color 0.3s ease;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--bright-gold);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
         }
 
         nav a:hover {
-            color: #FFD700;
+            color: var(--bright-gold);
         }
 
+        nav a:hover::after {
+            width: 80%;
+        }
+
+        /* Container */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 2rem;
         }
 
+        /* Section Styles */
         section {
-            background: white;
+            background: var(--white);
             border-radius: 15px;
-            margin-bottom: 2rem;
-            padding: 2rem;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2.5rem;
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
         }
 
         section h2 {
-            color: #8B4513;
-            font-size: 2rem;
+            color: var(--primary-brown);
+            font-size: 2.5rem;
             margin-bottom: 1.5rem;
-            border-bottom: 3px solid #DAA520;
-            padding-bottom: 0.5rem;
+            border-bottom: 4px solid var(--gold);
+            padding-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
         section h3 {
-            color: #654321;
-            font-size: 1.3rem;
-            margin-top: 1.5rem;
-            margin-bottom: 1rem;
+            color: var(--dark-brown);
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1.5rem;
+            padding-left: 1rem;
+            border-left: 4px solid var(--gold);
         }
 
         .intro-text {
             font-size: 1.1rem;
             line-height: 1.8;
-            color: #555;
+            color: var(--text-light);
             margin-bottom: 1.5rem;
         }
 
+        /* Breed Grid */
         .breeds-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
             margin-top: 2rem;
         }
 
         .breed-card {
             background: linear-gradient(135deg, #fff8dc 0%, #ffe4b5 100%);
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-left: 5px solid #8B4513;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
         }
 
         .breed-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--gold);
+        }
+
+        .breed-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #daa520, #8B4513);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: var(--white);
+        }
+
+        .breed-info {
+            padding: 1.5rem;
         }
 
         .breed-card h4 {
-            color: #8B4513;
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
+            color: var(--primary-brown);
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
         }
 
         .breed-card p {
-            color: #666;
+            color: var(--text-light);
             font-size: 0.95rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.8rem;
+            line-height: 1.6;
         }
 
-        .breed-size {
+        .breed-specs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .breed-tag {
             display: inline-block;
-            background: #DAA520;
+            background: var(--gold);
             color: white;
-            padding: 0.3rem 0.8rem;
+            padding: 0.4rem 1rem;
             border-radius: 20px;
             font-size: 0.85rem;
-            margin-top: 0.5rem;
+            font-weight: 600;
         }
 
+        /* Tips List */
         .tips-list {
             list-style: none;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
-        .tips-list li {
-            background: #f9f9f9;
-            padding: 1rem;
-            border-radius: 8px;
-            border-left: 4px solid #8B4513;
-            transition: background 0.3s ease;
-        }
-
-        .tips-list li:hover {
-            background: #f0f0f0;
-        }
-
-        .tips-list li:before {
-            content: "🐾 ";
-            margin-right: 0.5rem;
-            font-weight: bold;
-        }
-
-        .health-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
             margin-top: 1.5rem;
         }
 
-        .health-item {
-            background: linear-gradient(135deg, #fff8dc 0%, #ffe4b5 100%);
+        .tips-list li {
+            background: var(--bg-light);
             padding: 1.5rem;
             border-radius: 10px;
+            border-left: 5px solid var(--primary-brown);
+            transition: all 0.3s ease;
+            position: relative;
+            padding-left: 3rem;
+        }
+
+        .tips-list li::before {
+            content: "🐾";
+            position: absolute;
+            left: 1rem;
+            font-size: 1.5rem;
+            opacity: 0.7;
+        }
+
+        .tips-list li:hover {
+            background: #f0f0f0;
+            transform: translateX(5px);
+        }
+
+        /* Health Grid */
+        .health-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .health-item {
+            background: linear-gradient(135deg, #fff8dc 0%, #ffe4b5 100%);
+            padding: 2rem 1.5rem;
+            border-radius: 12px;
             text-align: center;
-            border: 2px solid #DAA520;
+            border: 2px solid var(--gold);
+            transition: all 0.3s ease;
+        }
+
+        .health-item:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            background: linear-gradient(135deg, #ffe4b5 0%, #ffd699 100%);
+        }
+
+        .health-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
         }
 
         .health-item h4 {
-            color: #8B4513;
-            margin-bottom: 0.5rem;
+            color: var(--primary-brown);
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
         }
 
         .health-item p {
-            color: #666;
+            color: var(--text-light);
             font-size: 0.95rem;
+            line-height: 1.6;
         }
 
+        /* CTA Section */
         .call-to-action {
             background: linear-gradient(135deg, #8B4513 0%, #654321 100%);
             color: white;
-            padding: 2rem;
-            border-radius: 10px;
+            padding: 3rem 2rem;
+            border-radius: 15px;
             text-align: center;
             margin-top: 2rem;
+            box-shadow: var(--shadow-lg);
         }
 
         .call-to-action h3 {
             color: white;
             margin-bottom: 1rem;
+            border-left: none;
+            font-size: 1.8rem;
+        }
+
+        .call-to-action p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
         }
 
         .call-to-action button {
-            background: #DAA520;
-            color: #333;
+            background: var(--gold);
+            color: var(--text-dark);
             border: none;
-            padding: 1rem 2rem;
-            font-size: 1rem;
+            padding: 1rem 2.5rem;
+            font-size: 1.05rem;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
-            margin: 0.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         .call-to-action button:hover {
-            background: #FFD700;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            background: var(--bright-gold);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
         }
 
+        .call-to-action button:active {
+            transform: translateY(-1px);
+        }
+
+        /* Footer */
         footer {
-            background: #333;
+            background: linear-gradient(90deg, #333 0%, #1a1a1a 100%);
             color: white;
             text-align: center;
-            padding: 2rem;
+            padding: 3rem 2rem;
             margin-top: 2rem;
         }
 
         footer p {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.8rem;
+            opacity: 0.9;
         }
 
         .social-links {
-            margin-top: 1rem;
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
         }
 
         .social-links a {
-            display: inline-block;
-            margin: 0 0.5rem;
-            color: #DAA520;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--gold);
+            color: var(--text-dark);
             text-decoration: none;
             font-weight: 600;
-            transition: color 0.3s ease;
+            border-radius: 50%;
+            transition: all 0.3s ease;
         }
 
         .social-links a:hover {
-            color: #FFD700;
+            background: var(--bright-gold);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
+        /* Responsive Design */
         @media (max-width: 768px) {
             header h1 {
-                font-size: 2rem;
+                font-size: 2.2rem;
+            }
+
+            header p {
+                font-size: 1rem;
             }
 
             nav {
                 gap: 1rem;
+                padding: 1rem 0;
+                position: relative;
+                top: 0;
+            }
+
+            nav a {
+                font-size: 0.9rem;
+                padding: 0.4rem 0.8rem;
             }
 
             section {
                 padding: 1.5rem;
+                margin-bottom: 1.5rem;
             }
 
             section h2 {
-                font-size: 1.5rem;
+                font-size: 1.8rem;
+                gap: 0.5rem;
+            }
+
+            section h3 {
+                font-size: 1.2rem;
             }
 
             .breeds-grid {
@@ -287,8 +456,41 @@
             .health-grid {
                 grid-template-columns: 1fr;
             }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .call-to-action button {
+                width: 100%;
+            }
         }
 
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            nav a {
+                display: block;
+                padding: 0.8rem;
+            }
+
+            section h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Accessibility */
         @media (prefers-reduced-motion: reduce) {
             * {
                 animation-duration: 0.01ms !important;
@@ -296,19 +498,53 @@
                 transition-duration: 0.01ms !important;
             }
         }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #5a4a3a 0%, #6b5a45 100%);
+            }
+
+            section {
+                background: #2a2a2a;
+                color: #f0f0f0;
+            }
+
+            .intro-text,
+            .breed-card p,
+            .health-item p {
+                color: #d0d0d0;
+            }
+        }
+
+        /* Loading Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        body {
+            animation: fadeIn 0.5s ease-in;
+        }
     </style>
 </head>
 <body>
+    <!-- Header -->
     <header>
         <h1>🐕 Dog's World</h1>
         <p>Your Complete Guide to Man's Best Friend</p>
     </header>
 
+    <!-- Navigation -->
     <nav>
         <a href="#breeds">Breeds</a>
-        <a href="#care">Care Guide</a>
-        <a href="#training">Training Tips</a>
-        <a href="#health">Health & Wellness</a>
+        <a href="#care">Care</a>
+        <a href="#training">Training</a>
+        <a href="#health">Health</a>
+        <a href="#behavior">Behavior</a>
         <a href="#fun">Fun Facts</a>
         <a href="#contact">Contact</a>
     </nav>
@@ -316,219 +552,428 @@
     <div class="container">
         <!-- Introduction Section -->
         <section>
-            <h2>Welcome to Dog's World</h2>
+            <h2>🐾 Welcome to Dog's World</h2>
             <p class="intro-text">
-                Dogs have been humanity's faithful companions for thousands of years. From loyal family pets to working assistance animals, dogs play an incredible role in our lives. This website is dedicated to providing comprehensive information about dog breeds, care, training, and everything you need to know to be the best dog owner possible.
+                Dogs have been humanity's most loyal companions for over 15,000 years. From energetic family pets to working service animals, dogs play an incredible role in our lives. Whether you're considering bringing a dog into your home or looking to deepen your relationship with your furry friend, this comprehensive guide is designed for you.
             </p>
             <p class="intro-text">
-                Whether you're a first-time dog owner or an experienced enthusiast, you'll find valuable resources and insights here to help you understand and care for your furry friend.
+                On this website, you'll find everything you need to know about dog breeds, nutrition, training, health care, behavior, and so much more. Our mission is to help pet owners make informed decisions and provide the best possible care for their beloved companions.
             </p>
         </section>
 
         <!-- Dog Breeds Section -->
         <section id="breeds">
-            <h2>Popular Dog Breeds</h2>
-            <p class="intro-text">Discover some of the most beloved dog breeds around the world:</p>
+            <h2>🏆 Popular Dog Breeds</h2>
+            <p class="intro-text">Discover some of the most beloved dog breeds around the world, each with unique characteristics and care requirements:</p>
+            
             <div class="breeds-grid">
                 <div class="breed-card">
-                    <h4>🐕 Golden Retriever</h4>
-                    <p>Friendly, intelligent, and devoted family dog</p>
-                    <p><strong>Temperament:</strong> Outgoing, even-tempered, friendly</p>
-                    <p><strong>Exercise Needs:</strong> High</p>
-                    <span class="breed-size">Large</span>
+                    <div class="breed-image">🐕 🏃</div>
+                    <div class="breed-info">
+                        <h4>Golden Retriever</h4>
+                        <p>Friendly, intelligent, and devoted family dog that excels as therapy and service animals.</p>
+                        <p><strong>Size:</strong> Large (55-75 lbs)</p>
+                        <p><strong>Lifespan:</strong> 10-12 years</p>
+                        <p><strong>Exercise:</strong> High - Needs 1-2 hours daily</p>
+                        <div class="breed-specs">
+                            <span class="breed-tag">Family-Friendly</span>
+                            <span class="breed-tag">Very Active</span>
+                        </div>
+                    </div>
                 </div>
+
                 <div class="breed-card">
-                    <h4>🐕 Labrador Retriever</h4>
-                    <p>Loyal, outgoing, and even-tempered companion</p>
-                    <p><strong>Temperament:</strong> Friendly, outgoing, active</p>
-                    <p><strong>Exercise Needs:</strong> High</p>
-                    <span class="breed-size">Large</span>
+                    <div class="breed-image">🐕 💪</div>
+                    <div class="breed-info">
+                        <h4>Labrador Retriever</h4>
+                        <p>Loyal, outgoing, and athletic companion perfect for active families and outdoor enthusiasts.</p>
+                        <p><strong>Size:</strong> Large (55-80 lbs)</p>
+                        <p><strong>Lifespan:</strong> 10-12 years</p>
+                        <p><strong>Exercise:</strong> High - Needs 1-2 hours daily</p>
+                        <div class="breed-specs">
+                            <span class="breed-tag">Intelligent</span>
+                            <span class="breed-tag">Playful</span>
+                        </div>
+                    </div>
                 </div>
+
                 <div class="breed-card">
-                    <h4>🐕 German Shepherd</h4>
-                    <p>Confident, intelligent, and extremely versatile</p>
-                    <p><strong>Temperament:</strong> Confident, courageous, intelligent</p>
-                    <p><strong>Exercise Needs:</strong> Very High</p>
-                    <span class="breed-size">Large</span>
+                    <div class="breed-image">🐕 🛡️</div>
+                    <div class="breed-info">
+                        <h4>German Shepherd</h4>
+                        <p>Confident, intelligent, and versatile working dog used in police, military, and search-and-rescue.</p>
+                        <p><strong>Size:</strong> Large (50-90 lbs)</p>
+                        <p><strong>Lifespan:</strong> 9-13 years</p>
+                        <p><strong>Exercise:</strong> Very High - Needs 2+ hours daily</p>
+                        <div class="breed-specs">
+                            <span class="breed-tag">Highly Trainable</span>
+                            <span class="breed-tag">Working Dog</span>
+                        </div>
+                    </div>
                 </div>
+
                 <div class="breed-card">
-                    <h4>🐕 French Bulldog</h4>
-                    <p>Playful, alert, and affectionate companion</p>
-                    <p><strong>Temperament:</strong> Playful, alert, affectionate</p>
-                    <p><strong>Exercise Needs:</strong> Moderate</p>
-                    <span class="breed-size">Small</span>
+                    <div class="breed-image">🐕 😊</div>
+                    <div class="breed-info">
+                        <h4>French Bulldog</h4>
+                        <p>Playful, alert, and affectionate companion perfect for apartment living and first-time owners.</p>
+                        <p><strong>Size:</strong> Small (24-28 lbs)</p>
+                        <p><strong>Lifespan:</strong> 10-12 years</p>
+                        <p><strong>Exercise:</strong> Moderate - Needs 30-45 mins daily</p>
+                        <div class="breed-specs">
+                            <span class="breed-tag">Apartment-Friendly</span>
+                            <span class="breed-tag">Loyal</span>
+                        </div>
+                    </div>
                 </div>
+
                 <div class="breed-card">
-                    <h4>🐕 Beagle</h4>
-                    <p>Merry, curious, and determined hunting dog</p>
-                    <p><strong>Temperament:</strong> Merry, curious, determined</p>
-                    <p><strong>Exercise Needs:</strong> High</p>
-                    <span class="breed-size">Small</span>
+                    <div class="breed-image">🐕 🔍</div>
+                    <div class="breed-info">
+                        <h4>Beagle</h4>
+                        <p>Merry, curious, and determined hunting dog with an incredible sense of smell and pack mentality.</p>
+                        <p><strong>Size:</strong> Small (20-30 lbs)</p>
+                        <p><strong>Lifespan:</strong> 12-15 years</p>
+                        <p><strong>Exercise:</strong> High - Needs 1+ hour daily</p>
+                        <div class="breed-specs">
+                            <span class="breed-tag">Scent-Oriented</span>
+                            <span class="breed-tag">Social</span>
+                        </div>
+                    </div>
                 </div>
+
                 <div class="breed-card">
-                    <h4>🐕 Poodle</h4>
-                    <p>Exceptional intelligence and athletic ability</p>
-                    <p><strong>Temperament:</strong> Intelligent, active, elegant</p>
-                    <p><strong>Exercise Needs:</strong> High</p>
-                    <span class="breed-size">Medium/Large</span>
+                    <div class="breed-image">🐕 👑</div>
+                    <div class="breed-info">
+                        <h4>Poodle</h4>
+                        <p>Exceptional intelligence and athletic ability make poodles excellent competitors and family dogs.</p>
+                        <p><strong>Size:</strong> Medium/Large (45-70 lbs)</p>
+                        <p><strong>Lifespan:</strong> 12-15 years</p>
+                        <p><strong>Exercise:</strong> High - Needs 1-2 hours daily</p>
+                        <div class="breed-specs">
+                            <span class="breed-tag">Hypoallergenic</span>
+                            <span class="breed-tag">Intelligent</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Dog Care Section -->
         <section id="care">
-            <h2>Dog Care Guide</h2>
-            <p class="intro-text">Proper care is essential to keep your dog healthy and happy. Here are the key aspects of dog care:</p>
+            <h2>🍽️ Dog Care Guide</h2>
+            <p class="intro-text">Proper care is essential to keep your dog healthy, happy, and thriving. Here are the key aspects every pet owner should understand:</p>
             
-            <h3>🍽️ Nutrition</h3>
+            <h3>🥗 Nutrition & Feeding</h3>
             <ul class="tips-list">
-                <li>Feed high-quality dog food appropriate for your dog's age and size</li>
-                <li>Provide fresh water daily</li>
-                <li>Avoid toxic foods like chocolate, grapes, and onions</li>
-                <li>Consider consulting a veterinarian about the best diet</li>
+                <li><strong>Quality Diet:</strong> Feed high-quality dog food appropriate for your dog's age, size, and activity level</li>
+                <li><strong>Portion Control:</strong> Follow feeding guidelines to maintain healthy weight; obesity is common in dogs</li>
+                <li><strong>Fresh Water:</strong> Provide clean, fresh water at all times throughout the day</li>
+                <li><strong>Toxic Foods:</strong> Avoid chocolate, grapes, raisins, onions, garlic, xylitol, and avocado</li>
+                <li><strong>Supplements:</strong> Consult your vet about supplements like glucosamine for joint health</li>
+                <li><strong>Special Diets:</strong> Consider grain-free, limited ingredient, or prescription diets if recommended</li>
             </ul>
 
-            <h3>🏃 Exercise</h3>
+            <h3>🏃 Exercise & Activity</h3>
             <ul class="tips-list">
-                <li>Dogs need daily physical activity to stay healthy</li>
-                <li>Exercise duration depends on breed and age</li>
-                <li>Include both walks and playtime</li>
-                <li>Mental stimulation is just as important as physical exercise</li>
+                <li><strong>Daily Exercise:</strong> Dogs need regular physical activity to maintain health and burn energy</li>
+                <li><strong>Breed-Specific Needs:</strong> Exercise requirements vary significantly by breed and age</li>
+                <li><strong>Variety:</strong> Mix walks, fetch, swimming, and agility for physical and mental stimulation</li>
+                <li><strong>Mental Enrichment:</strong> Puzzle toys, scent games, and training keep minds sharp</li>
+                <li><strong>Socialization:</strong> Regular interaction with other dogs and people is crucial for development</li>
+                <li><strong>Outdoor Time:</strong> Let your dog explore and sniff - this is mental exercise too</li>
             </ul>
 
-            <h3>🛁 Grooming</h3>
+            <h3>🛁 Grooming & Hygiene</h3>
             <ul class="tips-list">
-                <li>Brush your dog's coat regularly</li>
-                <li>Bathe your dog every 4-6 weeks or as needed</li>
-                <li>Trim nails regularly</li>
-                <li>Clean ears and brush teeth regularly</li>
+                <li><strong>Coat Brushing:</strong> Brush your dog's coat regularly (daily for long-haired breeds)</li>
+                <li><strong>Bathing:</strong> Bathe every 4-6 weeks or as needed, using dog-specific shampoo</li>
+                <li><strong>Nail Trimming:</strong> Trim nails every 4-6 weeks or when you hear them clicking on floors</li>
+                <li><strong>Ear Care:</strong> Clean ears weekly to prevent infections, especially for floppy-eared breeds</li>
+                <li><strong>Dental Health:</strong> Brush teeth 3-4 times weekly and provide dental chews</li>
+                <li><strong>Professional Grooming:</strong> Consider professional grooming every 6-8 weeks for maintenance</li>
+            </ul>
+
+            <h3>🏠 Home Environment</h3>
+            <ul class="tips-list">
+                <li><strong>Safe Space:</strong> Create a designated safe area (crate, bed, room) where your dog can retreat</li>
+                <li><strong>Puppy Proofing:</strong> Remove hazards, secure cords, and eliminate access to toxic items</li>
+                <li><strong>Climate Control:</strong> Maintain comfortable temperature; dogs can overheat in extreme heat</li>
+                <li><strong>Sleeping Area:</strong> Provide a comfortable bed or crate for quality rest</li>
+                <li><strong>Toys & Enrichment:</strong> Rotate toys to keep your dog mentally stimulated and engaged</li>
+                <li><strong>Quiet Time:</strong> Ensure your dog has a quiet place to rest away from household chaos</li>
             </ul>
         </section>
 
         <!-- Training Section -->
         <section id="training">
-            <h2>Training Tips for Your Dog</h2>
-            <p class="intro-text">Proper training is crucial for a well-behaved and happy dog. Here are effective training strategies:</p>
+            <h2>🎓 Training Tips for Your Dog</h2>
+            <p class="intro-text">Proper training is crucial for a well-behaved, happy, and safe dog. Training strengthens your bond and provides mental stimulation. Here are effective training strategies:</p>
             
-            <h3>Basic Obedience Commands</h3>
+            <h3>📚 Basic Obedience Commands</h3>
             <ul class="tips-list">
-                <li><strong>Sit:</strong> One of the easiest commands to teach</li>
-                <li><strong>Stay:</strong> Essential for safety in dangerous situations</li>
-                <li><strong>Come:</strong> Critical for recall and safety</li>
-                <li><strong>Down:</strong> Useful for calm behavior indoors</li>
-                <li><strong>Leave It:</strong> Prevents eating dangerous items</li>
+                <li><strong>Sit:</strong> One of the easiest and most useful commands to teach; start with this</li>
+                <li><strong>Stay:</strong> Essential for safety in dangerous situations like near roads</li>
+                <li><strong>Come (Recall):</strong> Critical for safety; can prevent escape or dangerous situations</li>
+                <li><strong>Down:</strong> Useful for calm behavior indoors and in public settings</li>
+                <li><strong>Leave It:</strong> Prevents eating harmful items or consuming toxic substances</li>
+                <li><strong>Heel:</strong> Teaches proper leash walking without pulling or lagging</li>
             </ul>
 
-            <h3>Training Best Practices</h3>
+            <h3>🏆 Training Best Practices</h3>
             <ul class="tips-list">
-                <li>Start training early while your dog is young</li>
-                <li>Use positive reinforcement and treats as rewards</li>
-                <li>Keep training sessions short (5-10 minutes)</li>
-                <li>Be consistent with commands and rules</li>
-                <li>Practice patience and never use harsh punishment</li>
+                <li><strong>Start Early:</strong> Begin training immediately; puppies can learn basic commands at 7-8 weeks</li>
+                <li><strong>Positive Reinforcement:</strong> Use treats, praise, and play as rewards - this is most effective</li>
+                <li><strong>Short Sessions:</strong> Keep training 5-10 minutes; dogs have limited attention spans</li>
+                <li><strong>Consistency:</strong> Use same commands and rules; involve all family members</li>
+                <li><strong>Patience:</strong> Never use harsh punishment; this damages trust and teaches fear</li>
+                <li><strong>Frequency:</strong> Train 2-3 times daily for best results; consistency is key</li>
+            </ul>
+
+            <h3>🐶 Problem Behaviors</h3>
+            <ul class="tips-list">
+                <li><strong>Jumping:</strong> Ignore jumping; only give attention when all four paws are on ground</li>
+                <li><strong>Biting/Nipping:</strong> Redirect with toys; yelp loudly if bitten to teach bite inhibition</li>
+                <li><strong>Excessive Barking:</strong> Identify trigger; provide mental stimulation and training</li>
+                <li><strong>Separation Anxiety:</strong> Gradually increase alone time; create safe space with comfort items</li>
+                <li><strong>Pulling on Leash:</strong> Stop walking when dog pulls; resume when leash is slack</li>
+                <li><strong>Chewing Destructively:</strong> Provide appropriate chew toys and increase exercise and play</li>
+            </ul>
+
+            <h3>🎯 Advanced Training</h3>
+            <ul class="tips-list">
+                <li><strong>Crate Training:</strong> Essential for housebreaking and creating safe confinement space</li>
+                <li><strong>Leash Training:</strong> Teach loose-leash walking for enjoyable outdoor time</li>
+                <li><strong>Socialization:</strong> Expose puppies to various people, animals, sounds, and environments</li>
+                <li><strong>Clicker Training:</strong> Use a clicker to mark desired behavior followed by rewards</li>
+                <li><strong>Professional Help:</strong> Consider certified trainers for behavioral issues or advanced skills</li>
+                <li><strong>Continued Learning:</strong> Dogs need ongoing mental stimulation throughout their lives</li>
+            </ul>
+        </section>
+
+        <!-- Behavior Section -->
+        <section id="behavior">
+            <h2>🧠 Understanding Dog Behavior</h2>
+            <p class="intro-text">Understanding your dog's behavior helps you communicate better and build a stronger bond. Dogs use body language, vocalizations, and actions to express their needs and emotions.</p>
+            
+            <h3>📢 Communication Signs</h3>
+            <ul class="tips-list">
+                <li><strong>Tail Wagging:</strong> Not always happy - context matters; slow wag with low tail can indicate uncertainty</li>
+                <li><strong>Play Bow:</strong> Front legs stretched, rear in air - clear invitation to play</li>
+                <li><strong>Ear Positions:</strong> Relaxed ears indicate calmness; back ears may show fear; forward alert attention</li>
+                <li><strong>Yawning:</strong> Can indicate stress, not just tiredness; watch for other stress signals</li>
+                <li><strong>Whining:</strong> Can mean excitement, anxiety, pain, or a request for attention</li>
+                <li><strong>Body Posture:</strong> Stiff body and raised hackles indicate tension; relaxed posture shows comfort</li>
+            </ul>
+
+            <h3>😨 Stress & Anxiety Signs</h3>
+            <ul class="tips-list">
+                <li><strong>Panting:</strong> Excessive panting when cool may indicate stress or anxiety</li>
+                <li><strong>Pacing:</strong> Walking back and forth repeatedly shows restlessness or worry</li>
+                <li><strong>Avoidance:</strong> Hiding, sinking, or turning away indicates fear or discomfort</li>
+                <li><strong>Lip Licking:</strong> Frequent lip licking can signal stress even without other obvious signs</li>
+                <li><strong>Loss of Appetite:</strong> Refusing to eat often indicates anxiety or medical issues</li>
+                <li><strong>Destructive Behavior:</strong> Chewing, scratching may result from stress, not just boredom</li>
+            </ul>
+
+            <h3>💭 Personality Types</h3>
+            <ul class="tips-list">
+                <li><strong>Confident Dogs:</strong> Approach situations calmly; make great family pets</li>
+                <li><strong>Shy/Fearful Dogs:</strong> Need patient socialization and a predictable routine</li>
+                <li><strong>Aggressive Dogs:</strong> May require professional behavioral training and management</li>
+                <li><strong>Anxious Dogs:</strong> Benefit from exercise, mental stimulation, and sometimes medication</li>
+                <li><strong>Independent Dogs:</strong> Some breeds naturally prefer independent thinking</li>
+                <li><strong>Velcro Dogs:</strong> Breed predisposed to following owners everywhere; need appropriate outlets</li>
             </ul>
         </section>
 
         <!-- Health & Wellness Section -->
         <section id="health">
-            <h2>Health & Wellness</h2>
-            <p class="intro-text">Your dog's health is paramount. Here are essential health considerations:</p>
+            <h2>💚 Health & Wellness</h2>
+            <p class="intro-text">Your dog's health is paramount. Preventive care, regular checkups, and early detection of problems can add years to your dog's life. Here are essential health considerations:</p>
             
             <div class="health-grid">
                 <div class="health-item">
-                    <h4>💉 Vaccinations</h4>
-                    <p>Keep your dog's vaccinations up to date to prevent serious diseases.</p>
+                    <div class="health-icon">💉</div>
+                    <h4>Vaccinations</h4>
+                    <p>Keep vaccinations up to date to prevent serious diseases like rabies, distemper, and parvo. Follow your vet's recommended schedule.</p>
                 </div>
+
                 <div class="health-item">
-                    <h4>🦷 Dental Care</h4>
-                    <p>Regular teeth brushing prevents dental disease and infections.</p>
+                    <div class="health-icon">🦷</div>
+                    <h4>Dental Care</h4>
+                    <p>Regular teeth brushing (3-4 times weekly) and dental cleanings prevent disease and infections. Dental health affects overall health.</p>
                 </div>
+
                 <div class="health-item">
-                    <h4>🏥 Veterinary Checkups</h4>
-                    <p>Annual vet visits ensure early detection of health issues.</p>
+                    <div class="health-icon">🏥</div>
+                    <h4>Veterinary Checkups</h4>
+                    <p>Annual vet visits for adults, twice yearly for seniors (7+). Early detection of health issues can save lives and money.</p>
                 </div>
+
                 <div class="health-item">
-                    <h4>🧬 Parasite Prevention</h4>
-                    <p>Protect against fleas, ticks, and worms with preventative medication.</p>
+                    <div class="health-icon">🧬</div>
+                    <h4>Parasite Prevention</h4>
+                    <p>Protect against fleas, ticks, and intestinal worms with preventative medication. These parasites can cause serious health issues.</p>
                 </div>
+
                 <div class="health-item">
-                    <h4>⚖️ Weight Management</h4>
-                    <p>Maintain a healthy weight to prevent obesity-related diseases.</p>
+                    <div class="health-icon">⚖️</div>
+                    <h4>Weight Management</h4>
+                    <p>Maintain a healthy weight to prevent obesity-related diseases like diabetes, arthritis, and heart problems. An estimated 56% of dogs are overweight.</p>
                 </div>
+
                 <div class="health-item">
-                    <h4>💤 Rest & Sleep</h4>
-                    <p>Dogs need 12-14 hours of sleep daily for proper health.</p>
+                    <div class="health-icon">💤</div>
+                    <h4>Rest & Sleep</h4>
+                    <p>Dogs need 12-14 hours of sleep daily for proper health. Puppies and seniors need even more rest to support overall wellbeing.</p>
+                </div>
+
+                <div class="health-item">
+                    <div class="health-icon">🏃</div>
+                    <h4>Exercise Benefits</h4>
+                    <p>Regular exercise maintains healthy weight, strengthens bones and joints, and improves cardiovascular health. Mental exercise is equally important.</p>
+                </div>
+
+                <div class="health-item">
+                    <div class="health-icon">🧘</div>
+                    <h4>Stress Reduction</h4>
+                    <p>Chronic stress impairs immune function and contributes to behavioral problems. Create calm, predictable environments for your dog.</p>
+                </div>
+
+                <div class="health-item">
+                    <div class="health-icon">📋</div>
+                    <h4>Health Monitoring</h4>
+                    <p>Track changes in eating, drinking, bathroom habits, energy levels, and behavior. Report changes to your vet promptly.</p>
                 </div>
             </div>
+
+            <h3>⚠️ Common Health Issues by Breed</h3>
+            <ul class="tips-list">
+                <li><strong>Large Breeds:</strong> Hip dysplasia, elbow dysplasia, heart disease, bloat (GDV)</li>
+                <li><strong>Small Breeds:</strong> Dental disease, patellar luxation, heart murmurs, tracheal collapse</li>
+                <li><strong>Flat-Faced Breeds:</strong> Brachycephalic syndrome, breathing difficulties, eye problems</li>
+                <li><strong>All Breeds:</strong> Cancer, diabetes, arthritis, allergies - awareness helps with early detection</li>
+                <li><strong>Age-Related:</strong> Cognitive dysfunction in seniors; discuss senior care with your vet</li>
+                <li><strong>Genetic Testing:</strong> Consider genetic tests for breed-prone conditions before symptoms appear</li>
+            </ul>
+
+            <h3>🚨 When to Call the Vet</h3>
+            <ul class="tips-list">
+                <li><strong>Emergencies:</strong> Severe bleeding, difficulty breathing, unconsciousness, severe trauma, toxin ingestion</li>
+                <li><strong>Urgent Issues:</strong> Persistent vomiting/diarrhea, inability to urinate, acute lameness, signs of extreme pain</li>
+                <li><strong>Behavioral Changes:</strong> Sudden aggression, confusion, anxiety - could indicate medical issues</li>
+                <li><strong>Eating/Drinking Changes:</strong> Sudden loss of appetite or excessive drinking can indicate serious conditions</li>
+                <li><strong>Aging Signs:</strong> Senior dogs showing confusion, incontinence, or mobility issues need vet evaluation</li>
+                <li><strong>When in Doubt:</strong> Always contact your vet - better safe than sorry with your pet's health</li>
+            </ul>
         </section>
 
         <!-- Fun Facts Section -->
         <section id="fun">
-            <h2>Fascinating Dog Facts</h2>
+            <h2>🎉 Fascinating Dog Facts</h2>
+            <p class="intro-text">Learn amazing things about our canine companions:</p>
             <ul class="tips-list">
-                <li>Dogs have a sense of time and know when their owners are gone</li>
-                <li>A dog's sense of smell is 10,000 to 100,000 times more sensitive than humans</li>
-                <li>Dogs can understand approximately 250 words and gestures</li>
-                <li>Puppies are born with closed eyes and open them after 10-14 days</li>
-                <li>Dogs dream just like humans, often about their owners</li>
-                <li>A dog's mouth exerts 200 pounds of pressure per square inch when they bite</li>
-                <li>Dogs see the world in shades of blue and yellow, not color like humans</li>
-                <li>The oldest dog ever recorded lived to be 29 years old</li>
+                <li><strong>Time Sense:</strong> Dogs have a sense of time and know when their owners are gone; they experience time differently than humans</li>
+                <li><strong>Super Smell:</strong> Dogs' sense of smell is 10,000 to 100,000 times more sensitive than humans - they have 300 million olfactory receptors</li>
+                <li><strong>Language Skills:</strong> Dogs can understand approximately 250 words and gestures, with some learning 1,000+ words</li>
+                <li><strong>Birth:</strong> Puppies are born with closed eyes and open them after 10-14 days of age</li>
+                <li><strong>Dreams:</strong> Dogs dream just like humans, often about their owners and daily experiences during REM sleep</li>
+                <li><strong>Bite Force:</strong> A dog's mouth exerts 200 pounds of pressure per square inch when they bite - some breeds exceed this</li>
+                <li><strong>Color Vision:</strong> Dogs see the world primarily in shades of blue and yellow, not in full color like humans</li>
+                <li><strong>Record Lifespan:</strong> The oldest dog ever recorded (Bluey) lived to be 29 years and 5 months old</li>
+                <li><strong>Hear Range:</strong> Dogs can hear frequencies up to 65,000 Hz, while humans max out at 20,000 Hz</li>
+                <li><strong>Unique Print:</strong> Each dog has a unique nose print pattern, similar to human fingerprints</li>
             </ul>
         </section>
 
         <!-- Call to Action -->
         <section>
             <div class="call-to-action">
-                <h3>Ready to Learn More About Dogs?</h3>
-                <p>Join our community of dog lovers and get tips, updates, and stories delivered to your inbox!</p>
-                <button onclick="alert('Thank you for your interest! Subscribe feature coming soon.')">Subscribe Now</button>
-                <button onclick="alert('Get in touch with us! Contact form coming soon.')">Contact Us</button>
+                <h3>Ready to Learn More About Dogs? 🐾</h3>
+                <p>Join our community of passionate dog lovers and get exclusive tips, breed guides, training advice, and heartwarming stories delivered regularly!</p>
+                <div class="button-group">
+                    <button onclick="showAlert('Thank you for your interest! Our subscription feature is coming soon.')">Subscribe Now</button>
+                    <button onclick="showAlert('We\'d love to hear from you! Contact form is coming soon.')">Get in Touch</button>
+                </div>
             </div>
         </section>
     </div>
 
+    <!-- Footer -->
     <footer id="contact">
         <p>&copy; 2024 Dog's World. All rights reserved.</p>
-        <p>Dedicated to celebrating the joy and companionship of dogs.</p>
+        <p>Dedicated to celebrating the joy and companionship of dogs everywhere.</p>
         <div class="social-links">
-            <a href="#">Facebook</a>
-            <a href="#">Twitter</a>
-            <a href="#">Instagram</a>
-            <a href="#">YouTube</a>
+            <a href="#" title="Facebook">📱</a>
+            <a href="#" title="Twitter">🐦</a>
+            <a href="#" title="Instagram">📷</a>
+            <a href="#" title="YouTube">🎬</a>
         </div>
+        <p style="margin-top: 1.5rem; font-size: 0.9rem;">
+            <em>Disclaimer: This website provides general information about dogs. For medical concerns, always consult with a licensed veterinarian.</em>
+        </p>
     </footer>
 
     <script>
+        // Alert function for CTA buttons
+        function showAlert(message) {
+            alert(message);
+        }
+
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+                const href = this.getAttribute('href');
+                if (href !== '#') {
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
                 }
             });
         });
 
-        // Add scroll effect to header
+        // Dynamic header shadow on scroll
         let lastScrollTop = 0;
         const header = document.querySelector('header');
+        const nav = document.querySelector('nav');
 
         window.addEventListener('scroll', () => {
             let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // Update header shadow
             if (scrollTop > 50) {
-                header.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.2)';
+                header.style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.2)';
+                nav.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.15)';
             } else {
-                header.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+                header.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.1)';
+                nav.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
             }
+            
             lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
         });
 
-        console.log('Dog\'s World website loaded successfully!');
+        // Intersection Observer for fade-in effects
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeIn 0.6s ease-in forwards';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        // Observe all sections
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Console message
+        console.log('🐕 Welcome to Dog\'s World! Made with ❤️ for dog lovers everywhere.');
     </script>
 </body>
 </html>
