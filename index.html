@@ -1,961 +1,782 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Sistema Profesional de Facturación</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
-<style>
-
-:root{
-
-  --bg:#0b1120;
-  --card:#111827;
-  --card2:#1f2937;
-
-  --primary:#2563eb;
-  --primary-hover:#1d4ed8;
-
-  --success:#16a34a;
-  --danger:#dc2626;
-
-  --text:#f8fafc;
-  --muted:#94a3b8;
-
-  --border:rgba(255,255,255,.08);
-
-  --shadow:0 20px 40px rgba(0,0,0,.35);
-}
-
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
-body{
-
-  font-family:"Inter",sans-serif;
-
-  background:
-  radial-gradient(circle at top left,
-  rgba(37,99,235,.15),
-  transparent 30%),
-
-  radial-gradient(circle at bottom right,
-  rgba(16,185,129,.08),
-  transparent 25%),
-
-  var(--bg);
-
-  color:var(--text);
-
-  min-height:100vh;
-}
-
-header{
-  padding:30px;
-}
-
-.header-container{
-
-  max-width:1700px;
-
-  margin:auto;
-
-  background:rgba(17,24,39,.8);
-
-  backdrop-filter:blur(18px);
-
-  border:1px solid var(--border);
-
-  border-radius:28px;
-
-  padding:28px;
-
-  display:flex;
-
-  justify-content:space-between;
-
-  align-items:center;
-
-  gap:20px;
-
-  box-shadow:var(--shadow);
-}
-
-.brand h1{
-
-  font-size:2rem;
-
-  font-weight:800;
-}
-
-.brand p{
-
-  margin-top:8px;
-
-  color:var(--muted);
-}
-
-.button-group{
-
-  display:flex;
-
-  gap:12px;
-
-  flex-wrap:wrap;
-}
-
-.excel-btn{
-
-  background:var(--success);
-
-  color:white;
-
-  border:none;
-
-  padding:15px 24px;
-
-  border-radius:16px;
-
-  font-weight:700;
-
-  cursor:pointer;
-
-  transition:.25s;
-}
-
-.excel-btn:hover{
-
-  transform:translateY(-2px);
-}
-
-.copy-btn{
-
-  background:var(--primary);
-}
-
-main{
-
-  max-width:1700px;
-
-  margin:auto;
-
-  padding:0 30px 40px;
-}
-
-.card{
-
-  background:rgba(17,24,39,.8);
-
-  backdrop-filter:blur(18px);
-
-  border:1px solid var(--border);
-
-  border-radius:28px;
-
-  padding:28px;
-
-  box-shadow:var(--shadow);
-}
-
-.top-section{
-
-  display:flex;
-
-  justify-content:space-between;
-
-  align-items:center;
-
-  gap:20px;
-
-  flex-wrap:wrap;
-
-  margin-bottom:25px;
-}
-
-.factura-count{
-
-  background:var(--card2);
-
-  border:1px solid var(--border);
-
-  padding:12px 18px;
-
-  border-radius:14px;
-
-  font-weight:600;
-}
-
-form{
-
-  display:flex;
-
-  gap:15px;
-
-  flex-wrap:wrap;
-
-  margin-bottom:25px;
-}
-
-input[type="file"],
-input[type="text"]{
-
-  flex:1;
-
-  min-width:240px;
-
-  background:#0f172a;
-
-  color:white;
-
-  border:1px solid var(--border);
-
-  border-radius:16px;
-
-  padding:15px;
-
-  outline:none;
-}
-
-.upload-btn{
-
-  background:var(--primary);
-
-  color:white;
-
-  border:none;
-
-  padding:15px 24px;
-
-  border-radius:16px;
-
-  font-weight:700;
-
-  cursor:pointer;
-}
-
-.table-container{
-
-  overflow:auto;
-
-  border-radius:20px;
-
-  border:1px solid var(--border);
-}
-
-table{
-
-  width:100%;
-
-  min-width:2400px;
-
-  border-collapse:collapse;
-
-  background:#0f172a;
-}
-
-thead{
-
-  background:#172554;
-}
-
-th{
-
-  position:sticky;
-
-  top:0;
-
-  padding:14px 12px;
-
-  font-size:.8rem;
-
-  text-transform:uppercase;
-
-  border-bottom:1px solid var(--border);
-}
-
-td{
-
-  padding:12px;
-
-  text-align:center;
-
-  font-size:.84rem;
-
-  border-bottom:1px solid rgba(255,255,255,.05);
-}
-
-tbody tr:nth-child(even){
-
-  background:rgba(255,255,255,.02);
-}
-
-tbody tr:hover{
-
-  background:rgba(37,99,235,.08);
-}
-
-.delete-btn{
-
-  background:rgba(220,38,38,.15);
-
-  color:#fecaca;
-
-  border:1px solid rgba(220,38,38,.2);
-
-  padding:8px 12px;
-
-  border-radius:10px;
-
-  cursor:pointer;
-}
-
-.loading{
-
-  position:fixed;
-
-  inset:0;
-
-  background:rgba(0,0,0,.65);
-
-  display:none;
-
-  align-items:center;
-
-  justify-content:center;
-
-  z-index:999;
-}
-
-.loading-box{
-
-  background:var(--card);
-
-  padding:30px 40px;
-
-  border-radius:24px;
-
-  text-align:center;
-}
-
-.spinner{
-
-  width:55px;
-  height:55px;
-
-  border:5px solid rgba(255,255,255,.15);
-
-  border-top:5px solid var(--primary);
-
-  border-radius:50%;
-
-  margin:auto auto 15px;
-
-  animation:spin 1s linear infinite;
-}
-
-@keyframes spin{
-
-  to{
-    transform:rotate(360deg);
-  }
-}
-
-footer{
-
-  text-align:center;
-
-  color:var(--muted);
-
-  padding:30px;
-}
-
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feline World - Everything About Cats</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #ff6b6b;
+      --primary-dark: #ee5a52;
+      --secondary: #4ecdc4;
+      --accent: #ffe66d;
+      --dark: #1a1a2e;
+      --card: #16213e;
+      --light: #f7f7f7;
+      --text: #2d3436;
+      --muted: #636e72;
+      --border: rgba(0, 0, 0, 0.1);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.2);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background: var(--light);
+      line-height: 1.6;
+    }
+
+    /* Navigation */
+    nav {
+      background: white;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 6rem 2rem;
+      text-align: center;
+    }
+
+    .hero-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      font-weight: 800;
+    }
+
+    .hero p {
+      font-size: 1.3rem;
+      margin-bottom: 2rem;
+      opacity: 0.95;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .cta-button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Section */
+    section {
+      padding: 4rem 2rem;
+    }
+
+    section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--dark);
+    }
+
+    section > .container > p {
+      font-size: 1.1rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+      max-width: 800px;
+    }
+
+    /* Grid Layouts */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    }
+
+    /* Cards */
+    .card {
+      background: white;
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      transition: all 0.3s;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
+      margin-right: 1rem;
+    }
+
+    .card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--dark);
+    }
+
+    .card p {
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    /* Highlight Section */
+    .highlight {
+      background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(78, 205, 196, 0.1) 100%);
+      border-left: 4px solid var(--primary);
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin: 2rem 0;
+    }
+
+    /* Breeds Grid */
+    .breed-card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: all 0.3s;
+    }
+
+    .breed-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .breed-image {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+    }
+
+    .breed-info {
+      padding: 1.5rem;
+    }
+
+    .breed-info h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: var(--dark);
+    }
+
+    .breed-info p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .trait {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--text);
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-top: 0.8rem;
+      margin-right: 0.5rem;
+      font-weight: 600;
+    }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      padding: 2rem 0;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 100%;
+      background: var(--primary);
+    }
+
+    .timeline-item {
+      margin-bottom: 3rem;
+      width: 45%;
+    }
+
+    .timeline-item:nth-child(odd) {
+      margin-left: 0;
+      text-align: right;
+      padding-right: 3rem;
+    }
+
+    .timeline-item:nth-child(even) {
+      margin-left: 55%;
+      text-align: left;
+      padding-left: 3rem;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 20px;
+      background: var(--primary);
+      border: 4px solid white;
+      border-radius: 50%;
+      top: 1.5rem;
+    }
+
+    .timeline-item:nth-child(even) .timeline-dot {
+      left: 50%;
+    }
+
+    .timeline-content {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+    }
+
+    .timeline-content h3 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--dark);
+      color: white;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      text-align: left;
+      margin-bottom: 2rem;
+    }
+
+    .footer-section h4 {
+      margin-bottom: 1rem;
+      color: var(--primary);
+    }
+
+    .footer-section ul {
+      list-style: none;
+    }
+
+    .footer-section ul li {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-section a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-section a:hover {
+      color: var(--primary);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 2rem;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .nav-links {
+        gap: 1rem;
+        font-size: 0.9rem;
+      }
+
+      .timeline::before {
+        left: 20px;
+      }
+
+      .timeline-item,
+      .timeline-item:nth-child(odd),
+      .timeline-item:nth-child(even) {
+        width: 100%;
+        margin: 0;
+        padding: 0 0 0 80px;
+        text-align: left;
+      }
+
+      .timeline-dot {
+        left: 20px;
+      }
+
+      section h2 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="loading" id="loading">
-
-  <div class="loading-box">
-
-    <div class="spinner"></div>
-
-    <p>Procesando XML...</p>
-
-  </div>
-
-</div>
-
-<header>
-
-  <div class="header-container">
-
-    <div class="brand">
-
-      <h1>Sistema Profesional de Facturación</h1>
-
-      <p>Gestión avanzada de facturas XML</p>
-
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-container">
+      <div class="logo">🐱 Feline World</div>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#breeds">Breeds</a></li>
+        <li><a href="#care">Care</a></li>
+        <li><a href="#history">History</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
     </div>
+  </nav>
 
-    <div class="button-group">
-
-      <button
-        class="excel-btn"
-        onclick="exportToExcel()"
-      >
-        Exportar Excel
-      </button>
-
-      <button
-        class="excel-btn copy-btn"
-        onclick="copyAsExcel()"
-      >
-        Copiar
-      </button>
-
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Welcome to the World of Cats</h1>
+      <p>Discover fascinating facts, care tips, and everything you need to know about our feline companions</p>
+      <button class="cta-button">Explore Now</button>
     </div>
+  </section>
 
-  </div>
+  <!-- About Section -->
+  <section id="about">
+    <div class="container">
+      <h2>About Cats</h2>
+      <p>Cats are one of the most popular domesticated animals worldwide. Known for their independence, agility, and affectionate nature, they have been human companions for thousands of years.</p>
 
-</header>
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-icon">🧬</span>
+            <h3>Biology</h3>
+          </div>
+          <p>Cats are obligate carnivores with a metabolism designed to digest meat. They have excellent night vision, powerful hearing, and incredibly sharp reflexes that make them exceptional hunters.</p>
+        </div>
 
-<main>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-icon">🧠</span>
+            <h3>Behavior</h3>
+          </div>
+          <p>Cats are intelligent, curious, and independent animals. They communicate through meowing, purring, and body language. Each cat has a unique personality and preferences.</p>
+        </div>
 
-  <div class="card">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-icon">❤️</span>
+            <h3>Temperament</h3>
+          </div>
+          <p>While known for independence, cats form strong bonds with their humans. They show affection through head bunting, purring, and slow blinks. Every cat is unique in how they express love.</p>
+        </div>
 
-    <div class="top-section">
-
-      <h2>Facturas Registradas</h2>
-
-      <div class="factura-count" id="factura-count">
-
-        Facturas leídas: 0
-
+        <div class="card">
+          <div class="card-header">
+            <span class="card-icon">📊</span>
+            <h3>Statistics</h3>
+          </div>
+          <p>There are over 600 million domestic cats worldwide. The average lifespan is 12-18 years. Cats spend about 70% of their lives sleeping or in a dormant state.</p>
+        </div>
       </div>
 
+      <div class="highlight">
+        <strong>Did You Know?</strong> A cat's purr vibrates at a frequency of 25 to 150 Hz, which can promote bone healing and has therapeutic effects on both cats and humans!
+      </div>
+    </div>
+  </section>
+
+  <!-- Breeds Section -->
+  <section id="breeds">
+    <div class="container">
+      <h2>Popular Cat Breeds</h2>
+      <p>There are numerous cat breeds, each with unique characteristics, appearances, and temperaments. Here are some of the most beloved breeds around the world.</p>
+
+      <div class="grid">
+        <div class="breed-card">
+          <div class="breed-image">🐱</div>
+          <div class="breed-info">
+            <h3>Persian</h3>
+            <p>Known for their luxurious long coat and flat face, Persians are calm and gentle companions.</p>
+            <span class="trait">Quiet</span>
+            <span class="trait">Affectionate</span>
+            <span class="trait">Playful</span>
+          </div>
+        </div>
+
+        <div class="breed-card">
+          <div class="breed-image">🐈</div>
+          <div class="breed-info">
+            <h3>Siamese</h3>
+            <p>Elegant and vocal, Siamese cats are highly intelligent and form strong bonds with their owners.</p>
+            <span class="trait">Vocal</span>
+            <span class="trait">Social</span>
+            <span class="trait">Intelligent</span>
+          </div>
+        </div>
+
+        <div class="breed-card">
+          <div class="breed-image">😺</div>
+          <div class="breed-info">
+            <h3>Maine Coon</h3>
+            <p>One of the largest domestic breeds, Maine Coons are friendly, gentle giants with impressive hunting abilities.</p>
+            <span class="trait">Large</span>
+            <span class="trait">Gentle</span>
+            <span class="trait">Friendly</span>
+          </div>
+        </div>
+
+        <div class="breed-card">
+          <div class="breed-image">🐈‍⬛</div>
+          <div class="breed-info">
+            <h3>Bengal</h3>
+            <p>Bengals have a wild appearance with spotted or marbled coats and are highly energetic and playful.</p>
+            <span class="trait">Active</span>
+            <span class="trait">Playful</span>
+            <span class="trait">Athletic</span>
+          </div>
+        </div>
+
+        <div class="breed-card">
+          <div class="breed-image">🐱‍🐉</div>
+          <div class="breed-info">
+            <h3>Ragdoll</h3>
+            <p>Ragdolls are known for their striking blue eyes and docile, gentle nature. They love human companionship.</p>
+            <span class="trait">Docile</span>
+            <span class="trait">Loving</span>
+            <span class="trait">Beautiful</span>
+          </div>
+        </div>
+
+        <div class="breed-card">
+          <div class="breed-image">🐱‍👓</div>
+          <div class="breed-info">
+            <h3>Scottish Fold</h3>
+            <p>Famous for their distinctive folded ears, Scottish Folds are sweet-natured and adaptable cats.</p>
+            <span class="trait">Cute</span>
+            <span class="trait">Adaptable</span>
+            <span class="trait">Sweet</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Care Section -->
+  <section id="care">
+    <div class="container">
+      <h2>Cat Care Guide</h2>
+      <p>Proper care is essential for your cat's health and happiness. Here are the key aspects of feline care.</p>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>🍽️ Nutrition</h3>
+          <p><strong>Feeding:</strong> Cats need high-quality protein. Feed them 1-2 times daily depending on age. Provide fresh water constantly. Consult your vet about dietary needs.</p>
+        </div>
+
+        <div class="card">
+          <h3>🏃 Exercise & Play</h3>
+          <p><strong>Activity:</strong> Cats need daily play and exercise. Use toys, climbing posts, and interactive games to keep them mentally and physically stimulated.</p>
+        </div>
+
+        <div class="card">
+          <h3>🧼 Grooming</h3>
+          <p><strong>Maintenance:</strong> Brush long-haired cats daily, short-haired cats 2-3 times weekly. Regular nail trimming and dental care are important.</p>
+        </div>
+
+        <div class="card">
+          <h3>🏥 Health & Veterinary Care</h3>
+          <p><strong>Wellness:</strong> Schedule annual vet check-ups. Keep vaccinations current. Watch for signs of illness and dental problems.</p>
+        </div>
+
+        <div class="card">
+          <h3>🛏️ Environment</h3>
+          <p><strong>Living Space:</strong> Provide a comfortable bed, scratching posts, litter box, and hiding spots. Cats love vertical spaces and window perches.</p>
+        </div>
+
+        <div class="card">
+          <h3>😻 Socialization</h3>
+          <p><strong>Bonding:</strong> Spend quality time with your cat. Early socialization helps them become well-adjusted and friendly companions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- History Section -->
+  <section id="history">
+    <div class="container">
+      <h2>History of Domestication</h2>
+      <p>The relationship between humans and cats spans thousands of years, evolving from hunters to beloved companions.</p>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3>10,000 BCE - Early Domestication</h3>
+            <p>Wildcats began living near human settlements, attracted by rodents. This marked the beginning of the human-cat relationship.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3>3000 BCE - Ancient Egypt</h3>
+            <p>Cats became sacred animals in Egypt. They were mummified and buried with their owners, reflecting their status and importance.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3>1000 CE - Medieval Europe</h3>
+            <p>Cats were valued for controlling rodent populations in grain stores and ships. However, they were sometimes persecuted during this period.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3>1800s - Victorian Era</h3>
+            <p>Cat shows and breed standards began to develop. Cats transitioned from working animals to cherished companions and status symbols.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3>1900s-Present - Modern Era</h3>
+            <p>Cats became one of the most popular pets worldwide. Breed development continued, and cats are now recognized as important family members.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fun Facts Section -->
+  <section>
+    <div class="container">
+      <h2>Fascinating Cat Facts</h2>
+      <p>Discover some amazing facts about our feline friends.</p>
+
+      <div class="grid">
+        <div class="card">
+          <h3>🎵 Hearing Superpowers</h3>
+          <p>Cats can hear frequencies up to 64,000 Hz, which is much higher than humans (20,000 Hz). This helps them detect ultrasonic sounds made by rodents.</p>
+        </div>
+
+        <div class="card">
+          <h3>👀 Night Vision</h3>
+          <p>Cats have excellent low-light vision and can see in light levels six times lower than what humans need. They have a reflective layer called the tapetum lucidum.</p>
+        </div>
+
+        <div class="card">
+          <h3>🦴 Flexible Spine</h3>
+          <p>Cats have an extremely flexible spine with 53 vertebrae (humans have 33), allowing them to twist, turn, and land on their feet from falls.</p>
+        </div>
+
+        <div class="card">
+          <h3>🏃 Speed & Agility</h3>
+          <p>Cats can run up to 30 mph (48 km/h) in short bursts. Their powerful hind legs give them incredible jumping ability—up to 6 times their body length.</p>
+        </div>
+
+        <div class="card">
+          <h3>💤 Sleep Masters</h3>
+          <p>Cats sleep 12-16 hours per day on average. This allows them to conserve energy for hunting and pouncing on prey.</p>
+        </div>
+
+        <div class="card">
+          <h3>🧬 Unique DNA</h3>
+          <p>Cats share about 95% of their DNA with tigers. They also have a third eyelid called the nictitating membrane that protects their eyes.</p>
+        </div>
+
+        <div class="card">
+          <h3>🗣️ Communication</h3>
+          <p>While cats have about 100 vocal sounds, they primarily meow to communicate with humans. They have over 20 different types of meows for different situations.</p>
+        </div>
+
+        <div class="card">
+          <h3>👅 Taste & Smell</h3>
+          <p>Cats have a weaker sense of taste than humans but an incredibly strong sense of smell. They have around 200 million olfactory receptors.</p>
+        </div>
+
+        <div class="card">
+          <h3>💪 Muscle Control</h3>
+          <p>Cats can rotate their ears 180 degrees independently, allowing them to pinpoint sounds from different directions without moving their head.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact">
+    <div class="container">
+      <h2>Get in Touch</h2>
+      <p>Have questions about cats? Love sharing your feline stories? We'd love to hear from you!</p>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>📧 Email</h3>
+          <p><strong>info@felineworld.com</strong></p>
+          <p>Send us your cat photos, questions, or feedback anytime!</p>
+        </div>
+
+        <div class="card">
+          <h3>📱 Social Media</h3>
+          <p>Follow us on Instagram, Facebook, and Twitter for daily cat content and updates!</p>
+          <p><strong>@FelineWorld</strong></p>
+        </div>
+
+        <div class="card">
+          <h3>📍 Location</h3>
+          <p><strong>Feline World Headquarters</strong></p>
+          <p>123 Whisker Lane<br>Paw City, FC 12345</p>
+        </div>
+
+        <div class="card">
+          <h3>⏰ Hours</h3>
+          <p><strong>Monday - Friday:</strong> 9AM - 6PM<br>
+          <strong>Saturday - Sunday:</strong> 10AM - 4PM<br>
+          <strong>Holiday Hours:</strong> Closed</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>🐱 Feline World</h4>
+        <p>Your ultimate resource for everything about cats. Learn, share, and celebrate our feline companions.</p>
+      </div>
+
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#about">About Cats</a></li>
+          <li><a href="#breeds">Breed Guide</a></li>
+          <li><a href="#care">Care Tips</a></li>
+          <li><a href="#history">History</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="#">Cat Breed Database</a></li>
+          <li><a href="#">Health & Wellness</a></li>
+          <li><a href="#">Training Guide</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
     </div>
 
-    <form id="upload-form">
-
-      <input
-        type="file"
-        id="file-upload"
-        accept=".xml"
-      >
-
-      <input
-        type="text"
-        id="search-bar"
-        placeholder="Buscar cliente, factura, RUC..."
-      >
-
-      <button
-        type="submit"
-        class="upload-btn"
-      >
-        Subir XML
-      </button>
-
-    </form>
-
-    <div class="table-container">
-
-      <table>
-
-        <thead>
-
-          <tr>
-
-            <th>Factura</th>
-            <th>Fecha</th>
-            <th>Fecha Entrega</th>
-            <th>Cliente</th>
-            <th>RUC</th>
-            <th>Provincia</th>
-            <th>Ciudad</th>
-            <th>Lista Precio</th>
-            <th>Canal</th>
-            <th>Sub Canal</th>
-            <th>Vendedor</th>
-            <th>Cuentas</th>
-            <th>Código</th>
-            <th>Modelo</th>
-            <th>Proveedor</th>
-            <th>Cantidad</th>
-            <th>Costo Unitario</th>
-            <th>Costo Total</th>
-            <th>IVA Pagado</th>
-            <th>Precio Unitario</th>
-            <th>Precio Total</th>
-            <th>IVA Cobrado</th>
-            <th>Total Facturado</th>
-            <th>Utilidad</th>
-            <th>Crédito</th>
-            <th>Condiciones Crédito</th>
-            <th>Pendientes</th>
-            <th>Perdido</th>
-            <th>Eliminar</th>
-
-          </tr>
-
-        </thead>
-
-        <tbody id="invoice-table"></tbody>
-
-      </table>
-
+    <div class="footer-bottom">
+      <p>&copy; 2024 Feline World. All rights reserved. | Crafted with ❤️ for cat lovers everywhere.</p>
     </div>
-
-  </div>
-
-</main>
-
-<footer>
-
-  Sistema Profesional de Facturación
-
-</footer>
-
-<script>
-
-let invoices =
-JSON.parse(
-  localStorage.getItem("invoices")
-)
-|| [];
-
-const loading =
-document.getElementById("loading");
-
-function showLoading(){
-
-  loading.style.display = "flex";
-}
-
-function hideLoading(){
-
-  loading.style.display = "none";
-}
-
-document
-.getElementById("upload-form")
-.addEventListener("submit",(e)=>{
-
-  e.preventDefault();
-
-  const fileInput =
-  document.getElementById("file-upload");
-
-  const file =
-  fileInput.files[0];
-
-  if(!file){
-
-    return alert(
-      "Selecciona un XML."
-    );
-  }
-
-  showLoading();
-
-  const reader =
-  new FileReader();
-
-  reader.onload = function(){
-
-    try{
-
-      const parser =
-      new DOMParser();
-
-      const xml =
-      parser.parseFromString(
-        this.result,
-        "application/xml"
-      );
-
-      const cdata =
-      xml.querySelector("comprobante")
-      ?.textContent
-      .trim();
-
-      if(cdata){
-
-        const inner =
-        new DOMParser()
-        .parseFromString(
-          cdata,
-          "application/xml"
-        );
-
-        const invoice =
-        processXMLData(inner);
-
-        const facturaNueva =
-        invoice[0]?.factura;
-
-        const yaExiste =
-        invoices.some(
-          inv => inv.factura === facturaNueva
-        );
-
-        if(yaExiste){
-
-          alert(
-            "Esta factura ya fue subida."
-          );
-
-          hideLoading();
-
-          fileInput.value = "";
-
-          return;
-        }
-
-        invoices.push(...invoice);
-
-        saveAndRender();
-
-        fileInput.value = "";
-
-      }else{
-
-        alert(
-          "No se encontró información válida."
-        );
-      }
-
-    }catch(err){
-
-      console.error(err);
-
-      alert(
-        "Error leyendo XML."
-      );
-    }
-
-    hideLoading();
-
-  };
-
-  reader.readAsText(file);
-
-});
-
-function processXMLData(xml){
-
-  const get = (sel)=>
-
-    xml.querySelector(sel)
-    ?.textContent
-    .trim() || "N/A";
-
-  const models =
-
-  Array.from(
-    xml.querySelectorAll(
-      "detalles > detalle"
-    )
-  );
-
-  return models.map(m=>({
-
-    factura:
-    get("infoTributaria > secuencial"),
-
-    fecha:
-    get("infoFactura > fechaEmision"),
-
-    fecha_entrega:
-    get("infoFactura > fechaEntrega"),
-
-    cliente:
-    get("infoFactura > razonSocialComprador"),
-
-    ruc:
-    get("infoFactura > identificacionComprador"),
-
-    provincia:
-    get("infoFactura > direccionComprador"),
-
-    ciudad:
-    get("infoFactura > direccionComprador"),
-
-    lista_precio:
-    get("infoFactura > listaPrecio"),
-
-    canal:
-    get("infoFactura > canal"),
-
-    sub_canal:
-    get("infoFactura > subCanal"),
-
-    vendedor:
-    get("infoFactura > vendedor"),
-
-    cuentas:
-    get("infoFactura > cuentas"),
-
-    codigo:
-    m.querySelector("codigoPrincipal")
-    ?.textContent.trim() || "N/A",
-
-    modelo:
-    m.querySelector("descripcion")
-    ?.textContent.trim() || "N/A",
-
-    proveedor:
-    m.querySelector("nombreProveedor")
-    ?.textContent.trim() || "N/A",
-
-    cantidad:
-    m.querySelector("cantidad")
-    ?.textContent.trim() || "N/A",
-
-    costo_unitario:
-    m.querySelector("precioUnitario")
-    ?.textContent.trim() || "N/A",
-
-    costo_total:
-    m.querySelector("precioTotalSinImpuesto")
-    ?.textContent.trim() || "N/A",
-
-    iva_pagado:
-    get(
-      "infoFactura > totalConImpuestos > totalImpuesto > valor"
-    ),
-
-    precio_unitario:
-    m.querySelector("precioUnitario")
-    ?.textContent.trim() || "N/A",
-
-    precio_total:
-    m.querySelector("precioTotalSinImpuesto")
-    ?.textContent.trim() || "N/A",
-
-    iva_cobrado:
-    get(
-      "infoFactura > totalConImpuestos > totalImpuesto > valor"
-    ),
-
-    total_facturado:
-    get("infoFactura > importeTotal"),
-
-    utilidad:
-    get("infoFactura > utilidad"),
-
-    credito:
-    get("infoFactura > credito"),
-
-    condiciones_credito:
-    get("infoFactura > condicionesCredito"),
-
-    pendientes:
-    get("infoFactura > pendientes"),
-
-    perdido:
-    get("infoFactura > perdido")
-
-  }));
-
-}
-
-function saveAndRender(){
-
-  localStorage.setItem(
-    "invoices",
-    JSON.stringify(invoices)
-  );
-
-  populateTable();
-
-  updateFacturaCount();
-}
-
-function populateTable(data = invoices){
-
-  const tbody =
-  document.getElementById("invoice-table");
-
-  tbody.innerHTML = "";
-
-  data.forEach((inv,index)=>{
-
-    const row =
-    document.createElement("tr");
-
-    Object.entries(inv).forEach(([key,value])=>{
-
-      const td =
-      document.createElement("td");
-
-      td.textContent = value;
-
-      row.appendChild(td);
-
-    });
-
-    const del =
-    document.createElement("button");
-
-    del.textContent = "Eliminar";
-
-    del.className = "delete-btn";
-
-    del.onclick = ()=>{
-
-      invoices.splice(index,1);
-
-      saveAndRender();
-    };
-
-    const td =
-    document.createElement("td");
-
-    td.appendChild(del);
-
-    row.appendChild(td);
-
-    tbody.appendChild(row);
-
-  });
-
-}
-
-function updateFacturaCount(){
-
-  document.getElementById(
-    "factura-count"
-  ).textContent =
-
-  `Facturas leídas: ${invoices.length}`;
-}
-
-function exportToExcel(){
-
-  const ws =
-  XLSX.utils.json_to_sheet(invoices);
-
-  const wb =
-  XLSX.utils.book_new();
-
-  XLSX.utils.book_append_sheet(
-    wb,
-    ws,
-    "Facturas"
-  );
-
-  XLSX.writeFile(
-    wb,
-    "facturas.xlsx"
-  );
-
-}
-
-async function copyAsExcel(){
-
-  if(invoices.length === 0){
-
-    return alert(
-      "No hay datos para copiar."
-    );
-  }
-
-  const headers =
-    Object.keys(invoices[0]);
-
-  let text =
-    headers.join("\t") + "\n";
-
-  invoices.forEach(inv=>{
-
-    text +=
-    Object.values(inv)
-    .map(value => {
-
-      if(
-        typeof value === "string" &&
-        /^0+\d+$/.test(value)
-      ){
-
-        return `="${value}"`;
-      }
-
-      return value;
-
-    })
-    .join("\t") + "\n";
-
-  });
-
-  try{
-
-    await navigator.clipboard.writeText(text);
-
-    alert(
-      "Copiado correctamente para Excel."
-    );
-
-  }catch(err){
-
-    console.error(err);
-
-    alert(
-      "No se pudo copiar."
-    );
-  }
-
-}
-
-document
-.getElementById("search-bar")
-.addEventListener("input",(e)=>{
-
-  const term =
-  e.target.value.toLowerCase();
-
-  const filtered =
-
-  invoices.filter(inv=>
-
-    Object.values(inv)
-    .join(" ")
-    .toLowerCase()
-    .includes(term)
-
-  );
-
-  populateTable(filtered);
-
-});
-
-document.addEventListener(
-  "DOMContentLoaded",
-  ()=>{
-
-    populateTable();
-
-    updateFacturaCount();
-
-  }
-);
-
-</script>
+  </footer>
 
 </body>
+
 </html>
