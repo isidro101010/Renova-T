@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A professional Snake game with smooth gameplay, score tracking, and difficulty levels">
-    <meta name="theme-color" content="#1a1a2e">
-    <title>Snake Game - Professional Edition</title>
+    <meta name="description" content="A comprehensive guide to dog breeds, care, training, and everything you need to know about man's best friend">
+    <meta name="theme-color" content="#8B4513">
+    <title>Dog's World - Your Complete Guide to Dogs</title>
     <style>
         * {
             margin: 0;
@@ -15,308 +15,277 @@
 
         html {
             font-size: 16px;
+            scroll-behavior: smooth;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f5deb3 0%, #daa520 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #8B4513 0%, #654321 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: #654321;
+            padding: 1rem 0;
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 1rem;
+            gap: 2rem;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #FFD700;
         }
 
         .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 2rem;
-            max-width: 600px;
-            width: 100%;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            color: #1a1a2e;
-            margin-bottom: 0.5rem;
-        }
-
-        .header p {
-            color: #666;
-            font-size: 0.95rem;
-        }
-
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat {
-            background: #f5f5f5;
-            padding: 1rem;
-            border-radius: 10px;
-            text-align: center;
-            border-left: 4px solid #667eea;
-        }
-
-        .stat-label {
-            font-size: 0.85rem;
-            color: #888;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-value {
-            font-size: 1.75rem;
-            font-weight: bold;
-            color: #1a1a2e;
-        }
-
-        .game-board {
-            background: #1a1a2e;
+        section {
+            background: white;
             border-radius: 15px;
             margin-bottom: 2rem;
-            overflow: hidden;
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
         }
 
-        canvas {
-            display: block;
-            width: 100%;
-            height: auto;
-            background: #0f0f1e;
+        section h2 {
+            color: #8B4513;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid #DAA520;
+            padding-bottom: 0.5rem;
         }
 
-        .controls {
+        section h3 {
+            color: #654321;
+            font-size: 1.3rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .intro-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 1.5rem;
+        }
+
+        .breeds-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
         }
 
-        .difficulty-control {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .difficulty-control label {
-            font-size: 0.85rem;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
-        }
-
-        .difficulty-buttons {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .difficulty-btn {
-            flex: 1;
-            padding: 0.75rem;
-            border: 2px solid #ddd;
-            background: white;
-            color: #333;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-
-        .difficulty-btn:hover {
-            border-color: #667eea;
-            color: #667eea;
-        }
-
-        .difficulty-btn.active {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
-
-        .buttons-container {
-            display: flex;
-            gap: 1rem;
-        }
-
-        button {
-            flex: 1;
-            padding: 1rem;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn-play {
-            background: #4caf50;
-            color: white;
-        }
-
-        .btn-play:hover:not(:disabled) {
-            background: #45a049;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
-        }
-
-        .btn-pause {
-            background: #ff9800;
-            color: white;
-        }
-
-        .btn-pause:hover:not(:disabled) {
-            background: #e68900;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
-        }
-
-        .btn-reset {
-            background: #f44336;
-            color: white;
-        }
-
-        .btn-reset:hover:not(:disabled) {
-            background: #da190b;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
-        }
-
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .instructions {
-            background: #f9f9f9;
+        .breed-card {
+            background: linear-gradient(135deg, #fff8dc 0%, #ffe4b5 100%);
             border-radius: 10px;
             padding: 1.5rem;
-            margin-top: 2rem;
-            border-left: 4px solid #667eea;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 5px solid #8B4513;
         }
 
-        .instructions h3 {
-            color: #1a1a2e;
-            margin-bottom: 1rem;
-            font-size: 1rem;
+        .breed-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
 
-        .instructions ul {
+        .breed-card h4 {
+            color: #8B4513;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .breed-card p {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .breed-size {
+            display: inline-block;
+            background: #DAA520;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .tips-list {
             list-style: none;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
-        }
-
-        .instructions li {
-            color: #666;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-        }
-
-        .instructions li:before {
-            content: "▸";
-            color: #667eea;
-            margin-right: 0.5rem;
-            font-weight: bold;
-        }
-
-        .game-over-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .game-over-modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 400px;
-        }
-
-        .modal-content h2 {
-            color: #f44336;
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .modal-content .final-score {
-            font-size: 1.5rem;
-            color: #1a1a2e;
-            margin-bottom: 1.5rem;
-            padding: 1rem;
-            background: #f5f5f5;
-            border-radius: 10px;
-        }
-
-        .modal-content .final-score strong {
-            display: block;
-            font-size: 2.5rem;
-            color: #667eea;
-        }
-
-        .modal-buttons {
-            display: flex;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1rem;
             margin-top: 1.5rem;
         }
 
-        .modal-buttons button {
-            flex: 1;
+        .tips-list li {
+            background: #f9f9f9;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #8B4513;
+            transition: background 0.3s ease;
         }
 
-        @media (max-width: 480px) {
-            .container {
+        .tips-list li:hover {
+            background: #f0f0f0;
+        }
+
+        .tips-list li:before {
+            content: "🐾 ";
+            margin-right: 0.5rem;
+            font-weight: bold;
+        }
+
+        .health-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .health-item {
+            background: linear-gradient(135deg, #fff8dc 0%, #ffe4b5 100%);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #DAA520;
+        }
+
+        .health-item h4 {
+            color: #8B4513;
+            margin-bottom: 0.5rem;
+        }
+
+        .health-item p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .call-to-action {
+            background: linear-gradient(135deg, #8B4513 0%, #654321 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .call-to-action h3 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .call-to-action button {
+            background: #DAA520;
+            color: #333;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+        }
+
+        .call-to-action button:hover {
+            background: #FFD700;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        .social-links {
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            display: inline-block;
+            margin: 0 0.5rem;
+            color: #DAA520;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #FFD700;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            nav {
+                gap: 1rem;
+            }
+
+            section {
                 padding: 1.5rem;
             }
 
-            .header h1 {
-                font-size: 1.75rem;
+            section h2 {
+                font-size: 1.5rem;
             }
 
-            .stats-container {
+            .breeds-grid {
                 grid-template-columns: 1fr;
             }
 
-            .controls {
+            .tips-list {
                 grid-template-columns: 1fr;
             }
 
-            .instructions ul {
+            .health-grid {
                 grid-template-columns: 1fr;
-            }
-
-            .difficulties-buttons {
-                flex-wrap: wrap;
             }
         }
 
@@ -330,395 +299,236 @@
     </style>
 </head>
 <body>
+    <header>
+        <h1>🐕 Dog's World</h1>
+        <p>Your Complete Guide to Man's Best Friend</p>
+    </header>
+
+    <nav>
+        <a href="#breeds">Breeds</a>
+        <a href="#care">Care Guide</a>
+        <a href="#training">Training Tips</a>
+        <a href="#health">Health & Wellness</a>
+        <a href="#fun">Fun Facts</a>
+        <a href="#contact">Contact</a>
+    </nav>
+
     <div class="container">
-        <div class="header">
-            <h1>🐍 Snake Game</h1>
-            <p>Classic snake gameplay with modern controls</p>
-        </div>
+        <!-- Introduction Section -->
+        <section>
+            <h2>Welcome to Dog's World</h2>
+            <p class="intro-text">
+                Dogs have been humanity's faithful companions for thousands of years. From loyal family pets to working assistance animals, dogs play an incredible role in our lives. This website is dedicated to providing comprehensive information about dog breeds, care, training, and everything you need to know to be the best dog owner possible.
+            </p>
+            <p class="intro-text">
+                Whether you're a first-time dog owner or an experienced enthusiast, you'll find valuable resources and insights here to help you understand and care for your furry friend.
+            </p>
+        </section>
 
-        <div class="stats-container">
-            <div class="stat">
-                <div class="stat-label">Score</div>
-                <div class="stat-value" id="score">0</div>
-            </div>
-            <div class="stat">
-                <div class="stat-label">Best Score</div>
-                <div class="stat-value" id="bestScore">0</div>
-            </div>
-            <div class="stat">
-                <div class="stat-label">Level</div>
-                <div class="stat-value" id="level">1</div>
-            </div>
-        </div>
-
-        <div class="game-board">
-            <canvas id="gameCanvas" width="400" height="400"></canvas>
-        </div>
-
-        <div class="controls">
-            <div class="difficulty-control">
-                <label for="difficulty">Difficulty</label>
-                <div class="difficulty-buttons">
-                    <button class="difficulty-btn active" data-difficulty="easy">Easy</button>
-                    <button class="difficulty-btn" data-difficulty="medium">Medium</button>
-                    <button class="difficulty-btn" data-difficulty="hard">Hard</button>
+        <!-- Dog Breeds Section -->
+        <section id="breeds">
+            <h2>Popular Dog Breeds</h2>
+            <p class="intro-text">Discover some of the most beloved dog breeds around the world:</p>
+            <div class="breeds-grid">
+                <div class="breed-card">
+                    <h4>🐕 Golden Retriever</h4>
+                    <p>Friendly, intelligent, and devoted family dog</p>
+                    <p><strong>Temperament:</strong> Outgoing, even-tempered, friendly</p>
+                    <p><strong>Exercise Needs:</strong> High</p>
+                    <span class="breed-size">Large</span>
+                </div>
+                <div class="breed-card">
+                    <h4>🐕 Labrador Retriever</h4>
+                    <p>Loyal, outgoing, and even-tempered companion</p>
+                    <p><strong>Temperament:</strong> Friendly, outgoing, active</p>
+                    <p><strong>Exercise Needs:</strong> High</p>
+                    <span class="breed-size">Large</span>
+                </div>
+                <div class="breed-card">
+                    <h4>🐕 German Shepherd</h4>
+                    <p>Confident, intelligent, and extremely versatile</p>
+                    <p><strong>Temperament:</strong> Confident, courageous, intelligent</p>
+                    <p><strong>Exercise Needs:</strong> Very High</p>
+                    <span class="breed-size">Large</span>
+                </div>
+                <div class="breed-card">
+                    <h4>🐕 French Bulldog</h4>
+                    <p>Playful, alert, and affectionate companion</p>
+                    <p><strong>Temperament:</strong> Playful, alert, affectionate</p>
+                    <p><strong>Exercise Needs:</strong> Moderate</p>
+                    <span class="breed-size">Small</span>
+                </div>
+                <div class="breed-card">
+                    <h4>🐕 Beagle</h4>
+                    <p>Merry, curious, and determined hunting dog</p>
+                    <p><strong>Temperament:</strong> Merry, curious, determined</p>
+                    <p><strong>Exercise Needs:</strong> High</p>
+                    <span class="breed-size">Small</span>
+                </div>
+                <div class="breed-card">
+                    <h4>🐕 Poodle</h4>
+                    <p>Exceptional intelligence and athletic ability</p>
+                    <p><strong>Temperament:</strong> Intelligent, active, elegant</p>
+                    <p><strong>Exercise Needs:</strong> High</p>
+                    <span class="breed-size">Medium/Large</span>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="buttons-container">
-            <button class="btn-play" id="playBtn">Play</button>
-            <button class="btn-pause" id="pauseBtn" disabled>Pause</button>
-            <button class="btn-reset" id="resetBtn">Reset</button>
-        </div>
-
-        <div class="instructions">
-            <h3>How to Play</h3>
-            <ul>
-                <li>Use Arrow Keys to move</li>
-                <li>Eat the red food</li>
-                <li>Don't hit the walls</li>
-                <li>Don't hit yourself</li>
-                <li>Each food = +10 points</li>
-                <li>Can also use WASD</li>
+        <!-- Dog Care Section -->
+        <section id="care">
+            <h2>Dog Care Guide</h2>
+            <p class="intro-text">Proper care is essential to keep your dog healthy and happy. Here are the key aspects of dog care:</p>
+            
+            <h3>🍽️ Nutrition</h3>
+            <ul class="tips-list">
+                <li>Feed high-quality dog food appropriate for your dog's age and size</li>
+                <li>Provide fresh water daily</li>
+                <li>Avoid toxic foods like chocolate, grapes, and onions</li>
+                <li>Consider consulting a veterinarian about the best diet</li>
             </ul>
-        </div>
+
+            <h3>🏃 Exercise</h3>
+            <ul class="tips-list">
+                <li>Dogs need daily physical activity to stay healthy</li>
+                <li>Exercise duration depends on breed and age</li>
+                <li>Include both walks and playtime</li>
+                <li>Mental stimulation is just as important as physical exercise</li>
+            </ul>
+
+            <h3>🛁 Grooming</h3>
+            <ul class="tips-list">
+                <li>Brush your dog's coat regularly</li>
+                <li>Bathe your dog every 4-6 weeks or as needed</li>
+                <li>Trim nails regularly</li>
+                <li>Clean ears and brush teeth regularly</li>
+            </ul>
+        </section>
+
+        <!-- Training Section -->
+        <section id="training">
+            <h2>Training Tips for Your Dog</h2>
+            <p class="intro-text">Proper training is crucial for a well-behaved and happy dog. Here are effective training strategies:</p>
+            
+            <h3>Basic Obedience Commands</h3>
+            <ul class="tips-list">
+                <li><strong>Sit:</strong> One of the easiest commands to teach</li>
+                <li><strong>Stay:</strong> Essential for safety in dangerous situations</li>
+                <li><strong>Come:</strong> Critical for recall and safety</li>
+                <li><strong>Down:</strong> Useful for calm behavior indoors</li>
+                <li><strong>Leave It:</strong> Prevents eating dangerous items</li>
+            </ul>
+
+            <h3>Training Best Practices</h3>
+            <ul class="tips-list">
+                <li>Start training early while your dog is young</li>
+                <li>Use positive reinforcement and treats as rewards</li>
+                <li>Keep training sessions short (5-10 minutes)</li>
+                <li>Be consistent with commands and rules</li>
+                <li>Practice patience and never use harsh punishment</li>
+            </ul>
+        </section>
+
+        <!-- Health & Wellness Section -->
+        <section id="health">
+            <h2>Health & Wellness</h2>
+            <p class="intro-text">Your dog's health is paramount. Here are essential health considerations:</p>
+            
+            <div class="health-grid">
+                <div class="health-item">
+                    <h4>💉 Vaccinations</h4>
+                    <p>Keep your dog's vaccinations up to date to prevent serious diseases.</p>
+                </div>
+                <div class="health-item">
+                    <h4>🦷 Dental Care</h4>
+                    <p>Regular teeth brushing prevents dental disease and infections.</p>
+                </div>
+                <div class="health-item">
+                    <h4>🏥 Veterinary Checkups</h4>
+                    <p>Annual vet visits ensure early detection of health issues.</p>
+                </div>
+                <div class="health-item">
+                    <h4>🧬 Parasite Prevention</h4>
+                    <p>Protect against fleas, ticks, and worms with preventative medication.</p>
+                </div>
+                <div class="health-item">
+                    <h4>⚖️ Weight Management</h4>
+                    <p>Maintain a healthy weight to prevent obesity-related diseases.</p>
+                </div>
+                <div class="health-item">
+                    <h4>💤 Rest & Sleep</h4>
+                    <p>Dogs need 12-14 hours of sleep daily for proper health.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fun Facts Section -->
+        <section id="fun">
+            <h2>Fascinating Dog Facts</h2>
+            <ul class="tips-list">
+                <li>Dogs have a sense of time and know when their owners are gone</li>
+                <li>A dog's sense of smell is 10,000 to 100,000 times more sensitive than humans</li>
+                <li>Dogs can understand approximately 250 words and gestures</li>
+                <li>Puppies are born with closed eyes and open them after 10-14 days</li>
+                <li>Dogs dream just like humans, often about their owners</li>
+                <li>A dog's mouth exerts 200 pounds of pressure per square inch when they bite</li>
+                <li>Dogs see the world in shades of blue and yellow, not color like humans</li>
+                <li>The oldest dog ever recorded lived to be 29 years old</li>
+            </ul>
+        </section>
+
+        <!-- Call to Action -->
+        <section>
+            <div class="call-to-action">
+                <h3>Ready to Learn More About Dogs?</h3>
+                <p>Join our community of dog lovers and get tips, updates, and stories delivered to your inbox!</p>
+                <button onclick="alert('Thank you for your interest! Subscribe feature coming soon.')">Subscribe Now</button>
+                <button onclick="alert('Get in touch with us! Contact form coming soon.')">Contact Us</button>
+            </div>
+        </section>
     </div>
 
-    <div class="game-over-modal" id="gameOverModal">
-        <div class="modal-content">
-            <h2>Game Over!</h2>
-            <div class="final-score">
-                Final Score
-                <strong id="finalScore">0</strong>
-            </div>
-            <div class="modal-buttons">
-                <button class="btn-play" onclick="game.reset(); game.start()">Play Again</button>
-                <button class="btn-reset" onclick="document.getElementById('gameOverModal').classList.remove('show')">Close</button>
-            </div>
+    <footer id="contact">
+        <p>&copy; 2024 Dog's World. All rights reserved.</p>
+        <p>Dedicated to celebrating the joy and companionship of dogs.</p>
+        <div class="social-links">
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+            <a href="#">Instagram</a>
+            <a href="#">YouTube</a>
         </div>
-    </div>
+    </footer>
 
     <script>
-        /**
-         * Professional Snake Game
-         * A fully-featured implementation with difficulty levels, score tracking, and smooth gameplay
-         */
-        const game = {
-            canvas: document.getElementById('gameCanvas'),
-            ctx: null,
-            gridSize: 20,
-            tileCount: 0,
-            snake: [],
-            food: null,
-            direction: { x: 1, y: 0 },
-            nextDirection: { x: 1, y: 0 },
-            score: 0,
-            bestScore: localStorage.getItem('snakeBestScore') || 0,
-            gameRunning: false,
-            gamePaused: false,
-            difficulty: 'easy',
-            speeds: {
-                easy: 100,
-                medium: 75,
-                hard: 40
-            },
-            gameLoopId: null,
-            level: 1,
-
-            /**
-             * Initialize the game
-             */
-            init() {
-                this.ctx = this.canvas.getContext('2d');
-                this.tileCount = this.canvas.width / this.gridSize;
-                this.setupEventListeners();
-                this.loadBestScore();
-                this.reset();
-            },
-
-            /**
-             * Setup all event listeners
-             */
-            setupEventListeners() {
-                // Keyboard controls
-                document.addEventListener('keydown', (e) => this.handleInput(e));
-
-                // Button controls
-                document.getElementById('playBtn').addEventListener('click', () => this.start());
-                document.getElementById('pauseBtn').addEventListener('click', () => this.togglePause());
-                document.getElementById('resetBtn').addEventListener('click', () => this.reset());
-
-                // Difficulty buttons
-                document.querySelectorAll('.difficulty-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => this.setDifficulty(e.target.dataset.difficulty));
-                });
-            },
-
-            /**
-             * Handle keyboard input
-             */
-            handleInput(e) {
-                if (!this.gameRunning || this.gamePaused) return;
-
-                const key = e.key.toLowerCase();
-                const keyMap = {
-                    'arrowup': { x: 0, y: -1 },
-                    'w': { x: 0, y: -1 },
-                    'arrowdown': { x: 0, y: 1 },
-                    's': { x: 0, y: 1 },
-                    'arrowleft': { x: -1, y: 0 },
-                    'a': { x: -1, y: 0 },
-                    'arrowright': { x: 1, y: 0 },
-                    'd': { x: 1, y: 0 }
-                };
-
-                if (keyMap[key]) {
-                    e.preventDefault();
-                    // Prevent 180-degree turns
-                    if (this.direction.x + keyMap[key].x !== 0 || this.direction.y + keyMap[key].y !== 0) {
-                        this.nextDirection = keyMap[key];
-                    }
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
                 }
-            },
+            });
+        });
 
-            /**
-             * Set game difficulty
-             */
-            setDifficulty(level) {
-                if (this.gameRunning) return;
+        // Add scroll effect to header
+        let lastScrollTop = 0;
+        const header = document.querySelector('header');
 
-                this.difficulty = level;
-
-                // Update UI
-                document.querySelectorAll('.difficulty-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                event.target.classList.add('active');
-
-                this.updateLevel();
-            },
-
-            /**
-             * Start the game
-             */
-            start() {
-                if (this.gameRunning) return;
-
-                this.gameRunning = true;
-                this.gamePaused = false;
-                document.getElementById('playBtn').disabled = true;
-                document.getElementById('pauseBtn').disabled = false;
-                document.querySelectorAll('.difficulty-btn').forEach(btn => btn.disabled = true);
-
-                this.gameLoopId = setInterval(() => this.update(), this.speeds[this.difficulty]);
-            },
-
-            /**
-             * Toggle pause
-             */
-            togglePause() {
-                if (!this.gameRunning) return;
-
-                this.gamePaused = !this.gamePaused;
-                document.getElementById('pauseBtn').textContent = this.gamePaused ? 'Resume' : 'Pause';
-            },
-
-            /**
-             * Update game state
-             */
-            update() {
-                if (this.gamePaused) return;
-
-                this.direction = this.nextDirection;
-
-                // Calculate new head position
-                const head = {
-                    x: this.snake[0].x + this.direction.x,
-                    y: this.snake[0].y + this.direction.y
-                };
-
-                // Check wall collision
-                if (head.x < 0 || head.x >= this.tileCount || head.y < 0 || head.y >= this.tileCount) {
-                    this.endGame();
-                    return;
-                }
-
-                // Check self collision
-                if (this.snake.some(segment => segment.x === head.x && segment.y === head.y)) {
-                    this.endGame();
-                    return;
-                }
-
-                this.snake.unshift(head);
-
-                // Check food collision
-                if (head.x === this.food.x && head.y === this.food.y) {
-                    this.score += 10;
-                    this.updateLevel();
-                    this.food = this.generateFood();
-                } else {
-                    this.snake.pop();
-                }
-
-                this.updateUI();
-                this.draw();
-            },
-
-            /**
-             * Draw the game
-             */
-            draw() {
-                // Clear canvas
-                this.ctx.fillStyle = '#0f0f1e';
-                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-                // Draw grid
-                this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
-                this.ctx.lineWidth = 0.5;
-                for (let i = 0; i <= this.tileCount; i++) {
-                    const pos = i * this.gridSize;
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(pos, 0);
-                    this.ctx.lineTo(pos, this.canvas.height);
-                    this.ctx.stroke();
-
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(0, pos);
-                    this.ctx.lineTo(this.canvas.width, pos);
-                    this.ctx.stroke();
-                }
-
-                // Draw snake
-                this.snake.forEach((segment, index) => {
-                    if (index === 0) {
-                        // Head
-                        this.ctx.fillStyle = '#4caf50';
-                        this.ctx.shadowColor = 'rgba(76, 175, 80, 0.5)';
-                        this.ctx.shadowBlur = 10;
-                    } else {
-                        // Body
-                        this.ctx.fillStyle = '#45a049';
-                        this.ctx.shadowColor = 'transparent';
-                    }
-
-                    this.ctx.fillRect(
-                        segment.x * this.gridSize + 1,
-                        segment.y * this.gridSize + 1,
-                        this.gridSize - 2,
-                        this.gridSize - 2
-                    );
-                });
-
-                this.ctx.shadowColor = 'transparent';
-
-                // Draw food
-                this.ctx.fillStyle = '#f44336';
-                this.ctx.shadowColor = 'rgba(244, 67, 54, 0.5)';
-                this.ctx.shadowBlur = 10;
-                this.ctx.beginPath();
-                this.ctx.arc(
-                    this.food.x * this.gridSize + this.gridSize / 2,
-                    this.food.y * this.gridSize + this.gridSize / 2,
-                    this.gridSize / 2 - 2,
-                    0,
-                    Math.PI * 2
-                );
-                this.ctx.fill();
-            },
-
-            /**
-             * Generate random food position
-             */
-            generateFood() {
-                let food;
-                let isOnSnake;
-
-                do {
-                    food = {
-                        x: Math.floor(Math.random() * this.tileCount),
-                        y: Math.floor(Math.random() * this.tileCount)
-                    };
-                    isOnSnake = this.snake.some(segment => segment.x === food.x && segment.y === food.y);
-                } while (isOnSnake);
-
-                return food;
-            },
-
-            /**
-             * Update UI displays
-             */
-            updateUI() {
-                document.getElementById('score').textContent = this.score;
-                document.getElementById('level').textContent = this.level;
-            },
-
-            /**
-             * Update level based on score
-             */
-            updateLevel() {
-                this.level = Math.floor(this.score / 50) + 1;
-            },
-
-            /**
-             * End the game
-             */
-            endGame() {
-                this.gameRunning = false;
-                this.gamePaused = false;
-                clearInterval(this.gameLoopId);
-
-                // Update best score
-                if (this.score > this.bestScore) {
-                    this.bestScore = this.score;
-                    localStorage.setItem('snakeBestScore', this.bestScore);
-                    document.getElementById('bestScore').textContent = this.bestScore;
-                }
-
-                document.getElementById('finalScore').textContent = this.score;
-                document.getElementById('gameOverModal').classList.add('show');
-
-                document.getElementById('playBtn').disabled = false;
-                document.getElementById('pauseBtn').disabled = true;
-                document.getElementById('pauseBtn').textContent = 'Pause';
-                document.querySelectorAll('.difficulty-btn').forEach(btn => btn.disabled = false);
-            },
-
-            /**
-             * Reset the game
-             */
-            reset() {
-                this.gameRunning = false;
-                this.gamePaused = false;
-                clearInterval(this.gameLoopId);
-
-                this.snake = [{ x: 10, y: 10 }];
-                this.direction = { x: 1, y: 0 };
-                this.nextDirection = { x: 1, y: 0 };
-                this.score = 0;
-                this.level = 1;
-                this.food = this.generateFood();
-
-                document.getElementById('playBtn').disabled = false;
-                document.getElementById('pauseBtn').disabled = true;
-                document.getElementById('pauseBtn').textContent = 'Pause';
-                document.querySelectorAll('.difficulty-btn').forEach(btn => btn.disabled = false);
-                document.getElementById('gameOverModal').classList.remove('show');
-
-                this.updateUI();
-                this.draw();
-            },
-
-            /**
-             * Load best score from storage
-             */
-            loadBestScore() {
-                document.getElementById('bestScore').textContent = this.bestScore;
+        window.addEventListener('scroll', () => {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > 50) {
+                header.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.2)';
+            } else {
+                header.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
             }
-        };
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        });
 
-        // Initialize game when page loads
-        document.addEventListener('DOMContentLoaded', () => game.init());
+        console.log('Dog\'s World website loaded successfully!');
     </script>
 </body>
 </html>
